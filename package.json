@@ -1,0 +1,8 @@
+{
+  "name": "surfer-shield",
+  "version": "1.0.0",
+  "description": "Privacy that watches back.",
+  "dependencies": {
+    "stripe": "^14.0.0"
+  }
+}
