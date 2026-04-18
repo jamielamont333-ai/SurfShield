@@ -228,7 +228,7 @@ async function scan(){if(!stream)return;if(dismissed&&Date.now()<dismissedUntil)
 function goToStripe(){window.location.href=STRIPE_LINK;}
 function openUpgrade(){$('upgrade-eyebrow').textContent=scansToday()>=FREE_LIMIT?"You've hit the free limit":"Unlock unlimited protection";$('upgrade-backdrop').classList.add('open');}
 function closeUpgrade(){$('upgrade-backdrop').classList.remove('open');}
-function handleReturn(){const p=new URLSearchParams(window.location.search);if(p.get('payment')==='success'){const proToken='pro_'+Date.now();const expiryMs=Date.now()+(31*24*60*60*1000);localStorage.setItem('ss_pro_token',proToken);localStorage.setItem('ss_pro_expiry',expiryMs);checkPro();toast('Welcome to Pro! All limits removed 🎉');window.history.replaceState({},'',window.location.pathname);}
+function handleReturn(){const p=new URLSearchParams(window.location.search);if(p.get('payment')==='success'){const proToken='pro_'+Date.now();const expiryMs=Date.now()+(31*24*60*60*1000);localStorage.setItem('ss_pro_token',proToken);localStorage.setItem('ss_pro_expiry',String(expiryMs));checkPro();toast('Welcome to Pro! All limits removed');window.history.replaceState({},'',window.location.pathname);}}
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 checkPro();refreshUsageUI();handleReturn();
 </script>
