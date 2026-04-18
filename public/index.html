@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SurfShield — Privacy that watches back.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Inconsolata:wght@400;500&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0d1b2a; --navy2:#1a2d42; --navy3:#243548;
+  --teal:#00c2a8; --teal-dim:rgba(0,194,168,0.12); --teal-dark:#00a08a;
+  --coral:#ff6b4a; --coral-dim:rgba(255,107,74,0.12);
+  --white:#f8fafc; --surface:#1e2f42; --surface2:#243548;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --muted:#7a95b0; --text:#e8f0f7;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Syne', sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+header { display: flex; align-items: center; justify-content: space-between; padding: 14px 32px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(26,45,66,0.97); backdrop-filter: blur(12px); z-index: 100; }
+.wordmark { display: flex; align-items: center; gap: 10px; }
+.wordmark h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; color: var(--white); }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.tier-pill { font-family: 'Inconsolata', monospace; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border2); color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; }
+.tier-pill.pro { background: var(--teal); border-color: var(--teal); color: var(--navy); }
+.btn { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; padding: 8px 18px; border-radius: 7px; border: 1.5px solid var(--border2); background: transparent; color: var(--text); cursor: pointer; transition: all 0.14s; }
+.btn:hover { background: var(--surface2); }
+.btn.primary { background: var(--teal); color: var(--navy); border-color: var(--teal); }
+.btn.primary:hover { background: var(--teal-dark); }
+.btn.danger { border-color: var(--coral); color: var(--coral); }
+.btn.danger:hover { background: var(--coral-dim); }
+main { max-width: 860px; margin: 0 auto; padding: 36px 24px 60px; }
+.hero-line { font-family: 'Lora', serif; font-style: italic; font-size: 14px; color: var(--muted); margin-bottom: 28px; display: flex; align-items: center; gap: 8px; }
+.hero-line::before { content: ''; flex: 1; height: 1px; background: var(--border); max-width: 40px; }
+.status-strip { display: flex; align-items: center; justify-content: space-between; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; }
+.status-left { display: flex; align-items: center; gap: 14px; }
+.live-dot { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); font-weight: 500; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.2); flex-shrink: 0; }
+.dot.on { background: var(--teal); animation: pulse 2.5s ease-in-out infinite; }
+.dot.alert { background: var(--coral); animation: pulse 0.9s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+.status-msg { font-size: 12px; color: var(--muted); font-family: 'Inconsolata', monospace; }
+.usage-wrap { display: flex; align-items: center; gap: 8px; }
+.usage-text { font-family: 'Inconsolata', monospace; font-size: 11px; color: var(--muted); white-space: nowrap; }
+.usage-track { width: 72px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.usage-bar { height: 100%; width: 0%; background: var(--teal); border-radius: 2px; transition: width 0.5s ease; }
+.usage-bar.warn { background: var(--coral); }
+.controls { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+.sens-group { display: flex; align-items: center; gap: 8px; margin-left: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; }
+.sens-group label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+input[type=range] { -webkit-appearance: none; width: 72px; height: 3px; background: var(--border2); border-radius: 2px; outline: none; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--teal); cursor: pointer; }
+.sens-val { font-family: 'Inconsolata', monospace; font-size: 13px; font-weight: 500; color: var(--teal); min-width: 10px; text-align: center; }
+.blur-progress { height: 2px; background: var(--border); border-radius: 2px; margin-bottom: 20px; overflow: hidden; }
+.blur-bar { height: 100%; width: 0%; background: var(--coral); border-radius: 2px; transition: width 0.35s ease; }
+.shield-zone { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+.protected { background: var(--surface); padding: 28px 28px 32px; transition: filter 1s cubic-bezier(0.4,0,0.2,1); filter: blur(0px); }
+.blur-veil { position: absolute; inset: 0; background: transparent; transition: background 1s ease; z-index: 5; pointer-events: none; border-radius: 12px; }
+.doc-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.doc-title { font-family: 'Lora', serif; font-size: 22px; font-weight: 400; color: var(--white); letter-spacing: -0.01em; margin-bottom: 3px; }
+.doc-sub { font-size: 12px; color: var(--muted); font-family: 'Inconsolata', monospace; }
+.doc-stamp { font-family: 'Inconsolata', monospace; font-size: 10px; font-weight: 500; padding: 3px 9px; border-radius: 4px; border: 1.5px solid var(--coral); color: var(--coral); text-transform: uppercase; letter-spacing: 0.08em; transform: rotate(2deg); display: inline-block; }
+.metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.metric { background: var(--navy2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+.metric-label { font-size: 10px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.metric-val { font-family: 'Lora', serif; font-size: 22px; color: var(--white); letter-spacing: -0.02em; }
+.metric-delta { font-family: 'Inconsolata', monospace; font-size: 11px; color: var(--teal); margin-top: 2px; }
+.doc-note { background: var(--navy2); border: 1px solid var(--border); border-left: 3px solid var(--coral); border-radius: 0 8px 8px 0; padding: 12px 16px; margin-bottom: 14px; }
+.note-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--coral); margin-bottom: 4px; }
+.note-body { font-family: 'Lora', serif; font-size: 13px; color: var(--text); line-height: 1.65; font-style: italic; }
+.key-row { display: flex; align-items: center; gap: 10px; background: var(--navy); border: 1px solid var(--border2); border-radius: 6px; padding: 10px 14px; }
+.key-label { font-family: 'Inconsolata', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.06em; flex-shrink: 0; }
+.key-val { font-family: 'Inconsolata', monospace; font-size: 13px; color: var(--teal); letter-spacing: 0.08em; flex: 1; }
+.key-age { font-family: 'Inconsolata', monospace; font-size: 10px; color: rgba(122,149,176,0.4); }
+.alert-pill { position: absolute; bottom: -80px; left: 50%; transform: translateX(-50%); background: var(--surface); border: 1px solid var(--border2); border-radius: 999px; padding: 10px 14px 10px 12px; display: flex; align-items: center; gap: 10px; z-index: 20; white-space: nowrap; pointer-events: all; transition: bottom 0.42s cubic-bezier(0.34,1.56,0.64,1); box-shadow: 0 8px 28px rgba(0,0,0,0.3); }
+.alert-pill.up { bottom: 18px; }
+.alert-badge { width: 26px; height: 26px; border-radius: 50%; background: var(--coral-dim); border: 1px solid rgba(255,107,74,0.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.alert-badge svg { width: 11px; height: 11px; }
+.alert-label { font-size: 13px; font-weight: 600; color: var(--white); }
+.alert-sub { font-size: 11px; color: var(--muted); font-family: 'Inconsolata', monospace; }
+.dismiss-btn { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 999px; border: 1px solid var(--border2); background: var(--surface2); color: var(--muted); cursor: pointer; transition: all 0.13s; margin-left: 4px; }
+.dismiss-btn:hover { border-color: var(--teal); color: var(--teal); }
+.backdrop { display: none; position: fixed; inset: 0; background: rgba(13,27,42,0.85); backdrop-filter: blur(10px); z-index: 500; align-items: center; justify-content: center; padding: 24px; }
+.backdrop.open { display: flex; }
+.upgrade-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; padding: 40px 36px; max-width: 400px; width: 100%; text-align: center; }
+.upgrade-eyebrow { font-family: 'Inconsolata', monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--coral); margin-bottom: 10px; }
+.upgrade-title { font-family: 'Lora', serif; font-size: 30px; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 8px; color: var(--white); }
+.upgrade-desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 24px; }
+.price-block { margin-bottom: 24px; }
+.price-num { font-family: 'Lora', serif; font-size: 52px; color: var(--teal); letter-spacing: -0.04em; line-height: 1; }
+.price-period { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.features { text-align: left; list-style: none; margin-bottom: 28px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 4px 0; }
+.features li { font-size: 13px; color: var(--text); padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.features li:last-child { border-bottom: none; }
+.feat-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+.upgrade-cta { width: 100%; padding: 14px; border-radius: 8px; background: var(--teal); color: var(--navy); border: none; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity 0.14s; margin-bottom: 12px; }
+.upgrade-cta:hover { opacity: 0.88; }
+.modal-dismiss { font-size: 13px; color: var(--muted); background: none; border: none; cursor: pointer; font-family: 'Syne', sans-serif; }
+.modal-dismiss:hover { color: var(--text); }
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface); border: 1px solid var(--border2); color: var(--text); border-radius: 8px; padding: 12px 18px; font-size: 13px; font-weight: 500; z-index: 600; transform: translateY(70px); opacity: 0; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); max-width: 260px; pointer-events: none; }
+.toast.show { transform: translateY(0); opacity: 1; }
+video, canvas { display: none; }
+</style>
+</head>
+<body>
+<video id="video" autoplay muted playsinline></video>
+<canvas id="canvas" width="320" height="240"></canvas>
+<header>
+  <div class="wordmark">
+    <svg width="32" height="34" viewBox="0 0 32 34" fill="none">
+      <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#0f2236" stroke="#00c2a8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M9 17C9 17 11.8 12.5 16 12.5C20.2 12.5 23 17 23 17C23 17 20.2 21.5 16 21.5C11.8 21.5 9 17 9 17Z" stroke="#00c2a8" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+      <circle cx="16" cy="17" r="2.8" fill="#00c2a8" opacity="0.9"/>
+      <circle cx="16" cy="17" r="1.3" fill="#0d1b2a"/>
+      <circle cx="17.1" cy="15.9" r="0.55" fill="#e8f0f7" opacity="0.8"/>
+    </svg>
+    <h1>SurfShield</h1>
+  </div>
+  <div class="header-right">
+    <span class="tier-pill" id="tier-pill">Free</span>
+    <button class="btn" id="upgrade-header-btn" onclick="openUpgrade()" style="display:flex;align-items:center;gap:8px;padding:6px 6px 6px 14px;border-radius:999px;background:transparent;border:1.5px solid rgba(255,255,255,0.15);color:#e8f0f7;font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.15s;">Get <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;background:#00c2a8;color:#0d1b2a;letter-spacing:0.04em;">PRO</span></button>
+  </div>
+</header>
+<main>
+  <p class="hero-line">Privacy that watches back.</p>
+  <div class="status-strip">
+    <div class="status-left">
+      <div class="live-dot">
+        <div class="dot" id="live-dot"></div>
+        <span id="cam-label">Shield off</span>
+      </div>
+      <span class="status-msg" id="status-msg">Click enable to start</span>
+    </div>
+    <div class="usage-wrap" id="usage-wrap">
+      <span class="usage-text" id="usage-text">0 / 5 today</span>
+      <div class="usage-track"><div class="usage-bar" id="usage-bar"></div></div>
+    </div>
+  </div>
+  <div class="controls">
+    <button class="btn primary" id="start-btn" onclick="toggleCamera()">Enable shield</button>
+    <button class="btn" onclick="testBlur()">Test blur</button>
+    <div class="sens-group">
+      <label>Sensitivity</label>
+      <input type="range" id="sensitivity" min="1" max="5" value="3" step="1" oninput="document.getElementById('sens-val').textContent=this.value">
+      <span class="sens-val" id="sens-val">3</span>
+    </div>
+  </div>
+  <div class="blur-progress"><div class="blur-bar" id="blur-bar"></div></div>
+  <div class="shield-zone">
+    <div class="blur-veil" id="blur-veil"></div>
+    <div class="protected" id="protected">
+      <div class="doc-header">
+        <div>
+          <div class="doc-title">Q3 Strategy Brief</div>
+          <div class="doc-sub">CONFIDENTIAL · Last edited 2 hours ago</div>
+        </div>
+        <div class="doc-stamp">Confidential</div>
+      </div>
+      <div class="metrics-row">
+        <div class="metric"><div class="metric-label">Revenue MTD</div><div class="metric-val">$84.2k</div><div class="metric-delta">↑ 12.4% vs last mo.</div></div>
+        <div class="metric"><div class="metric-label">Active users</div><div class="metric-val">12,430</div><div class="metric-delta">↑ 340 this week</div></div>
+        <div class="metric"><div class="metric-label">Runway</div><div class="metric-val">14 mo.</div><div class="metric-delta">Post Series A</div></div>
+        <div class="metric"><div class="metric-label">Valuation</div><div class="metric-val">$18M</div><div class="metric-delta">Pre-money target</div></div>
+      </div>
+      <div class="doc-note">
+        <div class="note-tag">Eyes Only</div>
+        <p class="note-body">Board meeting Thursday. Series B term sheet under review — do not share externally. Investor intro via Marcus at 3 pm.</p>
+      </div>
+      <div class="key-row">
+        <span class="key-label">API KEY</span>
+        <span class="key-val">sk-prod-••••••••••••••••••••••</span>
+        <span class="key-age">rotated 3d ago</span>
+      </div>
+    </div>
+    <div class="alert-pill" id="alert-pill">
+      <div class="alert-badge">
+        <svg viewBox="0 0 11 11" fill="none"><path d="M5.5 1L10 9.5H1L5.5 1Z" stroke="#ff6b4a" stroke-width="1.2" fill="none"/><path d="M5.5 4.5V6.5" stroke="#ff6b4a" stroke-width="1.2" stroke-linecap="round"/><circle cx="5.5" cy="8" r="0.6" fill="#ff6b4a"/></svg>
+      </div>
+      <div>
+        <div class="alert-label">Viewer detected</div>
+        <div class="alert-sub" id="alert-reason">Someone may be looking</div>
+      </div>
+      <button class="dismiss-btn" onclick="dismiss()">It's fine</button>
+    </div>
+  </div>
+</main>
+<div class="backdrop" id="upgrade-backdrop">
+  <div class="upgrade-card">
+    <div class="upgrade-eyebrow" id="upgrade-eyebrow">You've hit the free limit</div>
+    <h2 class="upgrade-title">Go Pro</h2>
+    <p class="upgrade-desc">5 free scans used up for today. Upgrade for unlimited, always-on protection — set it and forget it.</p>
+    <div class="price-block">
+      <div class="price-num">$1<span style="font-size:26px">.99</span></div>
+      <div class="price-period">per month · cancel any time</div>
+    </div>
+    <ul class="features">
+      <li><span class="feat-dot"></span>Unlimited detections — no daily cap</li>
+      <li><span class="feat-dot"></span>Adjustable sensitivity levels</li>
+      <li><span class="feat-dot"></span>Detection history & analytics</li>
+      <li><span class="feat-dot"></span>Auto-dismiss memory</li>
+      <li><span class="feat-dot"></span>Priority detection speed</li>
+    </ul>
+    <button class="upgrade-cta" onclick="goToStripe()">Upgrade to Pro — $1.99 / month</button>
+    <button class="modal-dismiss" onclick="closeUpgrade()">Not right now</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const STRIPE_LINK = 'https://buy.stripe.com/YOUR_LINK_HERE';
+const FREE_LIMIT = 5;
+let stream=null,detecting=false,blurLevel=0,dismissed=false,dismissedUntil=0,hits=0,clears=0,ticker=null,blurTimer=null,isPro=false;
+const HIT_THRESHOLD=2,CLEAR_THRESHOLD=3;
+const $=id=>document.getElementById(id);
+const video=$('video'),canvas=$('canvas'),ctx=canvas.getContext('2d');
+function checkPro(){const token=localStorage.getItem('ss_pro_token');const expiry=parseInt(localStorage.getItem('ss_pro_expiry')||'0');if(token&&Date.now()<expiry){isPro=true;$('tier-pill').textContent='Pro';$('tier-pill').classList.add('pro');$('upgrade-header-btn').style.display='none';$('usage-wrap').style.display='none';}}
+function todayKey(){return 'ss_scans_'+new Date().toISOString().slice(0,10);}
+function scansToday(){return parseInt(localStorage.getItem(todayKey())||'0');}
+function addScan(){localStorage.setItem(todayKey(),scansToday()+1);}
+function refreshUsageUI(){if(isPro)return;const n=scansToday();const pct=Math.min(100,(n/FREE_LIMIT)*100);$('usage-text').textContent=`${n} / ${FREE_LIMIT} today`;$('usage-bar').style.width=pct+'%';$('usage-bar').classList.toggle('warn',pct>=80);}
+function setBlur(level){blurLevel=Math.max(0,Math.min(1,level));$('protected').style.filter=`blur(${(blurLevel*20).toFixed(1)}px)`;$('blur-veil').style.background=`rgba(13,27,42,${(blurLevel*0.6).toFixed(2)})`;$('blur-bar').style.width=`${Math.round(blurLevel*100)}%`;if(blurLevel>0.05)$('alert-pill').classList.add('up');else{$('alert-pill').classList.remove('up');dismissed=false;}}
+function rampTo(target,speed){clearTimeout(blurTimer);const step=()=>{const diff=target-blurLevel;if(Math.abs(diff)<0.012){setBlur(target);return;}setBlur(blurLevel+diff*speed);blurTimer=setTimeout(step,38);};step();}
+function dismiss(){dismissed=true;dismissedUntil=Date.now()+30000;rampTo(0,0.16);hits=0;setLiveState('on','Dismissed — watching quietly');toast('Dismissed for 30 seconds');}
+function testBlur(){dismissed=false;hits=HIT_THRESHOLD;rampTo(0.72,0.07);$('alert-reason').textContent='Simulated — someone nearby';setLiveState('alert','Viewer detected!');}
+async function toggleCamera(){if(detecting){stopCamera();return;}if(!isPro&&scansToday()>=FREE_LIMIT){openUpgrade();return;}try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:320,height:240},audio:false});video.srcObject=stream;await video.play();detecting=true;$('start-btn').textContent='Disable shield';$('start-btn').classList.remove('primary');$('start-btn').classList.add('danger');setLiveState('on','Shield active');refreshUsageUI();const sens=parseInt($('sensitivity').value);const interval=isPro?Math.max(1800,5200-sens*650):4200;ticker=setInterval(scan,interval);}catch(e){toast('Camera access denied');}}
+function stopCamera(){if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;clearInterval(ticker);detecting=false;rampTo(0,0.15);$('start-btn').textContent='Enable shield';$('start-btn').classList.add('primary');$('start-btn').classList.remove('danger');setLiveState('off','Shield off');$('status-msg').textContent='Click enable to start';}
+function setLiveState(state,label){const dot=$('live-dot');dot.className='dot'+(state==='off'?':'+' '+state);$('cam-label').textContent=label;}
+async function scan(){if(!stream)return;if(dismissed&&Date.now()<dismissedUntil)return;if(dismissed&&Date.now()>=dismissedUntil)dismissed=false;if(!isPro){if(scansToday()>=FREE_LIMIT){stopCamera();openUpgrade();return;}addScan();refreshUsageUI();}ctx.drawImage(video,0,0,320,240);const b64=canvas.toDataURL('image/jpeg',0.55).split(',')[1];const sens=parseInt($('sensitivity').value);const note=sens<=2?'Only flag if a second person is clearly visible.':sens>=4?'Flag if any secondary face or unusual angle is detected.':'Use moderate judgment.';try{$('status-msg').textContent='Scanning…';const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:80,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:`Privacy scan. ${note} Reply with ONLY valid JSON (no markdown): {"threat":true or false,"reason":"max 5 words"}. Threat means a second person, someone looking over shoulder, or unexpected viewer.`}]}]})});const data=await res.json();const raw=(data.content||[]).map(i=>i.text||'').join('').replace(/```json|```/g,'').trim();const result=JSON.parse(raw);if(result.threat){hits++;clears=0;if(hits>=HIT_THRESHOLD){const target=Math.min(1,0.3+hits*0.14);rampTo(target,0.07);$('alert-reason').textContent=result.reason||'Someone nearby';setLiveState('alert','Viewer detected!');$('status-msg').textContent=result.reason||'Viewer nearby';}else{$('status-msg').textContent='Possible viewer — verifying…';}}else{clears++;hits=0;if(clears>=CLEAR_THRESHOLD&&blurLevel>0.05){rampTo(0,0.06);setLiveState('on','Shield active');}$('status-msg').textContent=clears>=CLEAR_THRESHOLD?'All clear':'Checking…';}}catch(e){$('status-msg').textContent='Detection paused';}}
+function goToStripe(){window.location.href=STRIPE_LINK;}
+function openUpgrade(){$('upgrade-eyebrow').textContent=scansToday()>=FREE_LIMIT?"You've hit the free limit":"Unlock unlimited protection";$('upgrade-backdrop').classList.add('open');}
+function closeUpgrade(){$('upgrade-backdrop').classList.remove('open');}
+function handleReturn(){const p=new URLSearchParams(window.location.search);if(p.get('payment')==='success'){checkPro();toast('Welcome to Pro! All limits removed 🎉');window.history.replaceState({},'',window.location.pathname);}}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+checkPro();refreshUsageUI();handleReturn();
+</script>
+</body>
+</html>
