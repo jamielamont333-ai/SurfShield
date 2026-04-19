@@ -4,6 +4,7 @@ export default async function handler(req, res) {
   }
   try {
     const { image, sensitivity } = req.body;
+    const sens = parseInt(sensitivity) || 5;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -24,20 +25,28 @@ export default async function handler(req, res) {
             },
             {
               type: 'text',
-              text: `You are analyzing a webcam image. Look very carefully at this image.
+              text: `Analyze this webcam image for a screen privacy app. Sensitivity level: ${sens}/10.
 
-Is there a human face, person, or any part of a human body visible anywhere in this image?
+Look carefully for:
+1. How many people are visible in the frame?
+2. Is anyone positioned to the side or behind the primary user?
+3. Is anyone glancing, looking, or angling their eyes toward the screen?
 
-Respond ONLY with valid JSON, no markdown, no backticks, no explanation. Just the raw JSON object.
+Respond ONLY with raw JSON, no markdown, no backticks, no explanation.
 
-If you see NO person at all:
-{"threat": false, "count": 0, "reason": "No people visible"}
-
-If you see ONE person (the user at the screen):
+If only the primary user is visible and no one is looking at the screen:
 {"threat": false, "count": 1, "reason": "Only user visible"}
 
-If you see TWO or more people:
-{"threat": true, "count": 2, "reason": "Multiple people detected"}`
+If NO person is visible at all:
+{"threat": false, "count": 0, "reason": "No people visible"}
+
+If ANY of these are true:
+- A second person is visible anywhere in the frame
+- Someone is positioned to the side or behind the user
+- Someone appears to be glancing or looking toward the screen
+- At sensitivity 7+ even a partial face or body is visible nearby
+Then respond:
+{"threat": true, "count": 2, "reason": "Brief description of what you see e.g. Person glancing from left"}`
             }
           ]
         }]
