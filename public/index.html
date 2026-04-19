@@ -288,7 +288,7 @@ function toggleCamera(){
     setLiveState('on','Shield active');
     refreshUsageUI();
     var sens=parseInt(g('sensitivity').value);
-    var interval=isPro?Math.max(1800,5200-sens*650):4200;
+    var interval=isPro?Math.max(1000,3000-sens*400):2000;
     ticker=setInterval(scan,interval);
   }).catch(function(){showToast('Camera access denied');});
 }
