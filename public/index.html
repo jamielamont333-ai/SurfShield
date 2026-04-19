@@ -277,7 +277,7 @@ function setLiveState(state,label){
 function toggleCamera(){
   if(detecting){stopCamera();return;}
   if(!isPro&&scansToday()>=FREE_LIMIT){openUpgrade();return;}
-  navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:320,height:240},audio:false}).then(function(s){
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:640,height:480},audio:false})
     stream=s;
     video.srcObject=stream;
     video.play();
@@ -312,8 +312,8 @@ function scan(){
     if(scansToday()>=FREE_LIMIT){stopCamera();openUpgrade();return;}
     addScan();refreshUsageUI();
   }
-  ctx.drawImage(video,0,0,320,240);
-  var b64=canvas.toDataURL('image/jpeg',0.55).split(',')[1];
+ ctx.drawImage(video,0,0,640,480);
+ var b64=canvas.toDataURL('image/jpeg',0.85).split(',')[1];
   var sens=parseInt(g('sensitivity').value);
   g('status-msg').textContent='Scanning...';
   fetch('/api/detect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:b64,sensitivity:sens})}).then(function(res){
