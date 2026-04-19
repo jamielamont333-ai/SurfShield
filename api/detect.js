@@ -2,9 +2,9 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
-
   try {
     const { image, sensitivity } = req.body;
+    const sens = parseInt(sensitivity) || 5;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -25,7 +25,15 @@ export default async function handler(req, res) {
             },
             {
               type: 'text',
-              text: 'Describe exactly what you see in this image. How many people are visible? Where are they positioned?'
+              text: `Analyze this webcam image for a screen privacy app. Sensitivity level: ${sens}/10 (higher = more sensitive).
+
+Count all people visible. The PRIMARY user sits directly in front of the camera. A VIEWER is any additional person visible anywhere in the frame.
+
+Respond ONLY with valid JSON, no markdown, no explanation:
+{"threat": boolean, "count": number, "reason": "short string"}
+
+threat=true if: (sensitivity>=7 and count>=2) OR (sensitivity<7 and count>=3) OR any person is clearly looking over a shoulder at a screen.
+reason should be brief e.g. "Viewer detected on left" or "Clear" or "Multiple people nearby".`
             }
           ]
         }]
@@ -33,12 +41,18 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    console.log('FULL API RESPONSE:', JSON.stringify(data));
-    
-    const text = (data.content || []).map(i => i.text || '').join('');
+    const text = (data.content || []).map(i => i.text || '').join('').trim();
     console.log('CLAUDE SAYS:', text);
-    
-    return res.status(200).json({ threat: false, reason: 'diagnostic', debug: text });
+
+    // Strip any accidental markdown fences
+    const clean = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    return res.status(200).json({
+      threat: !!parsed.threat,
+      reason: parsed.reason || 'OK',
+      count: parsed.count || 0
+    });
 
   } catch (e) {
     console.error('Error:', e.message);
