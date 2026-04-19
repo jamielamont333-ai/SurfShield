@@ -15,7 +15,8 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 100,
+        max_tokens: 150,
+        system: 'You are a JSON-only API. You must respond with a single valid JSON object and nothing else. No markdown, no backticks, no explanation, no preamble. Only output the JSON object.',
         messages: [{
           role: 'user',
           content: [
@@ -25,28 +26,15 @@ export default async function handler(req, res) {
             },
             {
               type: 'text',
-              text: `Analyze this webcam image for a screen privacy app. Sensitivity level: ${sens}/10.
+              text: `Look at this webcam image. Sensitivity: ${sens}/10.
 
-Look carefully for:
-1. How many people are visible in the frame?
-2. Is anyone positioned to the side or behind the primary user?
-3. Is anyone glancing, looking, or angling their eyes toward the screen?
+Count people visible. Check if anyone is glancing at the screen.
 
-Respond ONLY with raw JSON, no markdown, no backticks, no explanation.
+Respond with exactly one of these JSON objects:
 
-If only the primary user is visible and no one is looking at the screen:
-{"threat": false, "count": 1, "reason": "Only user visible"}
-
-If NO person is visible at all:
-{"threat": false, "count": 0, "reason": "No people visible"}
-
-If ANY of these are true:
-- A second person is visible anywhere in the frame
-- Someone is positioned to the side or behind the user
-- Someone appears to be glancing or looking toward the screen
-- At sensitivity 7+ even a partial face or body is visible nearby
-Then respond:
-{"threat": true, "count": 2, "reason": "Brief description of what you see e.g. Person glancing from left"}`
+{"threat":false,"count":0,"reason":"No people visible"}
+{"threat":false,"count":1,"reason":"Only user visible"}
+{"threat":true,"count":2,"reason":"[describe what you see]"}`
             }
           ]
         }]
@@ -59,7 +47,7 @@ Then respond:
 
     const clean = text.replace(/```json|```/g, '').trim();
     const jsonMatch = clean.match(/\{.*\}/s);
-    if (!jsonMatch) throw new Error('No JSON found: ' + clean.substring(0, 50));
+    if (!jsonMatch) throw new Error('No JSON: ' + clean.substring(0, 50));
     const parsed = JSON.parse(jsonMatch[0]);
 
     return res.status(200).json({
