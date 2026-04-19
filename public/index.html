@@ -277,7 +277,7 @@ function setLiveState(state,label){
 function toggleCamera(){
   if(detecting){stopCamera();return;}
   if(!isPro&&scansToday()>=FREE_LIMIT){openUpgrade();return;}
-  navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:640,height:480},audio:false})
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:640,height:480},audio:false}).then(function(s){
     stream=s;
     video.srcObject=stream;
     video.play();
