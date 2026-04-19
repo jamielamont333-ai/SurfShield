@@ -209,7 +209,7 @@ video, canvas { display:none; }
 var STRIPE_LINK='https://buy.stripe.com/test_cNicN44Q60Rg4jX4X20Fi00';
 var FREE_LIMIT=5;
 var stream=null,detecting=false,blurLevel=0,dismissed=false,dismissedUntil=0,hits=0,clears=0,ticker=null,blurTimer=null,isPro=false;
-var HIT_THRESHOLD=2,CLEAR_THRESHOLD=3;
+var HIT_THRESHOLD=1,CLEAR_THRESHOLD=2;
 function g(id){return document.getElementById(id);}
 var video=g('video'),canvas=g('canvas'),ctx=canvas.getContext('2d');
 function checkPro(){
