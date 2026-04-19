@@ -43,7 +43,7 @@ Respond with exactly one of these JSON objects:
 
     const data = await response.json();
     const text = (data.content || []).map(i => i.text || '').join('').trim();
-    console.log('CLAUDE SAYS:', text);
+    console.log('CLAUDE SAYS FULL:', JSON.stringify(data));
 
     const clean = text.replace(/```json|```/g, '').trim();
     const jsonMatch = clean.match(/\{.*\}/s);
