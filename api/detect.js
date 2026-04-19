@@ -5,14 +5,6 @@ export default async function handler(req, res) {
 
   try {
     const { image, sensitivity } = req.body;
-    const sens = parseInt(sensitivity) || 3;
-
-    const prompt = `You are a privacy protection system. Look at this webcam image and count human faces.
-
-Reply ONLY with valid JSON like this: {"threat":false,"faces":1,"reason":"only one person"}
-
-Set threat to true if you see more than one face or person. Set threat to false if only one person is visible.
-Sensitivity is ${sens}/5. At sensitivity 4-5, flag even partial faces in background.`;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -22,32 +14,62 @@ Sensitivity is ${sens}/5. At sensitivity 4-5, flag even partial faces in backgro
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
+        model: 'claude-sonnet-4-20250514',
         max_tokens: 100,
         messages: [{
           role: 'user',
           content: [
-            { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: image } },
-            { type: 'text', text: prompt }
+            {
+              type: 'image',
+              source: { type: 'base64', media_type: 'image/jpeg', data: image }
+            },
+            {
+              type: 'text',
+              text: `You are a privacy protection system. Analyze this webcam image carefully.
+
+Count the number of human faces or people visible in this image.
+
+A THREAT exists if ANY of these are true:
+- More than one face is visible
+- Someone appears to be looking over the primary user's shoulder
+- A person is visible in the background
+- Any part of a second person is visible (even partial face, head, or body)
+
+Sensitivity level is ${sensitivity} out of 5. At level ${sensitivity}:
+${sensitivity >= 4 ? '- Be very sensitive, flag even partial or distant faces' : ''}
+${sensitivity === 3 ? '- Flag any clear second person visible' : ''}
+${sensitivity <= 2 ? '- Only flag if a second person is clearly and obviously present' : ''}
+
+Reply ONLY with this exact JSON format, nothing else:
+{"threat": true or false, "faces": number of faces seen, "reason": "brief description under 6 words"}`
+            }
           ]
         }]
       })
     });
 
     const data = await response.json();
+    
     if (data.error) {
-      console.error('Claude error:', JSON.stringify(data.error));
+      console.error('Claude API error:', data.error);
       return res.status(200).json({ threat: false, reason: 'api error' });
     }
-
-    const raw = (data.content || []).map(i => i.text || '').join('').replace(/```json|```/g, '').trim();
-    console.log('Claude response:', raw);
     
-    const result = JSON.parse(raw);
+    const raw = (data.content || []).map(i => i.text || '').join('').replace(/```json|```/g, '').trim();
+    
+    let result;
+    try {
+      result = JSON.parse(raw);
+    } catch(e) {
+      console.error('Parse error:', raw);
+      return res.status(200).json({ threat: false, reason: 'parse error' });
+    }
+    
+    console.log('Detection result:', result);
     return res.status(200).json(result);
 
   } catch (e) {
-    console.error('Error:', e.message);
-    return res.status(200).json({ threat: false, reason: 'error' });
+    console.error('Detection error:', e);
+    return res.status(500).json({ threat: false, reason: 'server error' });
   }
 }
