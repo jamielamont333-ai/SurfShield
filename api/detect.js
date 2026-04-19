@@ -4,7 +4,6 @@ export default async function handler(req, res) {
   }
   try {
     const { image, sensitivity } = req.body;
-    const sens = parseInt(sensitivity) || 5;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -25,15 +24,20 @@ export default async function handler(req, res) {
             },
             {
               type: 'text',
-              text: `Analyze this webcam image for a screen privacy app. Sensitivity level: ${sens}/10 (higher = more sensitive).
+              text: `You are analyzing a webcam image. Look very carefully at this image.
 
-Count all people visible. The PRIMARY user sits directly in front of the camera. A VIEWER is any additional person visible anywhere in the frame.
+Is there a human face, person, or any part of a human body visible anywhere in this image?
 
-Respond ONLY with valid JSON, no markdown, no explanation:
-{"threat": boolean, "count": number, "reason": "short string"}
+Respond ONLY with valid JSON, no markdown, no backticks, no explanation. Just the raw JSON object.
 
-threat=true if: (sensitivity>=7 and count>=2) OR (sensitivity<7 and count>=3) OR any person is clearly looking over a shoulder at a screen.
-reason should be brief e.g. "Viewer detected on left" or "Clear" or "Multiple people nearby".`
+If you see NO person at all:
+{"threat": false, "count": 0, "reason": "No people visible"}
+
+If you see ONE person (the user at the screen):
+{"threat": false, "count": 1, "reason": "Only user visible"}
+
+If you see TWO or more people:
+{"threat": true, "count": 2, "reason": "Multiple people detected"}`
             }
           ]
         }]
@@ -44,7 +48,6 @@ reason should be brief e.g. "Viewer detected on left" or "Clear" or "Multiple pe
     const text = (data.content || []).map(i => i.text || '').join('').trim();
     console.log('CLAUDE SAYS:', text);
 
-    // Strip any accidental markdown fences
     const clean = text.replace(/```json|```/g, '').trim();
     const parsed = JSON.parse(clean);
 
