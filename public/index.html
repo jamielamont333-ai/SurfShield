@@ -333,7 +333,7 @@ function scan(){
       if(clears>=CLEAR_THRESHOLD&&blurLevel>0.05){rampTo(0,0.06);setLiveState('on','Shield active');}
       g('status-msg').textContent=clears>=CLEAR_THRESHOLD?'All clear':'Checking...';
     }
-  }).catch(function(){g('status-msg').textContent='Detection paused';});
+  }).catch(function(e){g('status-msg').textContent='Error: '+e.message;});
 }
 function goToStripe(){window.location.href=STRIPE_LINK;}
 function openUpgrade(){
