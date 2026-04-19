@@ -58,7 +58,9 @@ Then respond:
     console.log('CLAUDE SAYS:', text);
 
     const clean = text.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
+    const jsonMatch = clean.match(/\{.*\}/s);
+    if (!jsonMatch) throw new Error('No JSON found: ' + clean.substring(0, 50));
+    const parsed = JSON.parse(jsonMatch[0]);
 
     return res.status(200).json({
       threat: !!parsed.threat,
