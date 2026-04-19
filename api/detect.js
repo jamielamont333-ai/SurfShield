@@ -14,8 +14,8 @@ export default async function handler(req, res) {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 100,
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 200,
         messages: [{
           role: 'user',
           content: [
@@ -25,23 +25,7 @@ export default async function handler(req, res) {
             },
             {
               type: 'text',
-              text: `You are a privacy protection system. Analyze this webcam image carefully.
-
-Count the number of human faces or people visible in this image.
-
-A THREAT exists if ANY of these are true:
-- More than one face is visible
-- Someone appears to be looking over the primary user's shoulder
-- A person is visible in the background
-- Any part of a second person is visible (even partial face, head, or body)
-
-Sensitivity level is ${sensitivity} out of 5. At level ${sensitivity}:
-${sensitivity >= 4 ? '- Be very sensitive, flag even partial or distant faces' : ''}
-${sensitivity === 3 ? '- Flag any clear second person visible' : ''}
-${sensitivity <= 2 ? '- Only flag if a second person is clearly and obviously present' : ''}
-
-Reply ONLY with this exact JSON format, nothing else:
-{"threat": true or false, "faces": number of faces seen, "reason": "brief description under 6 words"}`
+              text: 'Describe exactly what you see in this image. How many people are visible? Where are they positioned?'
             }
           ]
         }]
@@ -49,27 +33,15 @@ Reply ONLY with this exact JSON format, nothing else:
     });
 
     const data = await response.json();
+    console.log('FULL API RESPONSE:', JSON.stringify(data));
     
-    if (data.error) {
-      console.error('Claude API error:', data.error);
-      return res.status(200).json({ threat: false, reason: 'api error' });
-    }
+    const text = (data.content || []).map(i => i.text || '').join('');
+    console.log('CLAUDE SAYS:', text);
     
-    const raw = (data.content || []).map(i => i.text || '').join('').replace(/```json|```/g, '').trim();
-    
-    let result;
-    try {
-      result = JSON.parse(raw);
-    } catch(e) {
-      console.error('Parse error:', raw);
-      return res.status(200).json({ threat: false, reason: 'parse error' });
-    }
-    
-    console.log('Detection result:', result);
-    return res.status(200).json(result);
+    return res.status(200).json({ threat: false, reason: 'diagnostic', debug: text });
 
   } catch (e) {
-    console.error('Detection error:', e);
-    return res.status(500).json({ threat: false, reason: 'server error' });
+    console.error('Error:', e.message);
+    return res.status(200).json({ threat: false, reason: e.message });
   }
 }
