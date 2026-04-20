@@ -6,7 +6,8 @@
   ],
   "functions": {
     "api/detect.js": {
-      "maxDuration": 30
+      "maxDuration": 30,
+      "memory": 1024
     }
   }
 }
