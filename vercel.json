@@ -1,17 +1,10 @@
 {
-  "version": 2,
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/((?!api/).*)\\.([a-z]+)", "destination": "/public/$1.$2" },
-    { "source": "/((?!api/).*)", "destination": "/public/$1.html" }
+    { "source": "/api/:path*", "destination": "/api/:path*" },
+    { "source": "/:slug.:ext", "destination": "/public/:slug.:ext" },
+    { "source": "/:slug", "destination": "/public/:slug.html" },
+    { "source": "/", "destination": "/public/index.html" }
   ],
-  "functions": {
-    "api/detect.js": {
-      "maxDuration": 30
-    }
-  }
-}{
-  "version": 2,
   "functions": {
     "api/detect.js": {
       "maxDuration": 30
