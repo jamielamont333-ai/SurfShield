@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Terms of Service — SurfShield</title>
+<meta name="description" content="SurfShield's Terms of Service. Subscription terms, refunds, acceptable use, and the rules for using our products." />
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inconsolata:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --navy: #0d1b2a;
+  --navy2: #1a2d42;
+  --surface: #1e2f42;
+  --surface2: #243548;
+  --teal: #00c2a8;
+  --teal-dark: #00a08a;
+  --teal-glow: rgba(0, 194, 168, 0.15);
+  --coral: #ff6b4a;
+  --white: #f8fafc;
+  --text: #e8f0f7;
+  --muted: #7a95b0;
+  --muted2: #a8b8c8;
+  --border: rgba(255, 255, 255, 0.08);
+  --border2: rgba(255, 255, 255, 0.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--navy);
+  color: var(--text);
+  line-height: 1.7;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 16px 32px;
+  background: rgba(13, 27, 42, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 700; font-size: 18px; letter-spacing: -0.02em;
+  color: var(--text);
+}
+.nav-logo:hover { text-decoration: none; }
+.nav-links { display: flex; gap: 24px; font-size: 14px; color: var(--muted2); }
+.nav-links a { color: var(--muted2); }
+.nav-links a:hover { color: var(--teal); text-decoration: none; }
+
+@media (max-width: 600px) {
+  nav { padding: 14px 18px; }
+  .nav-links { gap: 14px; font-size: 12px; }
+}
+
+.doc {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 120px 32px 80px;
+}
+
+.doc-eyebrow {
+  font-family: 'Inconsolata', monospace;
+  font-size: 11px;
+  color: var(--teal);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.doc h1 {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  margin-bottom: 16px;
+}
+
+.doc-meta {
+  font-family: 'Inconsolata', monospace;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.doc-summary {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-bottom: 40px;
+}
+
+.doc-summary h3 {
+  font-size: 14px;
+  color: var(--teal);
+  margin-bottom: 10px;
+  font-family: 'Inconsolata', monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.doc-summary p {
+  font-size: 15px;
+  color: var(--muted2);
+  margin-bottom: 6px;
+}
+
+.doc h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+  margin-top: 40px;
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+.doc h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--white);
+  margin-top: 24px;
+  margin-bottom: 10px;
+}
+
+.doc p {
+  font-size: 15px;
+  color: var(--muted2);
+  margin-bottom: 16px;
+}
+
+.doc ul {
+  margin: 0 0 16px 24px;
+  color: var(--muted2);
+  font-size: 15px;
+}
+
+.doc li { margin-bottom: 6px; }
+
+.doc strong { color: var(--text); }
+
+.placeholder {
+  background: rgba(255, 107, 74, 0.1);
+  border: 1px dashed var(--coral);
+  color: var(--coral);
+  padding: 1px 8px;
+  border-radius: 4px;
+  font-family: 'Inconsolata', monospace;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+footer {
+  border-top: 1px solid var(--border);
+  margin-top: 60px;
+  padding: 40px 32px;
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; }
+.footer-links { display: flex; gap: 20px; font-size: 13px; color: var(--muted); }
+.footer-links a { color: var(--muted); }
+.footer-links a:hover { color: var(--teal); text-decoration: none; }
+.footer-copy { font-family: 'Inconsolata', monospace; font-size: 11px; color: var(--muted); }
+@media (max-width: 600px) {
+  footer { padding: 32px 20px; }
+  .footer-inner { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <svg width="26" height="28" viewBox="0 0 32 34" fill="none">
+      <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#0f2236" stroke="#00c2a8" stroke-width="1.5"/>
+      <path d="M9 17C9 17 11.8 12.5 16 12.5C20.2 12.5 23 17 23 17C23 17 20.2 21.5 16 21.5C11.8 21.5 9 17 9 17Z" stroke="#00c2a8" stroke-width="1.3" fill="none"/>
+      <circle cx="16" cy="17" r="2.8" fill="#00c2a8" opacity="0.9"/>
+      <circle cx="16" cy="17" r="1.3" fill="#0d1b2a"/>
+    </svg>
+    SurfShield
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/feedback">Feedback</a>
+  </div>
+</nav>
+
+<div class="doc">
+
+<div class="doc-eyebrow">Legal</div>
+<h1>Terms of Service</h1>
+<div class="doc-meta">Last updated: May 2026 · Effective: at launch</div>
+
+<div class="doc-summary">
+  <h3>The short version</h3>
+  <p>By using SurfShield, you're agreeing to these terms. The product is provided as-is. We can change pricing or features with notice. You can cancel your subscription anytime. Don't use the product to do illegal things or to harm others.</p>
+</div>
+
+<h2>1. Agreement</h2>
+<p>These Terms of Service ("Terms") form a binding agreement between you and SurfShield ("we," "us," or "our"), operated by <span class="placeholder">[OPERATING ENTITY NAME]</span>, based in the United States. By creating an account, installing one of our applications, or using our website, you agree to these Terms and our <a href="/privacy">Privacy Policy</a>.</p>
+
+<p>If you don't agree, please don't use SurfShield.</p>
+
+<h2>2. Who can use SurfShield</h2>
+<p>You must be at least 13 years old to use SurfShield. If you're between 13 and 18, you must have a parent or guardian's permission. SurfShield is not intended for use by children under 13.</p>
+
+<p>If you're using SurfShield on behalf of a company or organization, you represent that you have authority to bind that organization to these Terms.</p>
+
+<h2>3. The Service</h2>
+<p>SurfShield is a privacy software product that uses your camera and AI-powered detection to blur your screen when someone is looking at it over your shoulder. The Service includes our website, desktop applications, browser extensions, and mobile applications.</p>
+
+<p>SurfShield is a privacy-enhancing tool, not a security product. It is intended to reduce casual shoulder-surfing in public and shared spaces. <strong>It does not guarantee that no one will ever see your screen.</strong> See "Disclaimers" below.</p>
+
+<h2>4. Subscriptions, billing, and trials</h2>
+
+<h3>4.1 Free trial</h3>
+<p>SurfShield may offer a free trial period (currently 7 days). During the trial, you have full access to paid features at no cost. You will not be charged unless you continue past the trial.</p>
+
+<h3>4.2 Subscription</h3>
+<p>After your free trial ends, your subscription will automatically continue at the price displayed at checkout (currently <strong>$1.99/month</strong>). You'll be billed monthly to the payment method on file until you cancel.</p>
+
+<h3>4.3 How to cancel</h3>
+<p>You can cancel your subscription at any time:</p>
+<ul>
+  <li>From within the SurfShield app or your account settings on our website</li>
+  <li>By emailing <a href="mailto:support@getsurfshield.com">support@getsurfshield.com</a> at least 24 hours before your next billing date</li>
+</ul>
+<p>If you cancel during your free trial, you won't be charged. If you cancel after billing has started, you'll keep access until the end of the current billing period; we won't issue prorated refunds for partial months.</p>
+
+<h3>4.4 Refunds</h3>
+<p>Subscriptions are generally non-refundable except where required by law. If you believe you've been billed in error or experienced a serious technical problem, contact us at <a href="mailto:support@getsurfshield.com">support@getsurfshield.com</a> and we'll review the situation in good faith.</p>
+
+<h3>4.5 Price changes</h3>
+<p>We may change subscription prices. If we do, we'll give you at least 30 days' notice by email before the change takes effect. Price changes won't apply to your current billing period.</p>
+
+<h3>4.6 Taxes</h3>
+<p>Prices displayed do not include applicable taxes. You are responsible for any sales, use, or value-added taxes that apply to your purchase. Where required, taxes will be added at checkout.</p>
+
+<h3>4.7 App Store and Play Store purchases</h3>
+<p>If you subscribed through Apple's App Store, Google Play, or another platform, those platforms handle billing and refunds according to their own terms. Cancel through that platform's settings.</p>
+
+<h2>5. Your account</h2>
+<p>You're responsible for keeping your account credentials secure and for any activity that happens under your account. Don't share your password. If you suspect unauthorized access, change your password and contact us immediately.</p>
+
+<p>You agree to provide accurate information during signup and to keep it up to date.</p>
+
+<h2>6. Acceptable use</h2>
+<p>You agree NOT to use SurfShield to:</p>
+<ul>
+  <li>Violate any law or regulation</li>
+  <li>Surveil, monitor, or record other people without their consent</li>
+  <li>Hide criminal activity from legitimate observation</li>
+  <li>Reverse engineer, decompile, or attempt to extract our source code, except as permitted by law</li>
+  <li>Resell, redistribute, or sublicense the Service without our written permission</li>
+  <li>Interfere with the Service's operation or attempt to gain unauthorized access</li>
+  <li>Use the Service to harass, threaten, or harm anyone</li>
+  <li>Use automated means (bots, scrapers) to interact with the Service in ways we haven't authorized</li>
+</ul>
+
+<p>SurfShield is designed to protect your own screen from being viewed by others. It is <strong>not</strong> designed for monitoring or surveilling other people, and using it that way is a violation of these Terms.</p>
+
+<h2>7. Camera and consent</h2>
+<p>SurfShield requires camera access to function. By enabling shield protection, you consent to the camera being used as described in our <a href="/privacy">Privacy Policy</a>. You can revoke this consent at any time by disabling the shield, denying camera permission in your operating system, or uninstalling the application.</p>
+
+<p>You are responsible for any laws in your jurisdiction or location that affect camera use, especially in shared spaces, workplaces, or where others may be incidentally captured by your camera.</p>
+
+<h2>8. Intellectual property</h2>
+<p>SurfShield, the SurfShield name, logo, and all related branding, software, and content are owned by us and protected by copyright, trademark, and other intellectual property laws. We grant you a limited, non-exclusive, non-transferable license to use the Service for personal or internal business use, in accordance with these Terms.</p>
+
+<p>This license does not give you the right to copy, modify, distribute, sell, or create derivative works from the Service.</p>
+
+<h2>9. Third-party services</h2>
+<p>The Service uses third-party services to operate (including AI providers, payment processors, hosting providers, and email services — see our <a href="/privacy">Privacy Policy</a> for the full list). We're not responsible for the actions of these third parties, but we choose them carefully and require them to handle data appropriately.</p>
+
+<h2>10. Disclaimers</h2>
+<p><strong>SurfShield is provided "as is" without warranties of any kind, express or implied.</strong> We do our best to provide a reliable, useful product, but we cannot guarantee that:</p>
+<ul>
+  <li>The Service will detect every shoulder-surfer in every situation</li>
+  <li>The Service will be available without interruption</li>
+  <li>The Service will be free of bugs or errors</li>
+  <li>Detection results will always be accurate (false positives and false negatives are possible)</li>
+</ul>
+
+<p>To the fullest extent permitted by law, we disclaim all warranties including merchantability, fitness for a particular purpose, and non-infringement.</p>
+
+<p><strong>SurfShield is a privacy-assistance tool, not a security or compliance solution.</strong> If you handle sensitive data (medical, legal, financial, regulated, or classified), do not rely on SurfShield as a substitute for proper security practices, screen privacy filters, or compliant work environments.</p>
+
+<h2>11. Limitation of liability</h2>
+<p>To the maximum extent permitted by law, SurfShield, its operators, employees, contractors, and partners will not be liable for:</p>
+<ul>
+  <li>Indirect, incidental, special, consequential, or punitive damages</li>
+  <li>Loss of profits, revenue, data, or goodwill</li>
+  <li>Damages resulting from your inability to use the Service</li>
+  <li>Damages resulting from third-party services we rely on</li>
+  <li>Damages resulting from someone viewing your screen despite SurfShield being active</li>
+</ul>
+
+<p>Our total liability for any claim related to the Service will not exceed the amount you paid us in the 12 months preceding the event giving rise to the claim, or $50, whichever is greater.</p>
+
+<h2>12. Indemnification</h2>
+<p>You agree to defend, indemnify, and hold harmless SurfShield and its operators from any claims, damages, or expenses (including reasonable legal fees) arising from your violation of these Terms, your misuse of the Service, or your violation of any law or third-party right.</p>
+
+<h2>13. Termination</h2>
+<p>You can stop using SurfShield at any time and cancel your subscription as described in Section 4. We can suspend or terminate your access if you violate these Terms, if we're required to by law, or if we discontinue the Service.</p>
+
+<p>If we terminate your account for a Terms violation, you won't be entitled to a refund of any unused portion of your subscription.</p>
+
+<h2>14. Changes to these Terms</h2>
+<p>We may update these Terms from time to time. When we make material changes, we'll notify you by email (if you have an account) and post the updated Terms on our website with a new "Last updated" date. Continued use of the Service after changes means you accept the updated Terms. If you don't accept the changes, you should stop using the Service and cancel your subscription.</p>
+
+<h2>15. Governing law and disputes</h2>
+<p>These Terms are governed by the laws of the United States and the State of <span class="placeholder">[YOUR STATE]</span>, without regard to its conflict of laws rules. Any disputes will be resolved in the state or federal courts located in <span class="placeholder">[YOUR COUNTY/STATE]</span>, and you consent to that jurisdiction.</p>
+
+<p>Before filing a formal claim, you agree to first contact us at <a href="mailto:support@getsurfshield.com">support@getsurfshield.com</a> and give us 30 days to try to resolve the issue informally.</p>
+
+<h2>16. Severability</h2>
+<p>If any part of these Terms is found unenforceable, the rest will continue to apply.</p>
+
+<h2>17. Entire agreement</h2>
+<p>These Terms and our <a href="/privacy">Privacy Policy</a> form the complete agreement between you and SurfShield regarding the Service. They supersede any prior agreements or understandings.</p>
+
+<h2>18. Contact</h2>
+<p>Questions about these Terms? Reach out:</p>
+<ul>
+  <li>Email: <a href="mailto:support@getsurfshield.com">support@getsurfshield.com</a></li>
+  <li>Web: <a href="/feedback">getsurfshield.com/feedback</a></li>
+</ul>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <svg width="20" height="22" viewBox="0 0 32 34" fill="none">
+        <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#0f2236" stroke="#00c2a8" stroke-width="1.5"/>
+        <circle cx="16" cy="17" r="2.8" fill="#00c2a8"/>
+      </svg>
+      SurfShield
+    </div>
+    <div class="footer-links">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/feedback">Feedback</a>
+      <a href="/">Home</a>
+    </div>
+    <div class="footer-copy">© 2026 SurfShield · v1.0.0</div>
+  </div>
+</footer>
+
+</body>
+</html>
