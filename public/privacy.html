@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Privacy Policy — SurfShield</title>
+<meta name="description" content="SurfShield's Privacy Policy. How we handle camera data, AI processing, and your personal information." />
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inconsolata:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --navy: #0d1b2a;
+  --navy2: #1a2d42;
+  --surface: #1e2f42;
+  --surface2: #243548;
+  --teal: #00c2a8;
+  --teal-dark: #00a08a;
+  --teal-glow: rgba(0, 194, 168, 0.15);
+  --coral: #ff6b4a;
+  --white: #f8fafc;
+  --text: #e8f0f7;
+  --muted: #7a95b0;
+  --muted2: #a8b8c8;
+  --border: rgba(255, 255, 255, 0.08);
+  --border2: rgba(255, 255, 255, 0.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--navy);
+  color: var(--text);
+  line-height: 1.7;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 16px 32px;
+  background: rgba(13, 27, 42, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 700; font-size: 18px; letter-spacing: -0.02em;
+  color: var(--text);
+}
+.nav-logo:hover { text-decoration: none; }
+.nav-links { display: flex; gap: 24px; font-size: 14px; color: var(--muted2); }
+.nav-links a { color: var(--muted2); }
+.nav-links a:hover { color: var(--teal); text-decoration: none; }
+
+@media (max-width: 600px) {
+  nav { padding: 14px 18px; }
+  .nav-links { gap: 14px; font-size: 12px; }
+}
+
+/* ── DOC ── */
+.doc {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 120px 32px 80px;
+}
+
+.doc-eyebrow {
+  font-family: 'Inconsolata', monospace;
+  font-size: 11px;
+  color: var(--teal);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.doc h1 {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  margin-bottom: 16px;
+}
+
+.doc-meta {
+  font-family: 'Inconsolata', monospace;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.doc-summary {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-bottom: 40px;
+}
+
+.doc-summary h3 {
+  font-size: 14px;
+  color: var(--teal);
+  margin-bottom: 10px;
+  font-family: 'Inconsolata', monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.doc-summary p {
+  font-size: 15px;
+  color: var(--muted2);
+  margin-bottom: 6px;
+}
+
+.doc h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+  margin-top: 40px;
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+.doc h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--white);
+  margin-top: 24px;
+  margin-bottom: 10px;
+}
+
+.doc p {
+  font-size: 15px;
+  color: var(--muted2);
+  margin-bottom: 16px;
+}
+
+.doc ul {
+  margin: 0 0 16px 24px;
+  color: var(--muted2);
+  font-size: 15px;
+}
+
+.doc li { margin-bottom: 6px; }
+
+.doc strong { color: var(--text); }
+
+.doc code {
+  font-family: 'Inconsolata', monospace;
+  font-size: 13px;
+  background: var(--surface);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--teal);
+}
+
+.placeholder {
+  background: rgba(255, 107, 74, 0.1);
+  border: 1px dashed var(--coral);
+  color: var(--coral);
+  padding: 1px 8px;
+  border-radius: 4px;
+  font-family: 'Inconsolata', monospace;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  margin-top: 60px;
+  padding: 40px 32px;
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; }
+.footer-links { display: flex; gap: 20px; font-size: 13px; color: var(--muted); }
+.footer-links a { color: var(--muted); }
+.footer-links a:hover { color: var(--teal); text-decoration: none; }
+.footer-copy { font-family: 'Inconsolata', monospace; font-size: 11px; color: var(--muted); }
+@media (max-width: 600px) {
+  footer { padding: 32px 20px; }
+  .footer-inner { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <svg width="26" height="28" viewBox="0 0 32 34" fill="none">
+      <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#0f2236" stroke="#00c2a8" stroke-width="1.5"/>
+      <path d="M9 17C9 17 11.8 12.5 16 12.5C20.2 12.5 23 17 23 17C23 17 20.2 21.5 16 21.5C11.8 21.5 9 17 9 17Z" stroke="#00c2a8" stroke-width="1.3" fill="none"/>
+      <circle cx="16" cy="17" r="2.8" fill="#00c2a8" opacity="0.9"/>
+      <circle cx="16" cy="17" r="1.3" fill="#0d1b2a"/>
+    </svg>
+    SurfShield
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/terms">Terms</a>
+    <a href="/feedback">Feedback</a>
+  </div>
+</nav>
+
+<div class="doc">
+
+<div class="doc-eyebrow">Legal</div>
+<h1>Privacy Policy</h1>
+<div class="doc-meta">Last updated: May 2026 · Effective: at launch</div>
+
+<div class="doc-summary">
+  <h3>The short version</h3>
+  <p>SurfShield uses your camera to detect when someone is looking at your screen. We do not record video, store images, or perform facial recognition. We send camera frames to our detection service to count people in view and discard them immediately. We do not sell your data. We do not show you ads.</p>
+</div>
+
+<h2>1. Who we are</h2>
+<p>SurfShield ("we," "us," or "our") is a privacy software product operated by <span class="placeholder">[OPERATING ENTITY NAME]</span>, based in the United States. This Privacy Policy explains how we collect, use, and protect information when you use our website (<a href="https://getsurfshield.com">getsurfshield.com</a>), our desktop applications, browser extensions, and mobile applications (collectively, the "Service").</p>
+
+<p>If you have questions about this policy, contact us at <a href="mailto:support@getsurfshield.com">support@getsurfshield.com</a>.</p>
+
+<h2>2. What information we collect</h2>
+
+<h3>2.1 Camera frames (transient)</h3>
+<p>When you enable shield protection, SurfShield accesses your camera to capture short still frames at regular intervals. These frames are sent to our detection service to determine whether one or more people are visible.</p>
+<ul>
+  <li><strong>Frames are not recorded.</strong> No video stream is saved.</li>
+  <li><strong>Frames are not retained.</strong> Once the detection result is returned, the frame is discarded from our servers.</li>
+  <li><strong>Frames are not used to identify you.</strong> SurfShield counts people in view; it does not match faces to identities.</li>
+  <li><strong>Frames may be transmitted briefly to a third-party AI service</strong> (currently Anthropic) for analysis. See "Third-party services" below.</li>
+</ul>
+
+<h3>2.2 Account information</h3>
+<p>If you sign up for an account, subscribe to a paid plan, or join our launch notification list, we collect:</p>
+<ul>
+  <li>Email address</li>
+  <li>Payment information (processed by Stripe — we never see or store your card number)</li>
+  <li>Subscription status (active, canceled, trial)</li>
+</ul>
+
+<h3>2.3 Usage data</h3>
+<p>The Service may collect anonymous usage information to help us improve the product:</p>
+<ul>
+  <li>How often you enable/disable shield protection</li>
+  <li>Whether detections occurred (count only, no images)</li>
+  <li>Application version, operating system, and crash reports</li>
+  <li>Approximate region (country-level), derived from IP address</li>
+</ul>
+
+<h3>2.4 Cookies and similar technologies</h3>
+<p>Our website uses minimal cookies, primarily to keep you signed in and remember your preferences. We do not use third-party advertising cookies or trackers.</p>
+
+<h2>3. What we do NOT collect</h2>
+<ul>
+  <li><strong>We do not perform facial recognition.</strong> Our detection counts people; it does not identify them.</li>
+  <li><strong>We do not store video.</strong> No webcam footage is saved by us, ever.</li>
+  <li><strong>We do not collect biometric identifiers.</strong> No facial templates, fingerprints, or voice prints.</li>
+  <li><strong>We do not sell your personal information.</strong> Not now, not ever.</li>
+  <li><strong>We do not show you advertisements</strong> in our products, and we do not allow advertisers to track you.</li>
+</ul>
+
+<h2>4. How we use your information</h2>
+<p>We use the information we collect to:</p>
+<ul>
+  <li>Operate the detection service and deliver shield protection</li>
+  <li>Manage your account, subscription, and billing</li>
+  <li>Send service-related emails (password resets, billing receipts, important updates)</li>
+  <li>Send marketing emails — only if you opted in. You can unsubscribe at any time.</li>
+  <li>Improve the product through anonymous usage analysis</li>
+  <li>Respond to support requests</li>
+  <li>Comply with legal obligations</li>
+</ul>
+
+<h2>5. Third-party services</h2>
+<p>SurfShield uses a small number of trusted third-party services to operate. We share only the data necessary for each service to function.</p>
+
+<h3>5.1 Anthropic (AI detection)</h3>
+<p>Camera frames are sent to <a href="https://www.anthropic.com/privacy" target="_blank">Anthropic's API</a> for shoulder-surfer detection. Anthropic's terms prohibit them from training on API customer data, and frames are not retained on their systems beyond what's needed to return a result.</p>
+
+<h3>5.2 Stripe (payments)</h3>
+<p>If you subscribe to a paid plan, payment information is collected and processed by <a href="https://stripe.com/privacy" target="_blank">Stripe</a>. We never see or store your full card number.</p>
+
+<h3>5.3 Vercel (hosting)</h3>
+<p>Our website and detection API are hosted by <a href="https://vercel.com/legal/privacy-policy" target="_blank">Vercel</a>. They process incoming requests on our behalf.</p>
+
+<h3>5.4 Email delivery</h3>
+<p>We use a transactional email service (currently Resend) to send account-related and support emails. Your email address is shared with this service only to deliver the messages you've requested or that we're required to send.</p>
+
+<h2>6. Data security</h2>
+<p>We use industry-standard security measures to protect your data:</p>
+<ul>
+  <li>All traffic is encrypted with HTTPS/TLS</li>
+  <li>Passwords are never stored in plain text (when account features launch)</li>
+  <li>Camera frames are transmitted securely and discarded after analysis</li>
+  <li>API keys and secrets are stored in encrypted environment variables, not in our code</li>
+</ul>
+<p>No system is perfectly secure. If we ever experience a data breach affecting your information, we will notify you promptly and as required by applicable law.</p>
+
+<h2>7. Your rights</h2>
+<p>Depending on where you live, you may have the following rights regarding your personal information:</p>
+<ul>
+  <li><strong>Access</strong> — request a copy of the data we have about you</li>
+  <li><strong>Correction</strong> — ask us to fix inaccurate data</li>
+  <li><strong>Deletion</strong> — ask us to delete your account and personal data</li>
+  <li><strong>Portability</strong> — request your data in a portable format</li>
+  <li><strong>Opt out of marketing</strong> — unsubscribe from any non-essential email</li>
+  <li><strong>Withdraw consent</strong> — turn off camera access at any time, which immediately stops all camera data collection</li>
+</ul>
+<p>To exercise any of these rights, email <a href="mailto:support@getsurfshield.com">support@getsurfshield.com</a>. We'll respond within 30 days.</p>
+
+<h3>7.1 California residents (CCPA / CPRA)</h3>
+<p>If you live in California, you have additional rights under the California Consumer Privacy Act and California Privacy Rights Act, including the right to know what categories of personal information we collect, the right to delete your information, and the right to opt out of the "sale" or "sharing" of your data. <strong>We do not sell or share your personal information for cross-context behavioral advertising.</strong></p>
+
+<h3>7.2 European users (GDPR)</h3>
+<p>If you are in the European Economic Area, the United Kingdom, or Switzerland, you have rights under the General Data Protection Regulation. The legal bases on which we process your data include: your consent (camera access, marketing emails), our contract with you (delivering the service you subscribed to), and our legitimate interests (improving the product, security, fraud prevention).</p>
+
+<h2>8. Children</h2>
+<p>SurfShield is not intended for users under 13 years old. We do not knowingly collect personal information from children under 13. If you believe a child has provided us with personal information, contact us and we'll delete it.</p>
+
+<h2>9. International data transfers</h2>
+<p>SurfShield operates from the United States. If you use our Service from outside the U.S., your information will be transferred to and processed in the U.S. By using the Service, you consent to this transfer.</p>
+
+<h2>10. Changes to this policy</h2>
+<p>We may update this Privacy Policy from time to time. When we make material changes, we'll notify you by email (if you have an account) and post the updated policy on our website with a new "Last updated" date. Continued use of the Service after changes means you accept the updated policy.</p>
+
+<h2>11. Contact us</h2>
+<p>For privacy questions, data requests, or anything else covered by this policy, reach out:</p>
+<ul>
+  <li>Email: <a href="mailto:support@getsurfshield.com">support@getsurfshield.com</a></li>
+  <li>Web: <a href="/feedback">getsurfshield.com/feedback</a></li>
+</ul>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <svg width="20" height="22" viewBox="0 0 32 34" fill="none">
+        <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#0f2236" stroke="#00c2a8" stroke-width="1.5"/>
+        <circle cx="16" cy="17" r="2.8" fill="#00c2a8"/>
+      </svg>
+      SurfShield
+    </div>
+    <div class="footer-links">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/feedback">Feedback</a>
+      <a href="/">Home</a>
+    </div>
+    <div class="footer-copy">© 2026 SurfShield · v1.0.0</div>
+  </div>
+</footer>
+
+</body>
+</html>
