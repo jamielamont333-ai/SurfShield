@@ -1,365 +1,1235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SurfShield — Privacy that watches back.</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Inconsolata:wght@400;500&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SurfShield — Privacy that watches your back</title>
+<meta name="description" content="SurfShield uses your webcam and on-device AI to detect when someone is looking over your shoulder, and automatically blurs your screen. Privacy that watches your back." />
+
+<!-- Open Graph / social share -->
+<meta property="og:title" content="SurfShield — Privacy that watches your back" />
+<meta property="og:description" content="Automatically blurs your screen when someone is looking over your shoulder. AI-powered shoulder-surfing protection." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://getsurfshield.com" />
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inconsolata:wght@400;500&display=swap" rel="stylesheet" />
+
 <style>
 :root {
-  --navy:#0d1b2a; --navy2:#1a2d42; --navy3:#243548;
-  --teal:#00c2a8; --teal-dim:rgba(0,194,168,0.12); --teal-dark:#00a08a;
-  --coral:#ff6b4a; --coral-dim:rgba(255,107,74,0.12);
-  --white:#f8fafc; --surface:#1e2f42; --surface2:#243548;
-  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
-  --muted:#7a95b0; --text:#e8f0f7;
+  --navy: #0d1b2a;
+  --navy2: #1a2d42;
+  --surface: #1e2f42;
+  --surface2: #243548;
+  --teal: #00c2a8;
+  --teal-dark: #00a08a;
+  --teal-glow: rgba(0, 194, 168, 0.15);
+  --coral: #ff6b4a;
+  --white: #f8fafc;
+  --text: #e8f0f7;
+  --muted: #7a95b0;
+  --muted2: #a8b8c8;
+  --border: rgba(255, 255, 255, 0.08);
+  --border2: rgba(255, 255, 255, 0.15);
 }
-* { box-sizing:border-box; margin:0; padding:0; }
-body { font-family:'Syne',sans-serif; background:var(--navy); color:var(--text); min-height:100vh; overflow-x:hidden; }
-header { display:flex; align-items:center; justify-content:space-between; padding:14px 32px; border-bottom:1px solid var(--border); position:sticky; top:0; background:rgba(26,45,66,0.97); backdrop-filter:blur(12px); z-index:100; }
-.wordmark { display:flex; align-items:center; gap:10px; }
-.wordmark h1 { font-size:17px; font-weight:700; letter-spacing:-0.02em; color:var(--white); }
-.header-right { display:flex; align-items:center; gap:10px; }
-.tier-pill { font-family:'Inconsolata',monospace; font-size:11px; font-weight:500; padding:3px 10px; border-radius:999px; border:1px solid var(--border2); color:var(--muted); letter-spacing:0.05em; text-transform:uppercase; }
-.tier-pill.pro { background:var(--teal); border-color:var(--teal); color:var(--navy); font-weight:700; }
-.btn { font-family:'Syne',sans-serif; font-size:13px; font-weight:600; padding:8px 18px; border-radius:7px; border:1.5px solid var(--border2); background:transparent; color:var(--text); cursor:pointer; transition:all 0.14s; }
-.btn:hover { background:var(--surface2); }
-.btn.primary { background:var(--teal); color:var(--navy); border-color:var(--teal); }
-.btn.primary:hover { background:var(--teal-dark); }
-.btn.danger { border-color:var(--coral); color:var(--coral); }
-.btn.danger:hover { background:var(--coral-dim); }
-main { max-width:860px; margin:0 auto; padding:36px 24px 60px; }
-.hero-line { font-family:'Lora',serif; font-style:italic; font-size:14px; color:var(--muted); margin-bottom:28px; display:flex; align-items:center; gap:8px; }
-.hero-line::before { content:''; flex:1; height:1px; background:var(--border); max-width:40px; }
-.status-strip { display:flex; align-items:center; justify-content:space-between; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 18px; margin-bottom:18px; }
-.status-left { display:flex; align-items:center; gap:14px; }
-.live-dot { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--muted); font-weight:500; }
-.dot { width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,0.2); flex-shrink:0; }
-.dot.on { background:var(--teal); animation:pulse 2.5s ease-in-out infinite; }
-.dot.alert { background:var(--coral); animation:pulse 0.9s ease-in-out infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-.status-msg { font-size:12px; color:var(--muted); font-family:'Inconsolata',monospace; }
-.usage-wrap { display:flex; align-items:center; gap:8px; }
-.usage-text { font-family:'Inconsolata',monospace; font-size:11px; color:var(--muted); white-space:nowrap; }
-.usage-track { width:72px; height:3px; background:var(--border); border-radius:2px; overflow:hidden; }
-.usage-bar { height:100%; width:0%; background:var(--teal); border-radius:2px; transition:width 0.5s ease; }
-.usage-bar.warn { background:var(--coral); }
-.controls { display:flex; align-items:center; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
-.sens-group { display:flex; align-items:center; gap:8px; margin-left:auto; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:6px 12px; }
-.sens-group label { font-size:11px; color:var(--muted); font-weight:600; letter-spacing:0.04em; text-transform:uppercase; }
-input[type=range] { -webkit-appearance:none; width:72px; height:3px; background:var(--border2); border-radius:2px; outline:none; }
-input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:13px; height:13px; border-radius:50%; background:var(--teal); cursor:pointer; }
-.sens-val { font-family:'Inconsolata',monospace; font-size:13px; font-weight:500; color:var(--teal); min-width:10px; text-align:center; }
-.blur-progress { height:2px; background:var(--border); border-radius:2px; margin-bottom:20px; overflow:hidden; }
-.blur-bar { height:100%; width:0%; background:var(--coral); border-radius:2px; transition:width 0.35s ease; }
-.shield-zone { position:relative; border-radius:12px; overflow:hidden; border:1px solid var(--border); }
-.protected { background:var(--surface); padding:28px 28px 32px; transition:filter 1s cubic-bezier(0.4,0,0.2,1); filter:blur(0px); }
-.blur-veil { position:absolute; inset:0; background:transparent; transition:background 1s ease; z-index:5; pointer-events:none; border-radius:12px; }
-.doc-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border); }
-.doc-title { font-family:'Lora',serif; font-size:22px; font-weight:400; color:var(--white); letter-spacing:-0.01em; margin-bottom:3px; }
-.doc-sub { font-size:12px; color:var(--muted); font-family:'Inconsolata',monospace; }
-.doc-stamp { font-family:'Inconsolata',monospace; font-size:10px; font-weight:500; padding:3px 9px; border-radius:4px; border:1.5px solid var(--coral); color:var(--coral); text-transform:uppercase; letter-spacing:0.08em; transform:rotate(2deg); display:inline-block; }
-.metrics-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:16px; }
-.metric { background:var(--navy2); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
-.metric-label { font-size:10px; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
-.metric-val { font-family:'Lora',serif; font-size:22px; color:var(--white); letter-spacing:-0.02em; }
-.metric-delta { font-family:'Inconsolata',monospace; font-size:11px; color:var(--teal); margin-top:2px; }
-.doc-note { background:var(--navy2); border:1px solid var(--border); border-left:3px solid var(--coral); border-radius:0 8px 8px 0; padding:12px 16px; margin-bottom:14px; }
-.note-tag { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--coral); margin-bottom:4px; }
-.note-body { font-family:'Lora',serif; font-size:13px; color:var(--text); line-height:1.65; font-style:italic; }
-.key-row { display:flex; align-items:center; gap:10px; background:var(--navy); border:1px solid var(--border2); border-radius:6px; padding:10px 14px; }
-.key-label { font-family:'Inconsolata',monospace; font-size:11px; color:var(--muted); letter-spacing:0.06em; flex-shrink:0; }
-.key-val { font-family:'Inconsolata',monospace; font-size:13px; color:var(--teal); letter-spacing:0.08em; flex:1; }
-.key-age { font-family:'Inconsolata',monospace; font-size:10px; color:rgba(122,149,176,0.4); }
-.alert-pill { position:absolute; bottom:-80px; left:50%; transform:translateX(-50%); background:var(--surface); border:1px solid var(--border2); border-radius:999px; padding:10px 14px 10px 12px; display:flex; align-items:center; gap:10px; z-index:20; white-space:nowrap; pointer-events:all; transition:bottom 0.42s cubic-bezier(0.34,1.56,0.64,1); box-shadow:0 8px 28px rgba(0,0,0,0.3); }
-.alert-pill.up { bottom:18px; }
-.alert-badge { width:26px; height:26px; border-radius:50%; background:var(--coral-dim); border:1px solid rgba(255,107,74,0.3); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.alert-badge svg { width:11px; height:11px; }
-.alert-label { font-size:13px; font-weight:600; color:var(--white); }
-.alert-sub { font-size:11px; color:var(--muted); font-family:'Inconsolata',monospace; }
-.dismiss-btn { font-family:'Syne',sans-serif; font-size:12px; font-weight:600; padding:5px 14px; border-radius:999px; border:1px solid var(--border2); background:var(--surface2); color:var(--muted); cursor:pointer; transition:all 0.13s; margin-left:4px; }
-.dismiss-btn:hover { border-color:var(--teal); color:var(--teal); }
-.backdrop { display:none; position:fixed; inset:0; background:rgba(13,27,42,0.85); backdrop-filter:blur(10px); z-index:500; align-items:center; justify-content:center; padding:24px; }
-.backdrop.open { display:flex; }
-.upgrade-card { background:var(--surface); border:1px solid var(--border2); border-radius:16px; padding:40px 36px; max-width:400px; width:100%; text-align:center; }
-.upgrade-eyebrow { font-family:'Inconsolata',monospace; font-size:11px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--coral); margin-bottom:10px; }
-.upgrade-title { font-family:'Lora',serif; font-size:30px; font-weight:400; letter-spacing:-0.02em; margin-bottom:8px; color:var(--white); }
-.upgrade-desc { font-size:13px; color:var(--muted); line-height:1.65; margin-bottom:24px; }
-.price-block { margin-bottom:24px; }
-.price-num { font-family:'Lora',serif; font-size:52px; color:var(--teal); letter-spacing:-0.04em; line-height:1; }
-.price-period { font-size:13px; color:var(--muted); margin-top:4px; }
-.features { text-align:left; list-style:none; margin-bottom:28px; border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:4px 0; }
-.features li { font-size:13px; color:var(--text); padding:8px 0; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
-.features li:last-child { border-bottom:none; }
-.feat-dot { width:5px; height:5px; border-radius:50%; background:var(--teal); flex-shrink:0; }
-.upgrade-cta { width:100%; padding:14px; border-radius:8px; background:var(--teal); color:var(--navy); border:none; font-family:'Syne',sans-serif; font-size:15px; font-weight:700; cursor:pointer; transition:opacity 0.14s; margin-bottom:12px; }
-.upgrade-cta:hover { opacity:0.88; }
-.modal-dismiss { font-size:13px; color:var(--muted); background:none; border:none; cursor:pointer; font-family:'Syne',sans-serif; }
-.modal-dismiss:hover { color:var(--text); }
-.toast { position:fixed; bottom:24px; right:24px; background:var(--surface); border:1px solid var(--border2); color:var(--text); border-radius:8px; padding:12px 18px; font-size:13px; font-weight:500; z-index:600; transform:translateY(70px); opacity:0; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1); max-width:260px; pointer-events:none; }
-.toast.show { transform:translateY(0); opacity:1; }
-video, canvas { display:none; }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--navy);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ── NAV ─────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 16px 32px;
+  background: rgba(13, 27, 42, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  font-size: 14px;
+  color: var(--muted2);
+}
+
+.nav-links a:hover { color: var(--teal); }
+
+@media (max-width: 600px) {
+  nav { padding: 14px 18px; }
+  .nav-links { gap: 14px; font-size: 12px; }
+}
+
+/* ── HERO ────────────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  padding: 120px 32px 80px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.hero-content h1 {
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  margin-bottom: 20px;
+}
+
+.hero-content h1 .accent { color: var(--teal); }
+
+.hero-tagline {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--muted2);
+  margin-bottom: 28px;
+}
+
+.hero-content p.lead {
+  font-size: 17px;
+  color: var(--muted2);
+  margin-bottom: 36px;
+  max-width: 480px;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 26px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: var(--teal);
+  color: var(--navy);
+}
+
+.btn-primary:hover {
+  background: var(--teal-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px var(--teal-glow);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1.5px solid var(--border2);
+}
+
+.btn-secondary:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.hero-visual {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-shield {
+  width: 100%;
+  max-width: 400px;
+  filter: drop-shadow(0 0 60px var(--teal-glow));
+  animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.02); opacity: 0.95; }
+}
+
+@media (max-width: 800px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 100px 20px 60px;
+    gap: 40px;
+  }
+  .hero-visual { order: -1; }
+  .hero-shield { max-width: 240px; }
+}
+
+/* ── SECTION GENERIC ─────────────────────────────────── */
+section {
+  padding: 80px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-eyebrow {
+  font-family: 'Inconsolata', monospace;
+  font-size: 11px;
+  color: var(--teal);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.section-title {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.section-subtitle {
+  font-size: 16px;
+  color: var(--muted2);
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 60px;
+}
+
+@media (max-width: 600px) {
+  section { padding: 60px 20px; }
+}
+
+/* ── HOW IT WORKS ────────────────────────────────────── */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.step {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.step:hover {
+  border-color: var(--teal);
+  transform: translateY(-2px);
+}
+
+.step-num {
+  font-family: 'Inconsolata', monospace;
+  font-size: 12px;
+  color: var(--teal);
+  letter-spacing: 0.15em;
+  margin-bottom: 16px;
+}
+
+.step-icon {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 16px;
+}
+
+.step h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.step p {
+  font-size: 14px;
+  color: var(--muted2);
+  line-height: 1.6;
+}
+
+@media (max-width: 700px) {
+  .steps { grid-template-columns: 1fr; gap: 16px; }
+}
+
+/* ── DEMO SECTION ────────────────────────────────────── */
+.demo-wrap {
+  background: var(--navy2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.demo-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, var(--teal-glow), transparent 60%);
+  pointer-events: none;
+}
+
+.demo-frame {
+  position: relative;
+  background: var(--navy);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.demo-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.demo-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--muted2);
+  font-weight: 600;
+}
+
+.demo-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--teal);
+  animation: pulse-dot 2.2s infinite;
+}
+
+.demo-dot.alert {
+  background: var(--coral);
+  animation: pulse-dot 0.9s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 currentColor; }
+  50% { opacity: 0.5; box-shadow: 0 0 0 6px transparent; }
+}
+
+.demo-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.demo-btn {
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.demo-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+.demo-btn.active {
+  background: var(--coral);
+  border-color: var(--coral);
+  color: var(--white);
+}
+
+.demo-content {
+  position: relative;
+  min-height: 220px;
+  transition: filter 0.4s ease;
+}
+
+.demo-content.blurred {
+  filter: blur(14px);
+  pointer-events: none;
+}
+
+.demo-doc-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.demo-doc-meta {
+  font-family: 'Inconsolata', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.demo-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.demo-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.demo-stat-label {
+  font-family: 'Inconsolata', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.demo-stat-value {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.demo-stat-sub {
+  font-family: 'Inconsolata', monospace;
+  font-size: 10px;
+  color: var(--teal);
+  margin-top: 2px;
+}
+
+.demo-alert-bar {
+  background: rgba(255, 107, 74, 0.08);
+  border-left: 3px solid var(--coral);
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.demo-alert-bar strong {
+  color: var(--coral);
+  font-family: 'Inconsolata', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.demo-overlay-msg {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(13, 27, 42, 0.6);
+  border-radius: 8px;
+  text-align: center;
+  padding: 20px;
+}
+
+.demo-content.blurred ~ .demo-overlay-msg {
+  display: flex;
+}
+
+.demo-overlay-msg .ico {
+  font-size: 28px;
+  color: var(--coral);
+}
+
+.demo-overlay-msg .title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.01em;
+}
+
+.demo-overlay-msg .sub {
+  font-size: 13px;
+  color: var(--muted2);
+}
+
+.demo-hint {
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 18px;
+  font-style: italic;
+}
+
+@media (max-width: 600px) {
+  .demo-wrap { padding: 20px; }
+  .demo-frame { padding: 16px; }
+  .demo-stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── PLATFORMS ───────────────────────────────────────── */
+.platforms {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.platform {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+  text-align: center;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.platform:hover {
+  border-color: var(--border2);
+  transform: translateY(-2px);
+}
+
+.platform.available { border-color: rgba(0, 194, 168, 0.3); }
+
+.platform-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-family: 'Inconsolata', monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--surface2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.platform.available .platform-badge {
+  background: var(--teal);
+  color: var(--navy);
+  font-weight: 700;
+  border-color: var(--teal);
+}
+
+.platform-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 16px;
+}
+
+.platform h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+
+.platform p {
+  font-size: 13px;
+  color: var(--muted2);
+  margin-bottom: 18px;
+  min-height: 36px;
+}
+
+.platform .btn {
+  font-size: 13px;
+  padding: 10px 18px;
+  width: 100%;
+  justify-content: center;
+}
+
+@media (max-width: 700px) {
+  .platforms { grid-template-columns: 1fr; }
+}
+
+/* ── PRICING ─────────────────────────────────────────── */
+.pricing-card {
+  max-width: 440px;
+  margin: 0 auto;
+  background: linear-gradient(160deg, var(--surface) 0%, var(--navy2) 100%);
+  border: 1px solid rgba(0, 194, 168, 0.3);
+  border-radius: 18px;
+  padding: 40px 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, var(--teal-glow), transparent 50%);
+  pointer-events: none;
+}
+
+.pricing-trial-pill {
+  display: inline-block;
+  font-family: 'Inconsolata', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--teal);
+  background: rgba(0, 194, 168, 0.1);
+  border: 1px solid rgba(0, 194, 168, 0.3);
+  padding: 5px 12px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.pricing-price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.pricing-price .amount {
+  font-size: 56px;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.pricing-price .period {
+  font-size: 16px;
+  color: var(--muted2);
+  font-weight: 500;
+}
+
+.pricing-trial {
+  font-size: 14px;
+  color: var(--muted2);
+  margin-bottom: 28px;
+  position: relative;
+}
+
+.pricing-trial strong { color: var(--teal); font-weight: 600; }
+
+.pricing-features {
+  list-style: none;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.pricing-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.pricing-features li::before {
+  content: '✓';
+  color: var(--teal);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.pricing-card .btn {
+  width: 100%;
+  justify-content: center;
+  position: relative;
+}
+
+/* ── FAQ ─────────────────────────────────────────────── */
+.faq {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  padding: 20px 0;
+}
+
+.faq-q {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--white);
+  list-style: none;
+  user-select: none;
+}
+
+.faq-q::-webkit-details-marker { display: none; }
+
+.faq-q::after {
+  content: '+';
+  font-size: 22px;
+  color: var(--teal);
+  font-weight: 400;
+  transition: transform 0.2s;
+}
+
+details[open] .faq-q::after {
+  content: '−';
+}
+
+.faq-a {
+  padding-top: 12px;
+  font-size: 15px;
+  color: var(--muted2);
+  line-height: 1.7;
+}
+
+/* ── NOTIFY MODAL ────────────────────────────────────── */
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 27, 42, 0.85);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-bg.show { display: flex; }
+
+.modal {
+  background: var(--navy2);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 420px;
+  width: 100%;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 24px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: all 0.15s;
+}
+
+.modal-close:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.modal h3 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+
+.modal p {
+  font-size: 14px;
+  color: var(--muted2);
+  margin-bottom: 20px;
+}
+
+.modal input {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.modal input:focus {
+  outline: none;
+  border-color: var(--teal);
+}
+
+.modal .btn { width: 100%; justify-content: center; }
+
+.modal-success {
+  display: none;
+  text-align: center;
+  padding: 12px 0;
+}
+
+.modal-success .check {
+  font-size: 40px;
+  color: var(--teal);
+  margin-bottom: 12px;
+}
+
+.modal-success h3 { color: var(--teal); }
+
+/* ── FOOTER ──────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  margin-top: 60px;
+  padding: 40px 32px;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.footer-links a:hover { color: var(--teal); }
+
+.footer-copy {
+  font-family: 'Inconsolata', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+@media (max-width: 600px) {
+  footer { padding: 32px 20px; }
+  .footer-inner { flex-direction: column; text-align: center; }
+}
 </style>
 </head>
 <body>
-<video id="video" autoplay muted playsinline></video>
-<canvas id="canvas" width="640" height="480"></canvas>
-<header>
-  <div class="wordmark">
-    <svg width="32" height="34" viewBox="0 0 32 34" fill="none">
-      <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#0f2236" stroke="#00c2a8" stroke-width="1.5" stroke-linejoin="round"/>
-      <path d="M9 17C9 17 11.8 12.5 16 12.5C20.2 12.5 23 17 23 17C23 17 20.2 21.5 16 21.5C11.8 21.5 9 17 9 17Z" stroke="#00c2a8" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+
+<!-- ────────────────────────────  NAV  ──────────────────────────── -->
+<nav>
+  <a href="/" class="nav-logo">
+    <svg width="26" height="28" viewBox="0 0 32 34" fill="none">
+      <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#0f2236" stroke="#00c2a8" stroke-width="1.5"/>
+      <path d="M9 17C9 17 11.8 12.5 16 12.5C20.2 12.5 23 17 23 17C23 17 20.2 21.5 16 21.5C11.8 21.5 9 17 9 17Z" stroke="#00c2a8" stroke-width="1.3" fill="none"/>
       <circle cx="16" cy="17" r="2.8" fill="#00c2a8" opacity="0.9"/>
       <circle cx="16" cy="17" r="1.3" fill="#0d1b2a"/>
       <circle cx="17.1" cy="15.9" r="0.55" fill="#e8f0f7" opacity="0.8"/>
     </svg>
-    <h1>SurfShield</h1>
+    SurfShield
+  </a>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="/feedback">Feedback</a>
   </div>
-  <div class="header-right">
-    <span class="tier-pill" id="tier-pill">Free</span>
-    <button class="btn" id="upgrade-header-btn" onclick="openUpgrade()" style="display:flex;align-items:center;gap:8px;padding:6px 6px 6px 14px;border-radius:999px;background:transparent;border:1.5px solid rgba(255,255,255,0.15);color:#e8f0f7;font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.15s;">Get <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;background:#00c2a8;color:#0d1b2a;letter-spacing:0.04em;">PRO</span></button>
+</nav>
+
+<!-- ────────────────────────────  HERO  ──────────────────────────── -->
+<header class="hero">
+  <div class="hero-content">
+    <h1>Privacy that watches <span class="accent">your back.</span></h1>
+    <p class="hero-tagline">Your screen. Your eyes only.</p>
+    <p class="lead">SurfShield uses your webcam and on-device AI to detect when someone is looking over your shoulder — and instantly blurs your screen. Coffee shops, planes, open offices: stay private without thinking about it.</p>
+    <div class="hero-cta">
+      <button class="btn btn-primary" onclick="openNotify()">Get notified at launch →</button>
+      <a href="#demo" class="btn btn-secondary">See live demo</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <svg class="hero-shield" viewBox="0 0 320 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="shieldGlow" cx="0.5" cy="0.4" r="0.6">
+          <stop offset="0%" stop-color="#00c2a8" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#00c2a8" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="160" cy="160" r="150" fill="url(#shieldGlow)"/>
+      <path d="M160 30 L40 70 V160 C40 230 90 290 160 310 C230 290 280 230 280 160 V70 Z" fill="#0f2236" stroke="#00c2a8" stroke-width="3"/>
+      <path d="M70 165 C70 165 105 110 160 110 C215 110 250 165 250 165 C250 165 215 220 160 220 C105 220 70 165 70 165 Z" stroke="#00c2a8" stroke-width="2.5" fill="none"/>
+      <circle cx="160" cy="165" r="32" fill="#00c2a8" opacity="0.95"/>
+      <circle cx="160" cy="165" r="14" fill="#0d1b2a"/>
+      <circle cx="170" cy="155" r="5" fill="#e8f0f7" opacity="0.9"/>
+    </svg>
   </div>
 </header>
-<main>
-  <p class="hero-line">Privacy that watches back.</p>
-  <div class="status-strip">
-    <div class="status-left">
-      <div class="live-dot">
-        <div class="dot" id="live-dot"></div>
-        <span id="cam-label">Shield off</span>
-      </div>
-      <span class="status-msg" id="status-msg">Click enable to start</span>
+
+<!-- ─────────────────────────  HOW IT WORKS  ─────────────────────── -->
+<section id="how">
+  <div class="section-eyebrow">How it works</div>
+  <h2 class="section-title">Three steps, zero effort</h2>
+  <p class="section-subtitle">SurfShield runs quietly in the background. You don't have to remember to turn it on or do anything.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01 / WATCH</div>
+      <svg class="step-icon" viewBox="0 0 32 32" fill="none">
+        <rect x="3" y="6" width="26" height="18" rx="2" stroke="#00c2a8" stroke-width="2" fill="none"/>
+        <circle cx="16" cy="15" r="4" fill="#00c2a8"/>
+        <path d="M11 28h10" stroke="#00c2a8" stroke-width="2"/>
+      </svg>
+      <h3>Camera observes</h3>
+      <p>Your webcam quietly monitors what's behind you. No streaming, no recording — frames are checked and discarded.</p>
     </div>
-    <div class="usage-wrap" id="usage-wrap">
-      <span class="usage-text" id="usage-text">0 / 5 today</span>
-      <div class="usage-track"><div class="usage-bar" id="usage-bar"></div></div>
+    <div class="step">
+      <div class="step-num">02 / DETECT</div>
+      <svg class="step-icon" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="12" stroke="#00c2a8" stroke-width="2" fill="none"/>
+        <path d="M16 8 V12 M16 20 V24 M8 16 H12 M20 16 H24" stroke="#00c2a8" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="16" cy="16" r="2.5" fill="#00c2a8"/>
+      </svg>
+      <h3>AI checks for viewers</h3>
+      <p>Each frame is checked by Claude AI to see if someone besides you is looking at your screen. Smart enough to ignore false positives.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03 / BLUR</div>
+      <svg class="step-icon" viewBox="0 0 32 32" fill="none">
+        <rect x="4" y="6" width="24" height="16" rx="2" stroke="#00c2a8" stroke-width="2" fill="none"/>
+        <path d="M8 12 H24 M8 16 H20 M8 20 H22" stroke="#00c2a8" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+        <path d="M28 26 L4 26" stroke="#00c2a8" stroke-width="2"/>
+      </svg>
+      <h3>Screen instantly blurs</h3>
+      <p>If someone's watching, your content blurs in milliseconds. When they look away, your screen returns to normal automatically.</p>
     </div>
   </div>
-  <div class="controls">
-    <button class="btn primary" id="start-btn" onclick="toggleCamera()">Enable shield</button>
-    <button class="btn" onclick="testBlur()">Test blur</button>
-    <div class="sens-group">
-      <label>Sensitivity</label>
-      <input type="range" id="sensitivity" min="1" max="5" value="3" step="1" oninput="document.getElementById('sens-val').textContent=this.value">
-      <span class="sens-val" id="sens-val">3</span>
-    </div>
-  </div>
-  <div class="blur-progress"><div class="blur-bar" id="blur-bar"></div></div>
-  <div class="shield-zone">
-    <div class="blur-veil" id="blur-veil"></div>
-    <div class="protected" id="protected">
-      <div class="doc-header">
-        <div>
-          <div class="doc-title">Q3 Strategy Brief</div>
-          <div class="doc-sub">CONFIDENTIAL · Last edited 2 hours ago</div>
+</section>
+
+<!-- ────────────────────────────  DEMO  ──────────────────────────── -->
+<section id="demo">
+  <div class="section-eyebrow">Live demo</div>
+  <h2 class="section-title">See it happen</h2>
+  <p class="section-subtitle">Click "Trigger viewer" to see what happens when someone looks over your shoulder.</p>
+
+  <div class="demo-wrap">
+    <div class="demo-frame">
+      <div class="demo-controls">
+        <div class="demo-status">
+          <span class="demo-dot" id="demoDot"></span>
+          <span id="demoStatus">Shield active · Watching</span>
         </div>
-        <div class="doc-stamp">Confidential</div>
+        <div class="demo-buttons">
+          <button class="demo-btn" id="triggerBtn" onclick="triggerViewer()">Trigger viewer</button>
+          <button class="demo-btn" onclick="clearViewer()">Clear</button>
+        </div>
       </div>
-      <div class="metrics-row">
-        <div class="metric"><div class="metric-label">Revenue MTD</div><div class="metric-val">$84.2k</div><div class="metric-delta">↑ 12.4% vs last mo.</div></div>
-        <div class="metric"><div class="metric-label">Active users</div><div class="metric-val">12,430</div><div class="metric-delta">↑ 340 this week</div></div>
-        <div class="metric"><div class="metric-label">Runway</div><div class="metric-val">14 mo.</div><div class="metric-delta">Post Series A</div></div>
-        <div class="metric"><div class="metric-label">Valuation</div><div class="metric-val">$18M</div><div class="metric-delta">Pre-money target</div></div>
+
+      <div class="demo-content" id="demoContent">
+        <div class="demo-doc-title">Q3 Strategy Brief</div>
+        <div class="demo-doc-meta">Confidential · Last edited 2 hours ago</div>
+
+        <div class="demo-stats">
+          <div class="demo-stat">
+            <div class="demo-stat-label">Revenue MTD</div>
+            <div class="demo-stat-value">$84.2k</div>
+            <div class="demo-stat-sub">↑ 12.4% vs last mo.</div>
+          </div>
+          <div class="demo-stat">
+            <div class="demo-stat-label">Active users</div>
+            <div class="demo-stat-value">12,430</div>
+            <div class="demo-stat-sub">↑ 340 this week</div>
+          </div>
+          <div class="demo-stat">
+            <div class="demo-stat-label">Runway</div>
+            <div class="demo-stat-value">14 mo.</div>
+            <div class="demo-stat-sub">Post Series A</div>
+          </div>
+          <div class="demo-stat">
+            <div class="demo-stat-label">Valuation</div>
+            <div class="demo-stat-value">$18M</div>
+            <div class="demo-stat-sub">Pre-money target</div>
+          </div>
+        </div>
+
+        <div class="demo-alert-bar">
+          <strong>EYES ONLY</strong>
+          Board meeting Thursday. Series B term sheet under review — do not share externally.
+        </div>
       </div>
-      <div class="doc-note">
-        <div class="note-tag">Eyes Only</div>
-        <p class="note-body">Board meeting Thursday. Series B term sheet under review — do not share externally. Investor intro via Marcus at 3 pm.</p>
-      </div>
-      <div class="key-row">
-        <span class="key-label">API KEY</span>
-        <span class="key-val">sk-prod-xxxxxxxxxxxxxxxxxxxxxxxxxx</span>
-        <span class="key-age">rotated 3d ago</span>
+
+      <div class="demo-overlay-msg">
+        <div class="ico">⚠</div>
+        <div class="title">Viewer detected</div>
+        <div class="sub">Screen blurred to protect your content.</div>
       </div>
     </div>
-    <div class="alert-pill" id="alert-pill">
-      <div class="alert-badge">
-        <svg viewBox="0 0 11 11" fill="none"><path d="M5.5 1L10 9.5H1L5.5 1Z" stroke="#ff6b4a" stroke-width="1.2" fill="none"/><path d="M5.5 4.5V6.5" stroke="#ff6b4a" stroke-width="1.2" stroke-linecap="round"/><circle cx="5.5" cy="8" r="0.6" fill="#ff6b4a"/></svg>
-      </div>
-      <div>
-        <div class="alert-label">Viewer detected</div>
-        <div class="alert-sub" id="alert-reason">Someone may be looking</div>
-      </div>
-      <button class="dismiss-btn" onclick="dismiss()">It's fine</button>
+    <p class="demo-hint">In the real app, the camera does the detecting automatically.</p>
+  </div>
+</section>
+
+<!-- ─────────────────────────  PLATFORMS  ────────────────────────── -->
+<section id="platforms">
+  <div class="section-eyebrow">Where it works</div>
+  <h2 class="section-title">One subscription, every device</h2>
+  <p class="section-subtitle">SurfShield is rolling out across all your screens. We're starting with desktop and expanding from there.</p>
+
+  <div class="platforms">
+    <div class="platform">
+      <div class="platform-badge">Coming soon</div>
+      <svg class="platform-icon" viewBox="0 0 24 24" fill="none">
+        <path d="M3 5.5L10 4.5V11H3V5.5Z M11 4.4L21 3V11H11V4.4Z M3 12H10V18.5L3 17.5V12Z M11 12H21V20L11 18.6V12Z" fill="#00c2a8"/>
+      </svg>
+      <h3>Windows desktop</h3>
+      <p>Full screen-wide protection. Works in any application.</p>
+      <button class="btn btn-secondary" onclick="openNotify('windows')">Notify me</button>
+    </div>
+
+    <div class="platform">
+      <div class="platform-badge">Coming soon</div>
+      <svg class="platform-icon" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="10" stroke="#00c2a8" stroke-width="2" fill="none"/>
+        <path d="M12 2 L12 12 L20.5 7" stroke="#00c2a8" stroke-width="2" fill="none"/>
+        <path d="M12 12 L20.5 17" stroke="#00c2a8" stroke-width="2" fill="none"/>
+        <path d="M12 12 L3.5 17" stroke="#00c2a8" stroke-width="2" fill="none"/>
+        <circle cx="12" cy="12" r="3" fill="#00c2a8"/>
+      </svg>
+      <h3>Chrome extension</h3>
+      <p>Protects browser content while you work.</p>
+      <button class="btn btn-secondary" onclick="openNotify('chrome')">Notify me</button>
+    </div>
+
+    <div class="platform">
+      <div class="platform-badge">Coming soon</div>
+      <svg class="platform-icon" viewBox="0 0 24 24" fill="none">
+        <rect x="6" y="2" width="12" height="20" rx="2.5" stroke="#00c2a8" stroke-width="2" fill="none"/>
+        <circle cx="12" cy="18" r="1" fill="#00c2a8"/>
+        <path d="M9 5 H15" stroke="#00c2a8" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <h3>Android app</h3>
+      <p>Mobile shoulder-surfing protection on the go.</p>
+      <button class="btn btn-secondary" onclick="openNotify('android')">Notify me</button>
     </div>
   </div>
-</main>
-<div class="backdrop" id="upgrade-backdrop">
-  <div class="upgrade-card">
-    <div class="upgrade-eyebrow" id="upgrade-eyebrow">You've hit the free limit</div>
-    <h2 class="upgrade-title">Go Pro</h2>
-    <p class="upgrade-desc">5 free scans used up for today. Upgrade for unlimited, always-on protection.</p>
-    <div class="price-block">
-      <div class="price-num">$1<span style="font-size:26px">.99</span></div>
-      <div class="price-period">per month · cancel any time</div>
+</section>
+
+<!-- ─────────────────────────  PRICING  ──────────────────────────── -->
+<section id="pricing">
+  <div class="section-eyebrow">Pricing</div>
+  <h2 class="section-title">Simple. Honest.</h2>
+  <p class="section-subtitle">One subscription unlocks SurfShield on every platform. Cancel anytime.</p>
+
+  <div class="pricing-card">
+    <div class="pricing-trial-pill">7-Day Free Trial</div>
+    <div class="pricing-price">
+      <span class="amount">$1.99</span>
+      <span class="period">/ month</span>
     </div>
-    <ul class="features">
-      <li><span class="feat-dot"></span>Unlimited detections — no daily cap</li>
-      <li><span class="feat-dot"></span>Adjustable sensitivity levels</li>
-      <li><span class="feat-dot"></span>Detection history and analytics</li>
-      <li><span class="feat-dot"></span>Auto-dismiss memory</li>
-      <li><span class="feat-dot"></span>Priority detection speed</li>
+    <p class="pricing-trial">Then <strong>$1.99/mo</strong> after your trial. Cancel before day 7 and you're never charged.</p>
+
+    <ul class="pricing-features">
+      <li>Unlimited shoulder-surf detection</li>
+      <li>Works across Windows, Chrome, Android</li>
+      <li>AI-powered, no false alarms</li>
+      <li>One subscription, every device</li>
+      <li>Cancel anytime, no questions</li>
     </ul>
-    <button class="upgrade-cta" onclick="goToStripe()">Upgrade to Pro — $1.99 / month</button>
-    <button class="modal-dismiss" onclick="closeUpgrade()">Not right now</button>
+
+    <button class="btn btn-primary" onclick="openNotify('pricing')">Start when we launch →</button>
+  </div>
+</section>
+
+<!-- ──────────────────────────  FAQ  ─────────────────────────────── -->
+<section id="faq">
+  <div class="section-eyebrow">FAQ</div>
+  <h2 class="section-title">Common questions</h2>
+
+  <div class="faq">
+    <details class="faq-item">
+      <summary class="faq-q">Does SurfShield record me through my camera?</summary>
+      <div class="faq-a">No. Frames from your camera are analyzed and immediately discarded. Nothing is recorded, stored, or sent anywhere except briefly to our detection service to check whether anyone is watching. We never see your face.</div>
+    </details>
+
+    <details class="faq-item">
+      <summary class="faq-q">What happens if my internet drops out?</summary>
+      <div class="faq-a">SurfShield will pause detection and let you know. We're working on an on-device fallback so basic protection works offline too.</div>
+    </details>
+
+    <details class="faq-item">
+      <summary class="faq-q">Will this drain my battery?</summary>
+      <div class="faq-a">Camera use is light — we sample at long intervals and use efficient image compression. On laptops, expect minimal battery impact during normal work sessions.</div>
+    </details>
+
+    <details class="faq-item">
+      <summary class="faq-q">Can SurfShield tell my face from a stranger's?</summary>
+      <div class="faq-a">No, and that's deliberate. SurfShield never identifies who's in frame — it only counts people. If two or more people are visible, your screen blurs. This means we never collect or process any facial recognition data.</div>
+    </details>
+
+    <details class="faq-item">
+      <summary class="faq-q">What happens after the 7-day free trial?</summary>
+      <div class="faq-a">You'll be billed $1.99/month and continue uninterrupted. Cancel any time before day 7 and you'll never be charged. Cancel later and you'll keep access through the end of your billing period.</div>
+    </details>
+
+    <details class="faq-item">
+      <summary class="faq-q">When will SurfShield launch?</summary>
+      <div class="faq-a">We're putting the finishing touches on the Windows desktop app and Chrome extension. Sign up for "Notify me" above and you'll be the first to know when it's live.</div>
+    </details>
+  </div>
+</section>
+
+<!-- ──────────────────────────  FOOTER  ──────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <svg width="20" height="22" viewBox="0 0 32 34" fill="none">
+        <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#0f2236" stroke="#00c2a8" stroke-width="1.5"/>
+        <circle cx="16" cy="17" r="2.8" fill="#00c2a8"/>
+      </svg>
+      SurfShield
+    </div>
+    <div class="footer-links">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/feedback">Feedback</a>
+      <a href="#how">How it works</a>
+    </div>
+    <div class="footer-copy">© 2026 SurfShield · v1.0.0</div>
+  </div>
+</footer>
+
+<!-- ─────────────────────  NOTIFY MODAL  ─────────────────────────── -->
+<div class="modal-bg" id="notifyModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeNotify()">×</button>
+    <div id="notifyForm">
+      <h3>Get notified at launch</h3>
+      <p>We'll email you the second SurfShield is ready. No spam, no list-selling.</p>
+      <input type="email" id="notifyEmail" placeholder="you@example.com" required />
+      <button class="btn btn-primary" onclick="submitNotify()">Notify me →</button>
+    </div>
+    <div class="modal-success" id="notifySuccess">
+      <div class="check">✓</div>
+      <h3>You're on the list!</h3>
+      <p>We'll let you know the moment SurfShield is ready.</p>
+    </div>
   </div>
 </div>
-<div class="toast" id="toast"></div>
+
 <script>
-var STRIPE_LINK='https://buy.stripe.com/test_cNicN44Q60Rg4jX4X20Fi00';
-var FREE_LIMIT=5;
-var stream=null,detecting=false,blurLevel=0,dismissed=false,dismissedUntil=0,hits=0,clears=0,ticker=null,blurTimer=null,isPro=false;
-var HIT_THRESHOLD=1,CLEAR_THRESHOLD=2;
-function g(id){return document.getElementById(id);}
-var video=g('video'),canvas=g('canvas'),ctx=canvas.getContext('2d');
-function checkPro(){
-  var token=localStorage.getItem('ss_pro_token');
-  var expiry=parseInt(localStorage.getItem('ss_pro_expiry')||'0');
-  if(token&&Date.now()<expiry){
-    isPro=true;
-    g('tier-pill').textContent='Pro';
-    g('tier-pill').classList.add('pro');
-    g('upgrade-header-btn').style.display='none';
-    g('usage-wrap').style.display='none';
+// ── DEMO INTERACTIONS ──
+function triggerViewer() {
+  const content = document.getElementById('demoContent');
+  const dot = document.getElementById('demoDot');
+  const status = document.getElementById('demoStatus');
+  const btn = document.getElementById('triggerBtn');
+
+  content.classList.add('blurred');
+  dot.classList.add('alert');
+  status.textContent = 'Viewer detected · Screen protected';
+  btn.classList.add('active');
+}
+
+function clearViewer() {
+  const content = document.getElementById('demoContent');
+  const dot = document.getElementById('demoDot');
+  const status = document.getElementById('demoStatus');
+  const btn = document.getElementById('triggerBtn');
+
+  content.classList.remove('blurred');
+  dot.classList.remove('alert');
+  status.textContent = 'Shield active · Watching';
+  btn.classList.remove('active');
+}
+
+// ── NOTIFY MODAL ──
+let notifySource = '';
+
+function openNotify(source) {
+  notifySource = source || 'hero';
+  document.getElementById('notifyModal').classList.add('show');
+  document.getElementById('notifyForm').style.display = 'block';
+  document.getElementById('notifySuccess').style.display = 'none';
+  document.getElementById('notifyEmail').value = '';
+  setTimeout(() => document.getElementById('notifyEmail').focus(), 100);
+}
+
+function closeNotify() {
+  document.getElementById('notifyModal').classList.remove('show');
+}
+
+function submitNotify() {
+  const emailInput = document.getElementById('notifyEmail');
+  const email = emailInput.value.trim();
+
+  if (!email || !/^[^@]+@[^@]+\.[^@]+$/.test(email)) {
+    emailInput.style.borderColor = '#ff6b4a';
+    setTimeout(() => emailInput.style.borderColor = '', 1500);
+    return;
   }
+
+  // TODO: wire up to /api/notify when Resend is configured
+  // For now, just show success state
+  console.log('Notify signup:', { email, source: notifySource });
+
+  document.getElementById('notifyForm').style.display = 'none';
+  document.getElementById('notifySuccess').style.display = 'block';
 }
-function todayKey(){return 'ss_scans_'+new Date().toISOString().slice(0,10);}
-function scansToday(){return parseInt(localStorage.getItem(todayKey())||'0');}
-function addScan(){localStorage.setItem(todayKey(),scansToday()+1);}
-function refreshUsageUI(){
-  if(isPro)return;
-  var n=scansToday();
-  var pct=Math.min(100,(n/FREE_LIMIT)*100);
-  g('usage-text').textContent=n+' / '+FREE_LIMIT+' today';
-  g('usage-bar').style.width=pct+'%';
-  if(pct>=80){g('usage-bar').classList.add('warn');}else{g('usage-bar').classList.remove('warn');}
-}
-function setBlur(level){
-  blurLevel=Math.max(0,Math.min(1,level));
-  g('protected').style.filter='blur('+(blurLevel*20).toFixed(1)+'px)';
-  g('blur-veil').style.background='rgba(13,27,42,'+(blurLevel*0.6).toFixed(2)+')';
-  g('blur-bar').style.width=Math.round(blurLevel*100)+'%';
-  if(blurLevel>0.05){g('alert-pill').classList.add('up');}
-  else{g('alert-pill').classList.remove('up');dismissed=false;}
-}
-function rampTo(target,speed){
-  clearTimeout(blurTimer);
-  function step(){
-    var diff=target-blurLevel;
-    if(Math.abs(diff)<0.012){setBlur(target);return;}
-    setBlur(blurLevel+diff*speed);
-    blurTimer=setTimeout(step,38);
-  }
-  step();
-}
-function dismiss(){
-  dismissed=true;
-  dismissedUntil=Date.now()+30000;
-  rampTo(0,0.16);
-  hits=0;
-  setLiveState('on','Dismissed — watching quietly');
-  showToast('Dismissed for 30 seconds');
-}
-function testBlur(){
-  dismissed=false;
-  hits=HIT_THRESHOLD;
-  rampTo(0.72,0.07);
-  g('alert-reason').textContent='Simulated — someone nearby';
-  setLiveState('alert','Viewer detected!');
-}
-function setLiveState(state,label){
-  var dot=g('live-dot');
-  if(state==='off'){dot.className='dot';}
-  else if(state==='on'){dot.className='dot on';}
-  else if(state==='alert'){dot.className='dot alert';}
-  g('cam-label').textContent=label;
-}
-function toggleCamera(){
-  if(detecting){stopCamera();return;}
-  if(!isPro&&scansToday()>=FREE_LIMIT){openUpgrade();return;}
-  navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:640,height:480},audio:false}).then(function(s){
-    stream=s;
-    video.srcObject=stream;
-    video.play();
-    detecting=true;
-    g('start-btn').textContent='Disable shield';
-    g('start-btn').classList.remove('primary');
-    g('start-btn').classList.add('danger');
-    setLiveState('on','Shield active');
-    refreshUsageUI();
-    var sens=parseInt(g('sensitivity').value);
-    var interval=isPro?Math.max(1000,3000-sens*400):2000;
-    ticker=setInterval(scan,interval);
-  }).catch(function(){showToast('Camera access denied');});
-}
-function stopCamera(){
-  if(stream){stream.getTracks().forEach(function(t){t.stop();});}
-  stream=null;
-  clearInterval(ticker);
-  detecting=false;
-  rampTo(0,0.15);
-  g('start-btn').textContent='Enable shield';
-  g('start-btn').classList.add('primary');
-  g('start-btn').classList.remove('danger');
-  setLiveState('off','Shield off');
-  g('status-msg').textContent='Click enable to start';
-}
-function scan(){
-  if(!stream)return;
-  if(dismissed&&Date.now()<dismissedUntil)return;
-  if(dismissed&&Date.now()>=dismissedUntil)dismissed=false;
-  if(!isPro){
-    if(scansToday()>=FREE_LIMIT){stopCamera();openUpgrade();return;}
-    addScan();refreshUsageUI();
-  }
- ctx.drawImage(video,0,0,640,480);
- var b64=canvas.toDataURL('image/jpeg',0.85).split(',')[1];
-  var sens=parseInt(g('sensitivity').value);
-  g('status-msg').textContent='Scanning...';
-  fetch('/api/detect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:b64,sensitivity:sens})}).then(function(res){
-    return res.json();
-  }).then(function(result){
-    if(result.threat){
-      hits++;clears=0;
-      if(hits>=HIT_THRESHOLD){
-        var target=Math.min(1,0.3+hits*0.14);
-        rampTo(target,0.07);
-        g('alert-reason').textContent=result.reason||'Someone nearby';
-        setLiveState('alert','Viewer detected!');
-        g('status-msg').textContent=result.reason||'Viewer nearby';
-      }else{g('status-msg').textContent='Possible viewer — verifying...';}
-    }else{
-      clears++;hits=0;
-      if(clears>=CLEAR_THRESHOLD&&blurLevel>0.05){rampTo(0,0.06);setLiveState('on','Shield active');}
-      g('status-msg').textContent=clears>=CLEAR_THRESHOLD?'All clear':'Checking...';
-    }
-  }).catch(function(e){g('status-msg').textContent='Error: '+e.message;});
-}
-function goToStripe(){window.location.href=STRIPE_LINK;}
-function openUpgrade(){
-  g('upgrade-eyebrow').textContent=scansToday()>=FREE_LIMIT?"You've hit the free limit":"Unlock unlimited protection";
-  g('upgrade-backdrop').classList.add('open');
-}
-function closeUpgrade(){g('upgrade-backdrop').classList.remove('open');}
-function handleReturn(){
-  var p=new URLSearchParams(window.location.search);
-  if(p.get('payment')==='success'){
-    var proToken='pro_'+Date.now();
-    var expiryMs=Date.now()+(31*24*60*60*1000);
-    localStorage.setItem('ss_pro_token',proToken);
-    localStorage.setItem('ss_pro_expiry',String(expiryMs));
-    checkPro();
-    showToast('Welcome to Pro! All limits removed');
-    window.history.replaceState({},'',window.location.pathname);
-  }
-}
-function showToast(msg){
-  var t=g('toast');
-  t.textContent=msg;
-  t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show');},2800);
-}
-checkPro();refreshUsageUI();handleReturn();
+
+// Close modal on background click
+document.getElementById('notifyModal').addEventListener('click', function(e) {
+  if (e.target === this) closeNotify();
+});
+
+// Close modal on Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeNotify();
+});
 </script>
+
 </body>
 </html>
