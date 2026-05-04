@@ -1,4 +1,11 @@
 {
+  "cleanUrls": true,
+  "functions": {
+    "api/detect.js": {
+      "maxDuration": 30
+    }
+  }
+}{
   "functions": {
     "api/detect.js": {
       "maxDuration": 30
