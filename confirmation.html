@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Welcome to SurfShield Pro</title>
+<meta name="description" content="Thanks for subscribing to SurfShield. Download the app and get started." />
+
+<!-- Don't index this page in search results -->
+<meta name="robots" content="noindex, nofollow" />
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inconsolata:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --navy: #0d1b2a;
+  --navy2: #1a2d42;
+  --surface: #1e2f42;
+  --surface2: #243548;
+  --teal: #00c2a8;
+  --teal-dark: #00a08a;
+  --teal-glow: rgba(0, 194, 168, 0.15);
+  --coral: #ff6b4a;
+  --white: #f8fafc;
+  --text: #e8f0f7;
+  --muted: #7a95b0;
+  --muted2: #a8b8c8;
+  --border: rgba(255, 255, 255, 0.08);
+  --border2: rgba(255, 255, 255, 0.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--navy);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 16px 32px;
+  background: rgba(13, 27, 42, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 700; font-size: 18px; letter-spacing: -0.02em;
+  color: var(--text);
+}
+.nav-logo:hover { text-decoration: none; }
+.nav-links { display: flex; gap: 24px; font-size: 14px; color: var(--muted2); }
+.nav-links a { color: var(--muted2); }
+.nav-links a:hover { color: var(--teal); text-decoration: none; }
+@media (max-width: 600px) {
+  nav { padding: 14px 18px; }
+  .nav-links { gap: 14px; font-size: 12px; }
+}
+
+/* ── PAGE ── */
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 100px 24px 80px;
+}
+
+/* ── SUCCESS HERO ── */
+.hero {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.success-check {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(0, 194, 168, 0.15);
+  border: 2px solid var(--teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.success-check svg {
+  width: 36px;
+  height: 36px;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.hero h1 {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  margin-bottom: 14px;
+}
+
+.hero h1 .accent { color: var(--teal); }
+
+.hero p.lead {
+  font-size: 17px;
+  color: var(--muted2);
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* ── TRIAL INFO BANNER ── */
+.trial-banner {
+  background: linear-gradient(135deg, rgba(0, 194, 168, 0.08), rgba(0, 194, 168, 0.03));
+  border: 1px solid rgba(0, 194, 168, 0.25);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.trial-banner-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(0, 194, 168, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--teal);
+  font-size: 18px;
+}
+
+.trial-banner-content h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.trial-banner-content p {
+  font-size: 14px;
+  color: var(--muted2);
+  line-height: 1.6;
+}
+
+.trial-banner-content strong { color: var(--teal); font-weight: 600; }
+
+/* ── DOWNLOAD CARD ── */
+.download-card {
+  background: var(--navy2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 36px;
+  text-align: center;
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.download-card::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  height: 200px;
+  background: radial-gradient(ellipse, var(--teal-glow), transparent 60%);
+  pointer-events: none;
+}
+
+.download-eyebrow {
+  font-family: 'Inconsolata', monospace;
+  font-size: 11px;
+  color: var(--teal);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.download-card h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+.download-card p {
+  font-size: 14px;
+  color: var(--muted2);
+  margin-bottom: 28px;
+  position: relative;
+}
+
+.btn {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 28px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--teal);
+  color: var(--navy);
+}
+
+.btn-primary:hover {
+  background: var(--teal-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px var(--teal-glow);
+  text-decoration: none;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1.5px solid var(--border2);
+}
+
+.btn-secondary:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+  text-decoration: none;
+}
+
+.platform-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.coming-soon-text {
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+  position: relative;
+}
+
+/* ── STEPS ── */
+.steps-section {
+  margin-bottom: 40px;
+}
+
+.section-eyebrow {
+  font-family: 'Inconsolata', monospace;
+  font-size: 11px;
+  color: var(--teal);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 28px;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+.steps-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.step-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0, 194, 168, 0.15);
+  border: 1.5px solid var(--teal);
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inconsolata', monospace;
+  font-weight: 600;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.step-content h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+
+.step-content p {
+  font-size: 14px;
+  color: var(--muted2);
+  line-height: 1.5;
+}
+
+/* ── INFO TILES ── */
+.info-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 40px;
+}
+
+.info-tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+
+.info-tile-label {
+  font-family: 'Inconsolata', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.info-tile-value {
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.info-tile-value a {
+  color: var(--teal);
+}
+
+@media (max-width: 600px) {
+  .info-tiles { grid-template-columns: 1fr; }
+}
+
+/* ── HELP ── */
+.help-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+}
+
+.help-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.help-card p {
+  font-size: 14px;
+  color: var(--muted2);
+  margin-bottom: 16px;
+}
+
+.help-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.help-buttons .btn {
+  font-size: 13px;
+  padding: 10px 18px;
+}
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  margin-top: 60px;
+  padding: 40px 32px;
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; }
+.footer-links { display: flex; gap: 20px; font-size: 13px; color: var(--muted); }
+.footer-links a { color: var(--muted); }
+.footer-links a:hover { color: var(--teal); text-decoration: none; }
+.footer-copy { font-family: 'Inconsolata', monospace; font-size: 11px; color: var(--muted); }
+@media (max-width: 600px) {
+  footer { padding: 32px 20px; }
+  .footer-inner { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <svg width="26" height="28" viewBox="0 0 32 34" fill="none">
+      <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#0f2236" stroke="#00c2a8" stroke-width="1.5"/>
+      <path d="M9 17C9 17 11.8 12.5 16 12.5C20.2 12.5 23 17 23 17C23 17 20.2 21.5 16 21.5C11.8 21.5 9 17 9 17Z" stroke="#00c2a8" stroke-width="1.3" fill="none"/>
+      <circle cx="16" cy="17" r="2.8" fill="#00c2a8" opacity="0.9"/>
+      <circle cx="16" cy="17" r="1.3" fill="#0d1b2a"/>
+    </svg>
+    SurfShield
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/feedback">Support</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- Hero with success checkmark -->
+  <div class="hero">
+    <div class="success-check">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M5 13l4 4L19 7" stroke="#00c2a8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h1>Welcome to <span class="accent">SurfShield Pro</span></h1>
+    <p class="lead">Your trial is active and your screen is one download away from being protected.</p>
+  </div>
+
+  <!-- Trial info -->
+  <div class="trial-banner">
+    <div class="trial-banner-icon">⚡</div>
+    <div class="trial-banner-content">
+      <h3>Your 7-day free trial is running</h3>
+      <p>You won't be charged anything for the next <strong>7 days</strong>. After that, your subscription continues at <strong>$1.99/month</strong> on the card you provided. Cancel anytime — no questions, no hoops.</p>
+    </div>
+  </div>
+
+  <!-- Download Card -->
+  <div class="download-card">
+    <div class="download-eyebrow">Step 1 — Download</div>
+    <h2>Get SurfShield for Windows</h2>
+    <p>Download the installer, run it, and follow the setup wizard. Takes about 60 seconds.</p>
+
+    <div class="platform-row">
+      <a href="#" class="btn btn-primary" id="downloadBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 5.5L10 4.5V11H3V5.5Z M11 4.4L21 3V11H11V4.4Z M3 12H10V18.5L3 17.5V12Z M11 12H21V20L11 18.6V12Z"/>
+        </svg>
+        Download for Windows
+      </a>
+    </div>
+
+    <p class="coming-soon-text">Chrome extension and Android app coming soon — we'll email you the moment they're ready.</p>
+  </div>
+
+  <!-- Steps -->
+  <div class="steps-section">
+    <div class="section-eyebrow">Quick start</div>
+    <h2 class="section-title">Get protected in 4 steps</h2>
+
+    <ol class="steps-list">
+      <li class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Install SurfShield</h4>
+          <p>Run the installer above. Windows may show a "SmartScreen" warning — click "More info" → "Run anyway." This is normal for indie apps without a $300/yr code-signing certificate.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Open and grant camera access</h4>
+          <p>SurfShield needs your camera to see when someone's looking. We never record video, store images, or recognize faces.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Click "Enable Shield"</h4>
+          <p>SurfShield runs quietly in your system tray. Right-click the tray icon anytime to manage settings or quit.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Get back to work</h4>
+          <p>That's it. SurfShield watches in the background. If someone looks over your shoulder, your screen blurs until they look away.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <!-- Account info tiles -->
+  <div class="info-tiles">
+    <div class="info-tile">
+      <div class="info-tile-label">Subscription</div>
+      <div class="info-tile-value">$1.99/month after trial</div>
+    </div>
+    <div class="info-tile">
+      <div class="info-tile-label">Cancel anytime</div>
+      <div class="info-tile-value"><a href="mailto:support@getsurfshield.com">Email support</a> or reply to your receipt</div>
+    </div>
+    <div class="info-tile">
+      <div class="info-tile-label">Receipt</div>
+      <div class="info-tile-value">Sent to your email shortly</div>
+    </div>
+    <div class="info-tile">
+      <div class="info-tile-label">Need help?</div>
+      <div class="info-tile-value"><a href="/feedback">Contact us</a> — we read everything</div>
+    </div>
+  </div>
+
+  <!-- Help card -->
+  <div class="help-card">
+    <h3>Something not working?</h3>
+    <p>We're a small team and we're here to help. Most messages get a real reply within a day.</p>
+    <div class="help-buttons">
+      <a href="mailto:support@getsurfshield.com" class="btn btn-secondary">Email support</a>
+      <a href="/feedback" class="btn btn-secondary">Send feedback</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <svg width="20" height="22" viewBox="0 0 32 34" fill="none">
+        <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#0f2236" stroke="#00c2a8" stroke-width="1.5"/>
+        <circle cx="16" cy="17" r="2.8" fill="#00c2a8"/>
+      </svg>
+      SurfShield
+    </div>
+    <div class="footer-links">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/feedback">Feedback</a>
+      <a href="/">Home</a>
+    </div>
+    <div class="footer-copy">© 2026 SurfShield · v1.0.0</div>
+  </div>
+</footer>
+
+<script>
+// Placeholder for the download button — this will be set when GitHub Releases is configured
+// For now, clicking it explains the situation to the user
+document.getElementById('downloadBtn').addEventListener('click', function(e) {
+  e.preventDefault();
+  alert('Download will be available shortly! We\'re finalizing the installer hosting. Check back soon, or email support@getsurfshield.com if you need it sooner.');
+});
+</script>
+
+</body>
+</html>
