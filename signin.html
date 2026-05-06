@@ -83,6 +83,11 @@ main {
   line-height: 1.5;
 }
 
+.card .subtitle strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
 label {
   display: block;
   font-size: 13px;
@@ -92,7 +97,8 @@ label {
   letter-spacing: 0.01em;
 }
 
-input[type="email"] {
+input[type="email"],
+input[type="text"] {
   width: 100%;
   padding: 13px 14px;
   font-size: 15px;
@@ -105,8 +111,23 @@ input[type="email"] {
   transition: border-color 0.2s;
 }
 
-input[type="email"]:focus {
+input[type="email"]:focus,
+input[type="text"]:focus {
   border-color: var(--teal);
+}
+
+#codeInput {
+  font-family: 'Inconsolata', monospace;
+  font-size: 26px;
+  font-weight: 500;
+  text-align: center;
+  letter-spacing: 12px;
+  padding: 16px 14px;
+}
+
+#codeInput::placeholder {
+  color: var(--muted);
+  letter-spacing: 12px;
 }
 
 .btn {
@@ -146,22 +167,16 @@ input[type="email"]:focus {
   display: none;
 }
 
-.success-msg {
-  background: rgba(0, 194, 168, 0.08);
-  border: 1px solid rgba(0, 194, 168, 0.3);
-  color: var(--teal);
-  padding: 16px 18px;
-  border-radius: 10px;
-  font-size: 14px;
-  margin-top: 16px;
-  line-height: 1.5;
-  display: none;
+.back-link {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
 }
 
-.success-msg strong {
-  color: var(--white);
-  display: block;
-  margin-bottom: 4px;
+.back-link a {
+  cursor: pointer;
+  font-weight: 600;
 }
 
 .alt-action {
@@ -196,9 +211,10 @@ input[type="email"]:focus {
 <main>
   <div class="card">
     <h1 id="cardTitle">Sign in</h1>
-    <p class="subtitle" id="cardSubtitle">Enter your email and we'll send you a magic link to sign in. No password needed.</p>
+    <p class="subtitle" id="cardSubtitle">Enter your email and we'll send you a 6-digit code. No password needed.</p>
 
-    <form id="authForm">
+    <!-- Step 1: Email form -->
+    <form id="emailForm">
       <label for="emailInput">Email address</label>
       <input
         type="email"
@@ -209,15 +225,28 @@ input[type="email"]:focus {
         autocomplete="email"
         autofocus
       />
-      <button type="submit" class="btn" id="submitBtn">Send magic link</button>
+      <button type="submit" class="btn" id="emailSubmitBtn">Send code</button>
+    </form>
+
+    <!-- Step 2: Code form (hidden until step 1 succeeds) -->
+    <form id="codeForm" style="display: none;">
+      <label for="codeInput">Enter the 6-digit code</label>
+      <input
+        type="text"
+        id="codeInput"
+        name="code"
+        inputmode="numeric"
+        pattern="[0-9]*"
+        maxlength="6"
+        autocomplete="one-time-code"
+        placeholder="------"
+        required
+      />
+      <button type="submit" class="btn" id="codeSubmitBtn">Verify and sign in</button>
+      <p class="back-link">Wrong email? <a id="backLink">Use a different email</a></p>
     </form>
 
     <div class="error-msg" id="errorMsg"></div>
-
-    <div class="success-msg" id="successMsg">
-      <strong>Check your inbox</strong>
-      We sent a sign-in link to <span id="sentEmail"></span>. Click the link in the email to sign in.
-    </div>
 
     <div class="alt-action">
       Need help? <a href="/feedback">Contact support</a>
@@ -237,7 +266,35 @@ input[type="email"]:focus {
   // Adjust copy if URL is /signup vs /signin
   if (window.location.pathname === '/signup' || window.location.pathname === '/signup.html') {
     document.getElementById('cardTitle').textContent = 'Create your account';
-    document.getElementById('cardSubtitle').textContent = "Enter your email and we'll send you a magic link. No password to remember.";
+    document.getElementById('cardSubtitle').textContent = "Enter your email and we'll send you a 6-digit code. No password to remember.";
+  }
+
+  // Element references
+  const cardTitle = document.getElementById('cardTitle');
+  const cardSubtitle = document.getElementById('cardSubtitle');
+  const emailForm = document.getElementById('emailForm');
+  const emailInput = document.getElementById('emailInput');
+  const emailSubmitBtn = document.getElementById('emailSubmitBtn');
+  const codeForm = document.getElementById('codeForm');
+  const codeInput = document.getElementById('codeInput');
+  const codeSubmitBtn = document.getElementById('codeSubmitBtn');
+  const backLink = document.getElementById('backLink');
+  const errorMsg = document.getElementById('errorMsg');
+
+  // Stash original copy so we can restore it if user goes back
+  const originalTitle = cardTitle.textContent;
+  const originalSubtitle = cardSubtitle.textContent;
+
+  // Track which email the user is verifying
+  let pendingEmail = '';
+
+  function showError(message) {
+    errorMsg.textContent = message;
+    errorMsg.style.display = 'block';
+  }
+  function clearError() {
+    errorMsg.style.display = 'none';
+    errorMsg.textContent = '';
   }
 
   // Check if user is already signed in
@@ -248,48 +305,84 @@ input[type="email"]:focus {
     }
   })();
 
-  // Handle form submit
-  const form = document.getElementById('authForm');
-  const emailInput = document.getElementById('emailInput');
-  const submitBtn = document.getElementById('submitBtn');
-  const errorMsg = document.getElementById('errorMsg');
-  const successMsg = document.getElementById('successMsg');
-  const sentEmail = document.getElementById('sentEmail');
-
-  form.addEventListener('submit', async (e) => {
+  // --- Step 1: Send the 6-digit code ---
+  emailForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    errorMsg.style.display = 'none';
-    successMsg.style.display = 'none';
+    clearError();
 
     const email = emailInput.value.trim().toLowerCase();
     if (!email) return;
 
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending...';
+    emailSubmitBtn.disabled = true;
+    emailSubmitBtn.textContent = 'Sending...';
 
     try {
       const { error } = await supabase.auth.signInWithOtp({
         email: email,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`
+          shouldCreateUser: true
         }
       });
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
-      // Success
-      sentEmail.textContent = email;
-      successMsg.style.display = 'block';
-      form.style.display = 'none';
+      // Success — switch UI to the code-entry step
+      pendingEmail = email;
+      emailForm.style.display = 'none';
+      codeForm.style.display = 'block';
+      cardTitle.textContent = 'Check your email';
+      cardSubtitle.innerHTML = `We sent a 6-digit code to <strong>${email}</strong>. Enter it below to sign in.`;
+      codeInput.focus();
     } catch (err) {
-      console.error('Auth error:', err);
-      errorMsg.textContent = err.message || 'Something went wrong. Please try again.';
-      errorMsg.style.display = 'block';
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Send magic link';
+      console.error('signInWithOtp error:', err);
+      showError(err.message || 'Something went wrong. Please try again.');
+      emailSubmitBtn.disabled = false;
+      emailSubmitBtn.textContent = 'Send code';
     }
+  });
+
+  // --- Step 2: Verify the code, get session ---
+  codeForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearError();
+
+    const token = codeInput.value.trim();
+    if (!token) return;
+
+    codeSubmitBtn.disabled = true;
+    codeSubmitBtn.textContent = 'Verifying...';
+
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email: pendingEmail,
+        token: token,
+        type: 'email'
+      });
+
+      if (error) throw error;
+
+      // Session is set in localStorage — head to the dashboard
+      window.location.href = '/account';
+    } catch (err) {
+      console.error('verifyOtp error:', err);
+      showError(err.message || 'That code is invalid or expired. Try again.');
+      codeSubmitBtn.disabled = false;
+      codeSubmitBtn.textContent = 'Verify and sign in';
+    }
+  });
+
+  // --- Back link: return to the email step ---
+  backLink.addEventListener('click', () => {
+    clearError();
+    pendingEmail = '';
+    codeInput.value = '';
+    codeForm.style.display = 'none';
+    emailForm.style.display = 'block';
+    cardTitle.textContent = originalTitle;
+    cardSubtitle.textContent = originalSubtitle;
+    emailSubmitBtn.disabled = false;
+    emailSubmitBtn.textContent = 'Send code';
+    emailInput.focus();
   });
 </script>
 
