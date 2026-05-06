@@ -118,16 +118,16 @@ input[type="text"]:focus {
 
 #codeInput {
   font-family: 'Inconsolata', monospace;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 500;
   text-align: center;
-  letter-spacing: 12px;
+  letter-spacing: 8px;
   padding: 16px 14px;
 }
 
 #codeInput::placeholder {
   color: var(--muted);
-  letter-spacing: 12px;
+  letter-spacing: 8px;
 }
 
 .btn {
@@ -211,7 +211,7 @@ input[type="text"]:focus {
 <main>
   <div class="card">
     <h1 id="cardTitle">Sign in</h1>
-    <p class="subtitle" id="cardSubtitle">Enter your email and we'll send you a 6-digit code. No password needed.</p>
+    <p class="subtitle" id="cardSubtitle">Enter your email and we'll send you a sign-in code. No password needed.</p>
 
     <!-- Step 1: Email form -->
     <form id="emailForm">
@@ -230,16 +230,16 @@ input[type="text"]:focus {
 
     <!-- Step 2: Code form (hidden until step 1 succeeds) -->
     <form id="codeForm" style="display: none;">
-      <label for="codeInput">Enter the 6-digit code</label>
+      <label for="codeInput">Enter the code from your email</label>
       <input
         type="text"
         id="codeInput"
         name="code"
         inputmode="numeric"
         pattern="[0-9]*"
-        maxlength="6"
+        maxlength="8"
         autocomplete="one-time-code"
-        placeholder="------"
+        placeholder="--------"
         required
       />
       <button type="submit" class="btn" id="codeSubmitBtn">Verify and sign in</button>
@@ -266,7 +266,7 @@ input[type="text"]:focus {
   // Adjust copy if URL is /signup vs /signin
   if (window.location.pathname === '/signup' || window.location.pathname === '/signup.html') {
     document.getElementById('cardTitle').textContent = 'Create your account';
-    document.getElementById('cardSubtitle').textContent = "Enter your email and we'll send you a 6-digit code. No password to remember.";
+    document.getElementById('cardSubtitle').textContent = "Enter your email and we'll send you a sign-in code. No password to remember.";
   }
 
   // Element references
@@ -331,7 +331,7 @@ input[type="text"]:focus {
       emailForm.style.display = 'none';
       codeForm.style.display = 'block';
       cardTitle.textContent = 'Check your email';
-      cardSubtitle.innerHTML = `We sent a 6-digit code to <strong>${email}</strong>. Enter it below to sign in.`;
+      cardSubtitle.innerHTML = `We sent a sign-in code to <strong>${email}</strong>. Enter it below to finish signing in.`;
       codeInput.focus();
     } catch (err) {
       console.error('signInWithOtp error:', err);
