@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sign in to SurfShield</title>
+<meta name="description" content="Sign in to your SurfShield account." />
+<meta name="robots" content="noindex, nofollow" />
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inconsolata:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --navy: #0d1b2a;
+  --navy2: #1a2d42;
+  --surface: #1e2f42;
+  --teal: #00c2a8;
+  --teal-dark: #00a08a;
+  --teal-glow: rgba(0, 194, 168, 0.15);
+  --coral: #ff6b4a;
+  --white: #f8fafc;
+  --text: #e8f0f7;
+  --muted: #7a95b0;
+  --muted2: #a8b8c8;
+  --border: rgba(255, 255, 255, 0.08);
+  --border2: rgba(255, 255, 255, 0.15);
+  --error-bg: rgba(255, 107, 74, 0.1);
+  --error-border: rgba(255, 107, 74, 0.4);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--navy);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+nav {
+  padding: 16px 32px;
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-weight: 700; font-size: 18px;
+  color: var(--text);
+}
+.nav-logo:hover { text-decoration: none; }
+
+main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.card {
+  background: var(--navy2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px;
+  max-width: 420px;
+  width: 100%;
+}
+
+.card h1 {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  color: var(--white);
+}
+
+.card .subtitle {
+  font-size: 14px;
+  color: var(--muted2);
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted2);
+  margin-bottom: 8px;
+  letter-spacing: 0.01em;
+}
+
+input[type="email"] {
+  width: 100%;
+  padding: 13px 14px;
+  font-size: 15px;
+  font-family: 'Syne', sans-serif;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input[type="email"]:focus {
+  border-color: var(--teal);
+}
+
+.btn {
+  width: 100%;
+  padding: 14px;
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  background: var(--teal);
+  color: var(--navy);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 16px;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--teal-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px var(--teal-glow);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-msg {
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  color: #ffb4a3;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-top: 14px;
+  display: none;
+}
+
+.success-msg {
+  background: rgba(0, 194, 168, 0.08);
+  border: 1px solid rgba(0, 194, 168, 0.3);
+  color: var(--teal);
+  padding: 16px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-top: 16px;
+  line-height: 1.5;
+  display: none;
+}
+
+.success-msg strong {
+  color: var(--white);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.alt-action {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.alt-action a {
+  color: var(--teal);
+  font-weight: 600;
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <svg width="26" height="28" viewBox="0 0 32 34" fill="none">
+      <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#0f2236" stroke="#00c2a8" stroke-width="1.5"/>
+      <path d="M9 17C9 17 11.8 12.5 16 12.5C20.2 12.5 23 17 23 17C23 17 20.2 21.5 16 21.5C11.8 21.5 9 17 9 17Z" stroke="#00c2a8" stroke-width="1.3" fill="none"/>
+      <circle cx="16" cy="17" r="2.8" fill="#00c2a8" opacity="0.9"/>
+      <circle cx="16" cy="17" r="1.3" fill="#0d1b2a"/>
+    </svg>
+    SurfShield
+  </a>
+</nav>
+
+<main>
+  <div class="card">
+    <h1 id="cardTitle">Sign in</h1>
+    <p class="subtitle" id="cardSubtitle">Enter your email and we'll send you a magic link to sign in. No password needed.</p>
+
+    <form id="authForm">
+      <label for="emailInput">Email address</label>
+      <input
+        type="email"
+        id="emailInput"
+        name="email"
+        placeholder="you@example.com"
+        required
+        autocomplete="email"
+        autofocus
+      />
+      <button type="submit" class="btn" id="submitBtn">Send magic link</button>
+    </form>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <div class="success-msg" id="successMsg">
+      <strong>Check your inbox</strong>
+      We sent a sign-in link to <span id="sentEmail"></span>. Click the link in the email to sign in.
+    </div>
+
+    <div class="alt-action">
+      Need help? <a href="/feedback">Contact support</a>
+    </div>
+  </div>
+</main>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
+
+  // Supabase config (publishable key is safe to expose in browser code)
+  const SUPABASE_URL = 'https://ngtqkyqckpbhwvejvtaa.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_LaMUtr4HVrGyBP3Zqkg9HA_aMNKpuHO';
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+  // Adjust copy if URL is /signup vs /signin
+  if (window.location.pathname === '/signup' || window.location.pathname === '/signup.html') {
+    document.getElementById('cardTitle').textContent = 'Create your account';
+    document.getElementById('cardSubtitle').textContent = "Enter your email and we'll send you a magic link. No password to remember.";
+  }
+
+  // Check if user is already signed in
+  (async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      window.location.href = '/account';
+    }
+  })();
+
+  // Handle form submit
+  const form = document.getElementById('authForm');
+  const emailInput = document.getElementById('emailInput');
+  const submitBtn = document.getElementById('submitBtn');
+  const errorMsg = document.getElementById('errorMsg');
+  const successMsg = document.getElementById('successMsg');
+  const sentEmail = document.getElementById('sentEmail');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorMsg.style.display = 'none';
+    successMsg.style.display = 'none';
+
+    const email = emailInput.value.trim().toLowerCase();
+    if (!email) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      // Success
+      sentEmail.textContent = email;
+      successMsg.style.display = 'block';
+      form.style.display = 'none';
+    } catch (err) {
+      console.error('Auth error:', err);
+      errorMsg.textContent = err.message || 'Something went wrong. Please try again.';
+      errorMsg.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send magic link';
+    }
+  });
+</script>
+
+</body>
+</html>
