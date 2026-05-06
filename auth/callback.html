@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Signing you in… · SurfShield</title>
+<meta name="robots" content="noindex, nofollow" />
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --navy: #0d1b2a;
+  --teal: #00c2a8;
+  --text: #e8f0f7;
+  --muted2: #a8b8c8;
+  --error-bg: rgba(255, 107, 74, 0.1);
+  --error-border: rgba(255, 107, 74, 0.4);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--navy);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.center {
+  text-align: center;
+  max-width: 400px;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(0, 194, 168, 0.15);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 24px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+p {
+  font-size: 14px;
+  color: var(--muted2);
+  line-height: 1.5;
+}
+
+.error-state {
+  display: none;
+}
+
+.error-state h1 {
+  color: #ffb4a3;
+}
+
+.error-state .actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-block;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  color: var(--text);
+  transition: all 0.2s;
+}
+
+.btn:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.btn-primary {
+  background: var(--teal);
+  color: var(--navy);
+  border-color: var(--teal);
+}
+
+.btn-primary:hover {
+  background: #00a08a;
+  color: var(--navy);
+}
+</style>
+</head>
+<body>
+
+<div class="center" id="loadingState">
+  <div class="spinner"></div>
+  <h1>Signing you in…</h1>
+  <p>Just a moment.</p>
+</div>
+
+<div class="center error-state" id="errorState">
+  <h1>Sign-in link didn't work</h1>
+  <p id="errorMessage">The link may have expired or already been used. Please request a new one.</p>
+  <div class="actions">
+    <a href="/signin" class="btn btn-primary">Get a new link</a>
+    <a href="/" class="btn">Go home</a>
+  </div>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
+
+  const SUPABASE_URL = 'https://ngtqkyqckpbhwvejvtaa.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_LaMUtr4HVrGyBP3Zqkg9HA_aMNKpuHO';
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+  function showError(message) {
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('errorState').style.display = 'block';
+    if (message) {
+      document.getElementById('errorMessage').textContent = message;
+    }
+  }
+
+  (async () => {
+    try {
+      // Supabase auto-handles the OAuth/OTP code exchange when the SDK loads,
+      // because the URL contains the code/token in query params or hash fragment.
+      // We just need to wait briefly, then check if a session exists.
+
+      // Give Supabase time to process the URL
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // Check session
+      const { data: { session }, error } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error('Session error:', error);
+        showError(error.message);
+        return;
+      }
+
+      if (session) {
+        // Sign-in successful, redirect to account page
+        window.location.replace('/account');
+        return;
+      }
+
+      // No session yet — try exchanging the code if we have one in the URL
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+
+      if (code) {
+        const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+        if (exchangeError) {
+          console.error('Exchange error:', exchangeError);
+          showError(exchangeError.message);
+          return;
+        }
+        window.location.replace('/account');
+        return;
+      }
+
+      // No session, no code — link probably invalid
+      showError();
+    } catch (err) {
+      console.error('Callback error:', err);
+      showError(err.message);
+    }
+  })();
+</script>
+
+</body>
+</html>
