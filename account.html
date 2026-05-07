@@ -157,6 +157,63 @@ h1 {
   font-size: 13px;
 }
 
+/* License key display */
+.license-key-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 16px 18px;
+  flex-wrap: wrap;
+}
+
+.license-key-display code {
+  font-family: 'Inconsolata', monospace;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--teal);
+  letter-spacing: 1px;
+  user-select: all;
+  word-break: break-all;
+  flex: 1;
+  min-width: 0;
+}
+
+.copy-btn {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--muted2);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.copy-btn:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.copy-btn.copied {
+  border-color: var(--teal);
+  color: var(--teal);
+  background: rgba(0, 194, 168, 0.08);
+}
+
+.license-hint {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 12px;
+  line-height: 1.5;
+}
+
 .loading {
   text-align: center;
   padding: 80px 20px;
@@ -226,9 +283,18 @@ h1 {
 
   <div class="section">
     <h2>Your license key</h2>
-    <div class="placeholder-card">
+    <!-- Shown when user has no active license -->
+    <div class="placeholder-card" id="licensePlaceholder">
       License keys are issued when you have an active subscription. Once issued, you'll see your key here and use it to activate the SurfShield desktop app.
     </div>
+    <!-- Shown when user has an active license -->
+    <div class="license-key-display" id="licenseDisplay" style="display: none;">
+      <code id="licenseKeyValue">—</code>
+      <button id="copyLicenseBtn" class="copy-btn">Copy</button>
+    </div>
+    <p class="license-hint" id="licenseHint" style="display: none;">
+      Paste this key into the SurfShield desktop app to activate your subscription. Keep it private — anyone with the key can use your subscription.
+    </p>
   </div>
 
   <div class="section">
@@ -261,23 +327,66 @@ h1 {
       return;
     }
 
-    // Show the account page
-    document.getElementById('loadingState').style.display = 'none';
-    document.getElementById('accountPage').style.display = 'block';
-
-    // Display user info
+    // --- Account info (always shown) ---
     document.getElementById('userEmail').textContent = session.user.email;
 
     const createdAt = new Date(session.user.created_at);
-    const formattedDate = createdAt.toLocaleDateString('en-US', {
+    document.getElementById('userSince').textContent = createdAt.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
-    document.getElementById('userSince').textContent = formattedDate;
+
+    // --- License lookup ---
+    // Pulls the user's active license (if any) from the licenses table.
+    // RLS policy must allow `auth.uid() = user_id` for SELECT.
+    try {
+      const { data: license, error: licenseError } = await supabase
+        .from('licenses')
+        .select('license_key, is_active')
+        .eq('user_id', session.user.id)
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (licenseError) {
+        console.error('License fetch error:', licenseError);
+      } else if (license && license.license_key) {
+        // Swap placeholder for the real license display
+        document.getElementById('licensePlaceholder').style.display = 'none';
+        document.getElementById('licenseDisplay').style.display = 'flex';
+        document.getElementById('licenseHint').style.display = 'block';
+        document.getElementById('licenseKeyValue').textContent = license.license_key;
+      }
+    } catch (err) {
+      console.error('License lookup failed:', err);
+      // Leave placeholder visible — non-fatal
+    }
+
+    // --- Reveal the page ---
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('accountPage').style.display = 'block';
   })();
 
-  // Sign-out handler
+  // --- Copy-to-clipboard ---
+  document.getElementById('copyLicenseBtn').addEventListener('click', async () => {
+    const key = document.getElementById('licenseKeyValue').textContent;
+    const btn = document.getElementById('copyLicenseBtn');
+    try {
+      await navigator.clipboard.writeText(key);
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    } catch (err) {
+      console.error('Copy failed:', err);
+      btn.textContent = 'Copy failed';
+      setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+    }
+  });
+
+  // --- Sign out ---
   document.getElementById('signoutBtn').addEventListener('click', async () => {
     await supabase.auth.signOut();
     window.location.replace('/');
