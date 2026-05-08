@@ -55,20 +55,17 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // Suspenders: linked subscription must be active too
-    if (!license.subscription || license.subscription.status !== 'active') {
+   // Suspenders: linked subscription must be in a paid-access state.
+    // 'active' = paying customer. 'trialing' = in their 7-day free trial.
+    // Both should have full access.
+    const subStatus = license.subscription?.status;
+    const validStatuses = ['active', 'trialing'];
+    if (!validStatuses.includes(subStatus)) {
       return res.status(402).json({
         error: 'subscription_inactive',
         message: 'No active subscription on this license. Renew to continue.'
       });
     }
-  } catch (err) {
-    console.error('License check failed:', err.message);
-    return res.status(503).json({
-      error: 'license_check_failed',
-      message: 'Could not verify your license. Try again in a moment.'
-    });
-  }
 
   // ================================================================
   //  Gate passed — original Claude detection logic, unchanged
