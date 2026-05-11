@@ -51,12 +51,7 @@ nav {
 }
 .nav-logo:hover { text-decoration: none; }
 
-.nav-actions {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  font-size: 14px;
-}
+.nav-actions { display: flex; gap: 16px; align-items: center; font-size: 14px; }
 
 .signout-btn {
   background: transparent;
@@ -69,11 +64,7 @@ nav {
   cursor: pointer;
   transition: all 0.2s;
 }
-
-.signout-btn:hover {
-  border-color: var(--coral);
-  color: var(--coral);
-}
+.signout-btn:hover { border-color: var(--coral); color: var(--coral); }
 
 main {
   max-width: 720px;
@@ -98,11 +89,7 @@ h1 {
   margin-bottom: 8px;
 }
 
-.subtitle {
-  font-size: 16px;
-  color: var(--muted2);
-  margin-bottom: 40px;
-}
+.subtitle { font-size: 16px; color: var(--muted2); margin-bottom: 40px; }
 
 .section {
   background: var(--navy2);
@@ -127,11 +114,7 @@ h1 {
   padding: 12px 0;
   border-top: 1px solid var(--border);
 }
-
-.info-row:first-of-type {
-  border-top: none;
-  padding-top: 0;
-}
+.info-row:first-of-type { border-top: none; padding-top: 0; }
 
 .info-label {
   font-family: 'Inconsolata', monospace;
@@ -141,11 +124,7 @@ h1 {
   text-transform: uppercase;
 }
 
-.info-value {
-  font-size: 14px;
-  color: var(--text);
-  font-weight: 500;
-}
+.info-value { font-size: 14px; color: var(--text); font-weight: 500; }
 
 .placeholder-card {
   background: var(--surface);
@@ -156,6 +135,40 @@ h1 {
   color: var(--muted);
   font-size: 13px;
 }
+
+.error-card {
+  background: rgba(255, 107, 74, 0.08);
+  border: 1px solid rgba(255, 107, 74, 0.3);
+  border-radius: 10px;
+  padding: 14px 16px;
+  color: var(--coral);
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--teal);
+  color: var(--navy);
+  border: none;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.btn-primary:hover {
+  background: var(--teal-dark);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+.btn-primary:disabled { opacity: 0.6; cursor: wait; transform: none; }
 
 /* License key display */
 .license-key-display {
@@ -195,30 +208,16 @@ h1 {
   transition: all 0.2s;
   flex-shrink: 0;
 }
-
-.copy-btn:hover {
-  border-color: var(--teal);
-  color: var(--teal);
-}
-
+.copy-btn:hover { border-color: var(--teal); color: var(--teal); }
 .copy-btn.copied {
   border-color: var(--teal);
   color: var(--teal);
   background: rgba(0, 194, 168, 0.08);
 }
 
-.license-hint {
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 12px;
-  line-height: 1.5;
-}
+.license-hint { font-size: 13px; color: var(--muted); margin-top: 12px; line-height: 1.5; }
 
-.loading {
-  text-align: center;
-  padding: 80px 20px;
-  color: var(--muted);
-}
+.loading { text-align: center; padding: 80px 20px; color: var(--muted); }
 
 .spinner {
   width: 36px;
@@ -230,9 +229,13 @@ h1 {
   margin: 0 auto 16px;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Subscription status colors */
+.status-active   { color: var(--teal); }
+.status-trialing { color: var(--teal); }
+.status-warning  { color: var(--coral); }
+.status-muted    { color: var(--muted); }
 </style>
 </head>
 <body>
@@ -276,24 +279,52 @@ h1 {
 
   <div class="section">
     <h2>Subscription</h2>
-    <div class="placeholder-card">
-      No active subscription yet. Once you subscribe, your subscription details will appear here.
+
+    <div class="placeholder-card" id="subLoading">Loading subscription details…</div>
+
+    <div id="subNone" style="display: none;">
+      <div class="placeholder-card" style="margin-bottom: 16px;">
+        No active subscription yet. Start your 7-day free trial below.
+      </div>
+      <a href="https://buy.stripe.com/test_7sY00ifuK57wcQt4X20Fi02" class="btn-primary">
+        Subscribe — $1.99/mo →
+      </a>
+    </div>
+
+    <div id="subActive" style="display: none;">
+      <div class="info-row">
+        <span class="info-label">Status</span>
+        <span class="info-value" id="subStatus">—</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Plan</span>
+        <span class="info-value">SurfShield Pro · $1.99 / month</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label" id="subPeriodLabel">Next bill</span>
+        <span class="info-value" id="subPeriod">—</span>
+      </div>
+      <div style="margin-top: 20px;">
+        <button id="manageSubBtn" class="btn-primary">Manage subscription</button>
+      </div>
+      <p class="license-hint">
+        Cancel, update your payment method, or view invoices through the Stripe portal.
+      </p>
+      <div class="error-card" id="subError" style="display: none;"></div>
     </div>
   </div>
 
   <div class="section">
     <h2>Your license key</h2>
-    <!-- Shown when user has no active license -->
     <div class="placeholder-card" id="licensePlaceholder">
-      License keys are issued when you have an active subscription. Once issued, you'll see your key here and use it to activate the SurfShield desktop app.
+      License keys are issued when you have an active subscription. Once issued, you'll see your key here and use it to activate the SurfShield desktop app or Chrome extension.
     </div>
-    <!-- Shown when user has an active license -->
     <div class="license-key-display" id="licenseDisplay" style="display: none;">
       <code id="licenseKeyValue">—</code>
       <button id="copyLicenseBtn" class="copy-btn">Copy</button>
     </div>
     <p class="license-hint" id="licenseHint" style="display: none;">
-      Paste this key into the SurfShield desktop app to activate your subscription. Keep it private — anyone with the key can use your subscription.
+      Paste this key into the SurfShield desktop app or Chrome extension to activate your subscription. Keep it private — anyone with the key can use your subscription.
     </p>
   </div>
 
@@ -322,24 +353,76 @@ h1 {
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session) {
-      // Not signed in, redirect to sign-in
       window.location.replace('/signin');
       return;
     }
 
-    // --- Account info (always shown) ---
+    // --- Account info ---
     document.getElementById('userEmail').textContent = session.user.email;
-
     const createdAt = new Date(session.user.created_at);
     document.getElementById('userSince').textContent = createdAt.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+      year: 'numeric', month: 'long', day: 'numeric'
     });
 
+    // --- Subscription lookup ---
+    try {
+      const { data: sub, error: subError } = await supabase
+        .from('subscriptions')
+        .select('status, current_period_end, stripe_customer_id')
+        .eq('user_id', session.user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      document.getElementById('subLoading').style.display = 'none';
+
+      if (subError || !sub) {
+        if (subError) console.error('Sub fetch error:', subError);
+        document.getElementById('subNone').style.display = 'block';
+      } else {
+        document.getElementById('subActive').style.display = 'block';
+
+        // Status label + color
+        const statusMap = {
+          active:     { label: 'Active',         cls: 'status-active' },
+          trialing:   { label: 'Trial',          cls: 'status-trialing' },
+          past_due:   { label: 'Payment failed', cls: 'status-warning' },
+          unpaid:     { label: 'Unpaid',         cls: 'status-warning' },
+          incomplete: { label: 'Incomplete',     cls: 'status-warning' },
+          canceled:   { label: 'Cancelled',      cls: 'status-muted' },
+          cancelled:  { label: 'Cancelled',      cls: 'status-muted' }
+        };
+        const info = statusMap[sub.status] || { label: sub.status, cls: 'status-muted' };
+        const statusEl = document.getElementById('subStatus');
+        statusEl.textContent = info.label;
+        statusEl.className = 'info-value ' + info.cls;
+
+        // Period end with context-appropriate label
+        if (sub.current_period_end) {
+          const periodEnd = new Date(sub.current_period_end);
+          const formatted = periodEnd.toLocaleDateString('en-US', {
+            year: 'numeric', month: 'long', day: 'numeric'
+          });
+          const labelEl = document.getElementById('subPeriodLabel');
+          if (sub.status === 'trialing') {
+            labelEl.textContent = 'Trial ends';
+          } else if (sub.status === 'canceled' || sub.status === 'cancelled') {
+            labelEl.textContent = 'Access until';
+          } else {
+            labelEl.textContent = 'Next bill';
+          }
+          document.getElementById('subPeriod').textContent = formatted;
+        } else {
+          document.getElementById('subPeriod').textContent = '—';
+        }
+      }
+    } catch (err) {
+      console.error('Subscription lookup failed:', err);
+      document.getElementById('subLoading').style.display = 'none';
+      document.getElementById('subNone').style.display = 'block';
+    }
+
     // --- License lookup ---
-    // Pulls the user's active license (if any) from the licenses table.
-    // RLS policy must allow `auth.uid() = user_id` for SELECT.
     try {
       const { data: license, error: licenseError } = await supabase
         .from('licenses')
@@ -351,7 +434,6 @@ h1 {
       if (licenseError) {
         console.error('License fetch error:', licenseError);
       } else if (license && license.license_key) {
-        // Swap placeholder for the real license display
         document.getElementById('licensePlaceholder').style.display = 'none';
         document.getElementById('licenseDisplay').style.display = 'flex';
         document.getElementById('licenseHint').style.display = 'block';
@@ -359,13 +441,46 @@ h1 {
       }
     } catch (err) {
       console.error('License lookup failed:', err);
-      // Leave placeholder visible — non-fatal
     }
 
     // --- Reveal the page ---
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('accountPage').style.display = 'block';
   })();
+
+  // --- Manage subscription button ---
+  document.getElementById('manageSubBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('manageSubBtn');
+    const errorEl = document.getElementById('subError');
+
+    btn.disabled = true;
+    btn.textContent = 'Opening Stripe…';
+    errorEl.style.display = 'none';
+
+    try {
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      if (!currentSession) throw new Error('You appear to be signed out. Please refresh and sign in again.');
+
+      const res = await fetch('/api/create-portal-session', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${currentSession.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Could not open the subscription portal.');
+
+      window.location.href = data.url;
+    } catch (err) {
+      console.error('Portal error:', err);
+      errorEl.textContent = err.message;
+      errorEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Manage subscription';
+    }
+  });
 
   // --- Copy-to-clipboard ---
   document.getElementById('copyLicenseBtn').addEventListener('click', async () => {
