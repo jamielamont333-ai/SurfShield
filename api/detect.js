@@ -60,7 +60,7 @@ module.exports = async function handler(req, res) {
     // 'trialing' = in their 7-day free trial
     // Both should have full access.
     const subStatus = license.subscription && license.subscription.status;
-    const validStatuses = ['active', 'trialing', 'past due'];
+    const validStatuses = ['active', 'trialing', 'past_due'];
     if (!validStatuses.includes(subStatus)) {
       return res.status(402).json({
         error: 'subscription_inactive',
