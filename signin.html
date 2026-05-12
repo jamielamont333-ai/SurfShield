@@ -131,7 +131,8 @@ label {
   text-transform: uppercase;
 }
 
-input[type="email"] {
+input[type="email"],
+input#code {
   background: var(--surface);
   border: 1px solid var(--border2);
   border-radius: 8px;
@@ -143,13 +144,24 @@ input[type="email"] {
   transition: border-color 0.15s;
 }
 
-input[type="email"]:focus {
+input[type="email"]:focus,
+input#code:focus {
   outline: none;
   border-color: var(--teal);
 }
 
-input[type="email"]::placeholder {
+input[type="email"]::placeholder,
+input#code::placeholder {
   color: var(--muted);
+}
+
+input#code {
+  text-align: center;
+  letter-spacing: 0.35em;
+  font-family: 'Inconsolata', monospace;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 14px 12px;
 }
 
 button {
@@ -179,8 +191,10 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .helper a { color: var(--muted2); }
 
-.success-state { display: none; text-align: center; }
+.success-state { display: none; }
 .success-state.show { display: block; }
+
+.success-top { text-align: center; margin-bottom: 8px; }
 
 .success-icon {
   width: 56px;
@@ -211,6 +225,26 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .success-state strong {
   color: var(--white);
   word-break: break-all;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 28px 0 20px;
+  color: var(--muted);
+  font-family: 'Inconsolata', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+}
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.divider span {
+  padding: 0 14px;
 }
 
 .error-msg {
@@ -264,6 +298,7 @@ footer {
 @media (max-width: 600px) {
   .card { padding: 36px 24px; }
   h1 { font-size: 26px; }
+  input#code { font-size: 17px; letter-spacing: 0.25em; }
   footer { padding: 32px 20px; }
   .footer-inner { flex-direction: column; text-align: center; }
 }
@@ -294,7 +329,7 @@ footer {
     <div id="form-state">
       <div class="eyebrow">Account</div>
       <h1>Sign in</h1>
-      <p class="subtitle">Enter your email and we'll send you a magic link. No password needed.</p>
+      <p class="subtitle">Enter your email and we'll send you a magic link and an 8-digit code. No password needed.</p>
 
       <form id="signin-form">
         <label for="email">Email address</label>
@@ -314,13 +349,34 @@ footer {
     </div>
 
     <div id="success-state" class="success-state">
-      <div class="success-icon">✓</div>
-      <h2>Check your inbox</h2>
-      <p>We sent a magic link to</p>
-      <p><strong id="sent-email">—</strong></p>
-      <p style="margin-top:20px; font-size:13px;">Click the link in the email to sign in. It expires in 1 hour.</p>
+      <div class="success-top">
+        <div class="success-icon">✓</div>
+        <h2>Check your inbox</h2>
+        <p>We sent a sign-in email to</p>
+        <p><strong id="sent-email">—</strong></p>
+        <p style="margin-top:16px; font-size:13px;">Click the link in the email to sign in, <strong style="color:var(--muted2);font-weight:400;">or</strong> paste the 8-digit code below.</p>
+      </div>
+
+      <div class="divider"><span>ENTER CODE</span></div>
+
+      <form id="verify-form">
+        <label for="code">8-digit code from email</label>
+        <input
+          type="text"
+          id="code"
+          name="code"
+          placeholder="00000000"
+          inputmode="numeric"
+          pattern="[0-9]{8}"
+          maxlength="8"
+          autocomplete="one-time-code"
+        />
+        <div id="code-error" class="error-msg"></div>
+        <button type="submit" id="verify-btn">Verify code</button>
+      </form>
+
       <p class="helper" style="margin-top:24px;">
-        Didn't get it? Check spam, or <a href="#" id="try-again">try again</a>.
+        Didn't get it? Check spam, or <a href="#" id="try-again">use a different email</a>.
       </p>
     </div>
   </div>
@@ -353,37 +409,48 @@ footer {
   //  key is SAFE to expose publicly; row-level security on
   //  Supabase handles the real protection.
   // =============================================================
-  const SUPABASE_URL = 'https://ngtqkyqckpbhwvejvtaa.supabase.co';
-  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_LaMUtr4HVrGyBP3Zqkg9HA_aMNKpuHO';
+  const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+  const SUPABASE_PUBLISHABLE_KEY = 'YOUR_SUPABASE_PUBLISHABLE_KEY_HERE';
 
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-  const form = document.getElementById('signin-form');
+  // DOM references
+  const signinForm = document.getElementById('signin-form');
+  const verifyForm = document.getElementById('verify-form');
   const emailInput = document.getElementById('email');
+  const codeInput = document.getElementById('code');
   const submitBtn = document.getElementById('submit-btn');
+  const verifyBtn = document.getElementById('verify-btn');
   const errorMsg = document.getElementById('error-msg');
+  const codeError = document.getElementById('code-error');
   const formState = document.getElementById('form-state');
   const successState = document.getElementById('success-state');
   const sentEmail = document.getElementById('sent-email');
   const tryAgain = document.getElementById('try-again');
 
-  function showError(message) {
-    errorMsg.textContent = message;
-    errorMsg.classList.add('show');
+  // Remembers which email the code was sent to
+  let pendingEmail = '';
+
+  function showError(el, message) {
+    el.textContent = message;
+    el.classList.add('show');
   }
 
-  function clearError() {
-    errorMsg.classList.remove('show');
-    errorMsg.textContent = '';
+  function clearError(el) {
+    el.classList.remove('show');
+    el.textContent = '';
   }
 
-  form.addEventListener('submit', async (e) => {
+  // -------------------------------------------------------------
+  //  Step 1: Send the magic link + 8-digit OTP email
+  // -------------------------------------------------------------
+  signinForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    clearError();
+    clearError(errorMsg);
 
     const email = emailInput.value.trim().toLowerCase();
     if (!email || !email.includes('@')) {
-      showError('Please enter a valid email address.');
+      showError(errorMsg, 'Please enter a valid email address.');
       return;
     }
 
@@ -400,24 +467,76 @@ footer {
 
       if (error) throw error;
 
+      pendingEmail = email;
       sentEmail.textContent = email;
       formState.style.display = 'none';
       successState.classList.add('show');
+      codeInput.focus();
     } catch (err) {
       console.error('Sign-in error:', err);
-      showError(err.message || 'Could not send the link. Please try again.');
+      showError(errorMsg, err.message || 'Could not send the link. Please try again.');
       submitBtn.disabled = false;
       submitBtn.textContent = 'Send magic link';
     }
   });
 
+  // -------------------------------------------------------------
+  //  Step 2 (optional path): User pastes the 8-digit code
+  // -------------------------------------------------------------
+  verifyForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearError(codeError);
+
+    const code = codeInput.value.trim();
+    if (!/^\d{8}$/.test(code)) {
+      showError(codeError, 'Enter the 8-digit code from your email.');
+      return;
+    }
+
+    if (!pendingEmail) {
+      showError(codeError, 'Please request a new code first.');
+      return;
+    }
+
+    verifyBtn.disabled = true;
+    verifyBtn.textContent = 'Verifying...';
+
+    try {
+      const { error } = await supabaseClient.auth.verifyOtp({
+        email: pendingEmail,
+        token: code,
+        type: 'email'
+      });
+
+      if (error) throw error;
+
+      // Auth session is now set in browser storage by Supabase.
+      // Send the user to /account, which picks up the session.
+      window.location.href = '/account';
+    } catch (err) {
+      console.error('Verify error:', err);
+      showError(codeError, err.message || 'Invalid or expired code. Try again.');
+      verifyBtn.disabled = false;
+      verifyBtn.textContent = 'Verify code';
+    }
+  });
+
+  // -------------------------------------------------------------
+  //  "Use a different email" — reset back to step 1
+  // -------------------------------------------------------------
   tryAgain.addEventListener('click', (e) => {
     e.preventDefault();
     successState.classList.remove('show');
     formState.style.display = 'block';
     submitBtn.disabled = false;
     submitBtn.textContent = 'Send magic link';
+    verifyBtn.disabled = false;
+    verifyBtn.textContent = 'Verify code';
     emailInput.value = '';
+    codeInput.value = '';
+    pendingEmail = '';
+    clearError(errorMsg);
+    clearError(codeError);
     emailInput.focus();
   });
 </script>
