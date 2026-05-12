@@ -3,6 +3,432 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sign In — SurfShield</title>
+<meta name="description" content="Sign in to your SurfShield account to manage your subscription and license key." />
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inconsolata:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --navy: #0d1b2a;
+  --navy2: #1a2d42;
+  --surface: #1e2f42;
+  --teal: #00c2a8;
+  --coral: #ff6b4a;
+  --white: #f8fafc;
+  --text: #e8f0f7;
+  --muted: #7a95b0;
+  --muted2: #a8b8c8;
+  --border: rgba(255, 255, 255, 0.08);
+  --border2: rgba(255, 255, 255, 0.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--navy);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 16px 32px;
+  background: rgba(13, 27, 42, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  color: var(--white);
+}
+.nav-logo:hover { text-decoration: none; }
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  font-size: 14px;
+  color: var(--muted2);
+}
+.nav-links a { color: var(--muted2); }
+.nav-links a:hover { color: var(--teal); }
+
+@media (max-width: 600px) {
+  nav { padding: 14px 18px; }
+  .nav-links { gap: 14px; font-size: 12px; }
+}
+
+main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 24px 60px;
+}
+
+.card {
+  background: var(--navy2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 440px;
+}
+
+.eyebrow {
+  font-family: 'Inconsolata', monospace;
+  font-size: 12px;
+  color: var(--teal);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+h1 {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: var(--muted2);
+  margin-bottom: 32px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+label {
+  font-family: 'Inconsolata', monospace;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+input[type="email"] {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--white);
+  width: 100%;
+  transition: border-color 0.15s;
+}
+
+input[type="email"]:focus {
+  outline: none;
+  border-color: var(--teal);
+}
+
+input[type="email"]::placeholder {
+  color: var(--muted);
+}
+
+button {
+  background: var(--teal);
+  color: var(--navy);
+  border: none;
+  border-radius: 8px;
+  padding: 14px 20px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.05s;
+  margin-top: 8px;
+}
+
+button:hover:not(:disabled) { opacity: 0.92; }
+button:active:not(:disabled) { transform: scale(0.98); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.helper {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 16px;
+  text-align: center;
+}
+
+.helper a { color: var(--muted2); }
+
+.success-state { display: none; text-align: center; }
+.success-state.show { display: block; }
+
+.success-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(0, 194, 168, 0.15);
+  border: 1px solid rgba(0, 194, 168, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 24px;
+  color: var(--teal);
+}
+
+.success-state h2 {
+  font-size: 22px;
+  color: var(--white);
+  margin-bottom: 10px;
+}
+
+.success-state p {
+  color: var(--muted2);
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.success-state strong {
+  color: var(--white);
+  word-break: break-all;
+}
+
+.error-msg {
+  display: none;
+  background: rgba(255, 107, 74, 0.1);
+  border: 1px solid rgba(255, 107, 74, 0.3);
+  color: var(--coral);
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.error-msg.show { display: block; }
+
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 32px;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--white);
+}
+.footer-brand:hover { text-decoration: none; }
+
+.footer-links { display: flex; gap: 20px; font-size: 13px; }
+.footer-links a { color: var(--muted); }
+.footer-links a:hover { color: var(--teal); }
+
+.footer-copy {
+  font-family: 'Inconsolata', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+@media (max-width: 600px) {
+  .card { padding: 36px 24px; }
+  h1 { font-size: 26px; }
+  footer { padding: 32px 20px; }
+  .footer-inner { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <svg width="26" height="28" viewBox="0 0 32 34" fill="none">
+      <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#0f2236" stroke="#00c2a8" stroke-width="1.5"/>
+      <path d="M9 17C9 17 11.8 12.5 16 12.5C20.2 12.5 23 17 23 17C23 17 20.2 21.5 16 21.5C11.8 21.5 9 17 9 17Z" stroke="#00c2a8" stroke-width="1.3" fill="none"/>
+      <circle cx="16" cy="17" r="2.8" fill="#00c2a8" opacity="0.9"/>
+      <circle cx="16" cy="17" r="1.3" fill="#0d1b2a"/>
+    </svg>
+    SurfShield
+  </a>
+  <div class="nav-links">
+    <a href="/#how">How it works</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/signin">Sign in</a>
+    <a href="/feedback">Feedback</a>
+  </div>
+</nav>
+
+<main>
+  <div class="card">
+    <div id="form-state">
+      <div class="eyebrow">Account</div>
+      <h1>Sign in</h1>
+      <p class="subtitle">Enter your email and we'll send you a magic link. No password needed.</p>
+
+      <form id="signin-form">
+        <label for="email">Email address</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+        />
+        <div id="error-msg" class="error-msg"></div>
+        <button type="submit" id="submit-btn">Send magic link</button>
+      </form>
+
+      <p class="helper">Don't have an account yet? <a href="/#pricing">Get Pro</a></p>
+    </div>
+
+    <div id="success-state" class="success-state">
+      <div class="success-icon">✓</div>
+      <h2>Check your inbox</h2>
+      <p>We sent a magic link to</p>
+      <p><strong id="sent-email">—</strong></p>
+      <p style="margin-top:20px; font-size:13px;">Click the link in the email to sign in. It expires in 1 hour.</p>
+      <p class="helper" style="margin-top:24px;">
+        Didn't get it? Check spam, or <a href="#" id="try-again">try again</a>.
+      </p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <a href="/" class="footer-brand">
+      <svg width="20" height="22" viewBox="0 0 32 34" fill="none">
+        <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#0f2236" stroke="#00c2a8" stroke-width="1.5"/>
+        <circle cx="16" cy="17" r="2.8" fill="#00c2a8"/>
+      </svg>
+      SurfShield
+    </a>
+    <div class="footer-links">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/feedback">Feedback</a>
+      <a href="/">Home</a>
+    </div>
+    <div class="footer-copy">© 2026 SurfShield · v1.0.0</div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // =============================================================
+  //  PASTE YOUR SUPABASE KEYS HERE
+  //  Copy them from your existing /account page — they should be
+  //  the same values. The anon key is SAFE to expose publicly;
+  //  it's designed for client-side use and row-level security
+  //  on Supabase handles the real protection.
+  // =============================================================
+  const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+  const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const form = document.getElementById('signin-form');
+  const emailInput = document.getElementById('email');
+  const submitBtn = document.getElementById('submit-btn');
+  const errorMsg = document.getElementById('error-msg');
+  const formState = document.getElementById('form-state');
+  const successState = document.getElementById('success-state');
+  const sentEmail = document.getElementById('sent-email');
+  const tryAgain = document.getElementById('try-again');
+
+  function showError(message) {
+    errorMsg.textContent = message;
+    errorMsg.classList.add('show');
+  }
+
+  function clearError() {
+    errorMsg.classList.remove('show');
+    errorMsg.textContent = '';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearError();
+
+    const email = emailInput.value.trim().toLowerCase();
+    if (!email || !email.includes('@')) {
+      showError('Please enter a valid email address.');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email,
+        options: {
+          emailRedirectTo: 'https://www.getsurfshield.com/account'
+        }
+      });
+
+      if (error) throw error;
+
+      sentEmail.textContent = email;
+      formState.style.display = 'none';
+      successState.classList.add('show');
+    } catch (err) {
+      console.error('Sign-in error:', err);
+      showError(err.message || 'Could not send the link. Please try again.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send magic link';
+    }
+  });
+
+  tryAgain.addEventListener('click', (e) => {
+    e.preventDefault();
+    successState.classList.remove('show');
+    formState.style.display = 'block';
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send magic link';
+    emailInput.value = '';
+    emailInput.focus();
+  });
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Sign in to SurfShield</title>
 <meta name="description" content="Sign in to your SurfShield account." />
 <meta name="robots" content="noindex, nofollow" />
