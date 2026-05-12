@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Sign In — SurfShield</title>
-<meta name="description" content="Sign in to your SurfShield account to manage your subscription and license key." />
+<meta name="description" content="Sign in to SurfShield to enable shoulder-surfing protection." />
 
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inconsolata:wght@400;500&display=swap" rel="stylesheet" />
 
@@ -63,12 +63,7 @@ nav {
 }
 .nav-logo:hover { text-decoration: none; }
 
-.nav-links {
-  display: flex;
-  gap: 24px;
-  font-size: 14px;
-  color: var(--muted2);
-}
+.nav-links { display: flex; gap: 24px; font-size: 14px; color: var(--muted2); }
 .nav-links a { color: var(--muted2); }
 .nav-links a:hover { color: var(--teal); }
 
@@ -151,9 +146,7 @@ input#code:focus {
 }
 
 input[type="email"]::placeholder,
-input#code::placeholder {
-  color: var(--muted);
-}
+input#code::placeholder { color: var(--muted); }
 
 input#code {
   text-align: center;
@@ -191,9 +184,11 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .helper a { color: var(--muted2); }
 
-.success-state { display: none; }
-.success-state.show { display: block; }
+/* State containers */
+.state { display: none; }
+.state.show { display: block; }
 
+/* Success (code entry) state */
 .success-top { text-align: center; margin-bottom: 8px; }
 
 .success-icon {
@@ -210,22 +205,48 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   color: var(--teal);
 }
 
-.success-state h2 {
+#code-state h2 {
   font-size: 22px;
   color: var(--white);
   margin-bottom: 10px;
 }
 
-.success-state p {
+#code-state p {
   color: var(--muted2);
   font-size: 14px;
   margin-bottom: 6px;
 }
 
-.success-state strong {
-  color: var(--white);
-  word-break: break-all;
+#code-state strong { color: var(--white); word-break: break-all; }
+
+/* Signed-in state */
+#done-state {
+  text-align: center;
 }
+
+#done-state h2 {
+  font-size: 24px;
+  color: var(--white);
+  margin: 8px 0 12px;
+}
+
+#done-state p {
+  color: var(--muted2);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--border2);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
 
 .divider {
   display: flex;
@@ -243,9 +264,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   height: 1px;
   background: var(--border);
 }
-.divider span {
-  padding: 0 14px;
-}
+.divider span { padding: 0 14px; }
 
 .error-msg {
   display: none;
@@ -326,10 +345,14 @@ footer {
 
 <main>
   <div class="card">
-    <div id="form-state">
+
+    <!-- =====================================================
+         STEP 1: Email entry
+         ===================================================== -->
+    <div id="email-state" class="state show">
       <div class="eyebrow">Account</div>
       <h1>Sign in</h1>
-      <p class="subtitle">Enter your email and we'll send you a magic link and an 8-digit code. No password needed.</p>
+      <p class="subtitle">Enter your email and we'll send you an 8-digit code. No password needed.</p>
 
       <form id="signin-form">
         <label for="email">Email address</label>
@@ -341,20 +364,23 @@ footer {
           autocomplete="email"
           required
         />
-        <div id="error-msg" class="error-msg"></div>
-        <button type="submit" id="submit-btn">Send magic link</button>
+        <div id="email-error" class="error-msg"></div>
+        <button type="submit" id="submit-btn">Send code</button>
       </form>
 
       <p class="helper">Don't have an account yet? <a href="/#pricing">Get Pro</a></p>
     </div>
 
-    <div id="success-state" class="success-state">
+    <!-- =====================================================
+         STEP 2: Code entry
+         ===================================================== -->
+    <div id="code-state" class="state">
       <div class="success-top">
         <div class="success-icon">✓</div>
         <h2>Check your inbox</h2>
-        <p>We sent a sign-in email to</p>
+        <p>We sent an 8-digit code to</p>
         <p><strong id="sent-email">—</strong></p>
-        <p style="margin-top:16px; font-size:13px;">Click the link in the email to sign in, <strong style="color:var(--muted2);font-weight:400;">or</strong> paste the 8-digit code below.</p>
+        <p style="margin-top:16px; font-size:13px;">Enter the code below to sign in.</p>
       </div>
 
       <div class="divider"><span>ENTER CODE</span></div>
@@ -372,13 +398,23 @@ footer {
           autocomplete="one-time-code"
         />
         <div id="code-error" class="error-msg"></div>
-        <button type="submit" id="verify-btn">Verify code</button>
+        <button type="submit" id="verify-btn">Verify &amp; open SurfShield</button>
       </form>
 
       <p class="helper" style="margin-top:24px;">
         Didn't get it? Check spam, or <a href="#" id="try-again">use a different email</a>.
       </p>
     </div>
+
+    <!-- =====================================================
+         STEP 3: Signed in, redirecting
+         ===================================================== -->
+    <div id="done-state" class="state">
+      <div class="spinner"></div>
+      <h2>Signed in</h2>
+      <p>Opening SurfShield...</p>
+    </div>
+
   </div>
 </main>
 
@@ -405,34 +441,43 @@ footer {
 <script>
   // =============================================================
   //  PASTE YOUR SUPABASE KEYS BELOW
-  //  Copy them from your existing /account page. The publishable
-  //  key is SAFE to expose publicly; row-level security on
-  //  Supabase handles the real protection.
+  //  Copy them from your existing /account page.
   // =============================================================
   const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
   const SUPABASE_PUBLISHABLE_KEY = 'YOUR_SUPABASE_PUBLISHABLE_KEY_HERE';
 
+  // Where to send the user after they successfully sign in.
+  // This is where the shield actually runs.
+  const POST_SIGNIN_URL = '/';
+
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-  // DOM references
+  // -------- DOM refs --------
+  const emailState = document.getElementById('email-state');
+  const codeState  = document.getElementById('code-state');
+  const doneState  = document.getElementById('done-state');
+
   const signinForm = document.getElementById('signin-form');
   const verifyForm = document.getElementById('verify-form');
-  const emailInput = document.getElementById('email');
-  const codeInput = document.getElementById('code');
-  const submitBtn = document.getElementById('submit-btn');
-  const verifyBtn = document.getElementById('verify-btn');
-  const errorMsg = document.getElementById('error-msg');
-  const codeError = document.getElementById('code-error');
-  const formState = document.getElementById('form-state');
-  const successState = document.getElementById('success-state');
-  const sentEmail = document.getElementById('sent-email');
-  const tryAgain = document.getElementById('try-again');
 
-  // Remembers which email the code was sent to
+  const emailInput = document.getElementById('email');
+  const codeInput  = document.getElementById('code');
+  const submitBtn  = document.getElementById('submit-btn');
+  const verifyBtn  = document.getElementById('verify-btn');
+  const emailError = document.getElementById('email-error');
+  const codeError  = document.getElementById('code-error');
+  const sentEmail  = document.getElementById('sent-email');
+  const tryAgain   = document.getElementById('try-again');
+
   let pendingEmail = '';
 
-  function showError(el, message) {
-    el.textContent = message;
+  function showState(stateEl) {
+    [emailState, codeState, doneState].forEach(s => s.classList.remove('show'));
+    stateEl.classList.add('show');
+  }
+
+  function showError(el, msg) {
+    el.textContent = msg;
     el.classList.add('show');
   }
 
@@ -442,15 +487,15 @@ footer {
   }
 
   // -------------------------------------------------------------
-  //  Step 1: Send the magic link + 8-digit OTP email
+  //  STEP 1 -> 2:  Email submit, sends the OTP
   // -------------------------------------------------------------
   signinForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    clearError(errorMsg);
+    clearError(emailError);
 
     const email = emailInput.value.trim().toLowerCase();
     if (!email || !email.includes('@')) {
-      showError(errorMsg, 'Please enter a valid email address.');
+      showError(emailError, 'Please enter a valid email address.');
       return;
     }
 
@@ -461,7 +506,7 @@ footer {
       const { error } = await supabaseClient.auth.signInWithOtp({
         email: email,
         options: {
-          emailRedirectTo: 'https://www.getsurfshield.com/account'
+          emailRedirectTo: 'https://www.getsurfshield.com' + POST_SIGNIN_URL
         }
       });
 
@@ -469,19 +514,18 @@ footer {
 
       pendingEmail = email;
       sentEmail.textContent = email;
-      formState.style.display = 'none';
-      successState.classList.add('show');
-      codeInput.focus();
+      showState(codeState);
+      setTimeout(() => codeInput.focus(), 50);
     } catch (err) {
-      console.error('Sign-in error:', err);
-      showError(errorMsg, err.message || 'Could not send the link. Please try again.');
+      console.error('Send-code error:', err);
+      showError(emailError, err.message || 'Could not send the code. Try again.');
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Send magic link';
+      submitBtn.textContent = 'Send code';
     }
   });
 
   // -------------------------------------------------------------
-  //  Step 2 (optional path): User pastes the 8-digit code
+  //  STEP 2 -> 3:  Verify the 8-digit code, then redirect
   // -------------------------------------------------------------
   verifyForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -492,7 +536,6 @@ footer {
       showError(codeError, 'Enter the 8-digit code from your email.');
       return;
     }
-
     if (!pendingEmail) {
       showError(codeError, 'Please request a new code first.');
       return;
@@ -510,34 +553,36 @@ footer {
 
       if (error) throw error;
 
-      // Auth session is now set in browser storage by Supabase.
-      // Send the user to /account, which picks up the session.
-      window.location.href = '/account';
+      // Auth session is now stored in browser storage by Supabase.
+      // Show the "signed in" state, then send them to the shield.
+      showState(doneState);
+      setTimeout(() => {
+        window.location.href = POST_SIGNIN_URL;
+      }, 900);
     } catch (err) {
       console.error('Verify error:', err);
       showError(codeError, err.message || 'Invalid or expired code. Try again.');
       verifyBtn.disabled = false;
-      verifyBtn.textContent = 'Verify code';
+      verifyBtn.textContent = 'Verify & open SurfShield';
     }
   });
 
   // -------------------------------------------------------------
-  //  "Use a different email" — reset back to step 1
+  //  Reset to step 1
   // -------------------------------------------------------------
   tryAgain.addEventListener('click', (e) => {
     e.preventDefault();
-    successState.classList.remove('show');
-    formState.style.display = 'block';
+    showState(emailState);
     submitBtn.disabled = false;
-    submitBtn.textContent = 'Send magic link';
+    submitBtn.textContent = 'Send code';
     verifyBtn.disabled = false;
-    verifyBtn.textContent = 'Verify code';
+    verifyBtn.textContent = 'Verify & open SurfShield';
     emailInput.value = '';
     codeInput.value = '';
     pendingEmail = '';
-    clearError(errorMsg);
+    clearError(emailError);
     clearError(codeError);
-    emailInput.focus();
+    setTimeout(() => emailInput.focus(), 50);
   });
 </script>
 
