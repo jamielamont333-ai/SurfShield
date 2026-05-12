@@ -348,16 +348,15 @@ footer {
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   // =============================================================
-  //  PASTE YOUR SUPABASE KEYS HERE
-  //  Copy them from your existing /account page — they should be
-  //  the same values. The anon key is SAFE to expose publicly;
-  //  it's designed for client-side use and row-level security
-  //  on Supabase handles the real protection.
+  //  PASTE YOUR SUPABASE KEYS BELOW
+  //  Copy them from your existing /account page. The publishable
+  //  key is SAFE to expose publicly; row-level security on
+  //  Supabase handles the real protection.
   // =============================================================
   const SUPABASE_URL = 'https://ngtqkyqckpbhwvejvtaa.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_LaMUtr4HVrGyBP3Zqkg9HA_aMNKpuHO';
 
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
   const form = document.getElementById('signin-form');
   const emailInput = document.getElementById('email');
@@ -392,7 +391,7 @@ footer {
     submitBtn.textContent = 'Sending...';
 
     try {
-      const { error } = await supabase.auth.signInWithOtp({
+      const { error } = await supabaseClient.auth.signInWithOtp({
         email: email,
         options: {
           emailRedirectTo: 'https://www.getsurfshield.com/account'
