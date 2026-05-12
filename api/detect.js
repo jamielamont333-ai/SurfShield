@@ -1,4 +1,21 @@
 module.exports = async function handler(req, res) {
+  // ================================================================
+  //  CORS — allow web app, extension, and Electron desktop app
+  // ================================================================
+  // The X-License-Key header is what authenticates the request, not the
+  // origin. Using '*' lets the desktop app (which may send no Origin
+  // header) just work. If we ever return per-user account data from
+  // this endpoint, we'd tighten this.
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-License-Key');
+
+  // Preflight requests come in as OPTIONS. Must respond before the
+  // method check below, or the browser sees a 405 and blocks the POST.
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -58,7 +75,7 @@ module.exports = async function handler(req, res) {
     // Suspenders: linked subscription must be in a paid-access state.
     // 'active'   = paying customer
     // 'trialing' = in their 7-day free trial
-    // Both should have full access.
+    // 'past_due' = card just failed, give grace before locking out
     const subStatus = license.subscription && license.subscription.status;
     const validStatuses = ['active', 'trialing', 'past_due'];
     if (!validStatuses.includes(subStatus)) {
