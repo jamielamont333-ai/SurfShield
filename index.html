@@ -3,6 +3,991 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SurfShield — Privacy that watches back</title>
+<meta name="description" content="SurfShield watches your back so prying eyes never see your screen. The moment a second pair of eyes lands on your display, the pixels dissolve." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #0d1b2a;
+    --bg-2: #1a2d42;
+    --surface: #1e2f42;
+    --surface-2: #243548;
+    --ink: #f8fafc;
+    --ink-body: #e8f0f7;
+    --ink-dim: #a8b8c8;
+    --ink-mute: #7a95b0;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.15);
+    --accent: #00c2a8;
+    --accent-2: #00a08a;
+    --accent-hover: #1ad6bd;
+    --accent-glow: rgba(0, 194, 168, 0.15);
+    --alert: #ff6b4a;
+    --alert-soft: rgba(255, 107, 74, 0.25);
+    --on-accent: #04221d;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); }
+  body {
+    font-family: 'Syne', system-ui, sans-serif;
+    font-feature-settings: 'ss01', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  .mono { font-family: 'Inconsolata', ui-monospace, monospace; letter-spacing: 0.02em; }
+  .upper { text-transform: uppercase; letter-spacing: 0.16em; }
+  a { color: inherit; text-decoration: none; }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero__grain {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    opacity: 0.40;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.6  0 0 0 0 0.85  0 0 0 0 0.8  0 0 0 0.10 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode: overlay;
+  }
+  .hero__bg {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 90% 70% at 75% 60%, rgba(0,194,168,0.12), transparent 65%),
+      radial-gradient(ellipse 70% 60% at 20% 30%, rgba(0,194,168,0.06), transparent 65%),
+      linear-gradient(180deg, #0d1b2a 0%, #0a1622 100%);
+  }
+
+  /* NAV */
+  .nav {
+    position: relative;
+    z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 40px;
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(2px);
+  }
+  .brand {
+    display: flex; align-items: center; gap: 12px;
+    font-weight: 700; font-size: 19px; letter-spacing: -0.015em;
+  }
+  .brand__mark { width: 28px; height: 28px; display: block; }
+  .brand__mark svg { width: 100%; height: 100%; display: block; }
+  .nav__links { display: flex; gap: 36px; font-size: 13.5px; }
+  .nav__links a { color: var(--ink-dim); }
+  .nav__links a:hover { color: var(--ink); }
+  .nav__right { display: flex; gap: 14px; align-items: center; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--ink);
+    transition: background 0.18s, border-color 0.18s;
+  }
+  .pill:hover { border-color: var(--accent); background: var(--accent-glow); }
+  .pill--solid {
+    background: var(--accent);
+    color: var(--on-accent);
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+  .pill--solid:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+  /* Headline variants */
+  .variant { display: none; }
+  body[data-variant="A"] .variant--A,
+  body[data-variant="B"] .variant--B,
+  body[data-variant="C"] .variant--C,
+  body[data-variant="D"] .variant--D { display: block; }
+
+  /* HERO CONTENT */
+  .hero__inner {
+    position: relative;
+    z-index: 5;
+    padding: 56px 40px 60px;
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+    gap: 60px;
+    align-items: center;
+    max-width: 1480px;
+    margin: 0 auto;
+  }
+  .hero__inner > div:first-child { position: relative; }
+  .hero__inner > div:first-child::before {
+    content: "";
+    position: absolute;
+    inset: -40px -80px -40px -80px;
+    background: radial-gradient(ellipse 70% 80% at 30% 50%, rgba(5,16,10,0.78) 0%, rgba(5,16,10,0.55) 40%, rgba(5,16,10,0) 75%);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-dim);
+    padding: 7px 12px 7px 10px;
+    border: 1px solid var(--line-strong);
+    border-radius: 100px;
+    background: rgba(13,27,42,0.6);
+  }
+  .eyebrow .dot {
+    width: 6px; height: 6px; border-radius: 99px;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  h1.headline {
+    font-size: clamp(46px, 6.4vw, 96px);
+    line-height: 0.96;
+    letter-spacing: -0.025em;
+    font-weight: 700;
+    margin: 22px 0 0;
+    text-wrap: balance;
+  }
+  h1.headline em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .sub {
+    margin-top: 26px;
+    max-width: 520px;
+    font-size: 17.5px; line-height: 1.55;
+    color: var(--ink-dim);
+  }
+
+  .hero__cta {
+    display: flex; gap: 14px; margin-top: 36px; flex-wrap: wrap;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 22px;
+    background: var(--accent);
+    color: var(--on-accent);
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14.5px;
+    border: 1px solid var(--accent);
+    transition: transform 0.18s, background 0.18s, box-shadow 0.18s;
+  }
+  .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 8px 32px var(--accent-glow); }
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 22px;
+    color: var(--ink);
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14.5px;
+    border: 1px solid var(--line-strong);
+    transition: border-color 0.18s, background 0.18s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); background: var(--accent-glow); }
+  .btn-arrow { width: 14px; height: 14px; }
+
+  /* PEEK DEMO */
+  .pd {
+    position: relative;
+    width: 100%;
+    max-width: 660px;
+    margin: 24px auto 0;
+    perspective: 2200px;
+  }
+  .pd__device {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/10;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    box-shadow:
+      0 60px 120px -30px rgba(0,0,0,0.75),
+      0 30px 60px -20px rgba(0,0,0,0.55),
+      0 0 60px -20px var(--accent-glow),
+      inset 0 1px 0 rgba(255,255,255,0.04);
+    transform: rotateY(-14deg) rotateX(6deg);
+    transform-style: preserve-3d;
+    transform-origin: center center;
+  }
+  .pd__chrome {
+    display: flex; align-items: center; gap: 7px;
+    height: 36px; padding: 0 14px;
+    background: linear-gradient(180deg, #243548 0%, #1a2d42 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    position: relative;
+  }
+  .pd__td { width: 11px; height: 11px; border-radius: 99px; }
+  .pd__td--r { background: #ff5f57; }
+  .pd__td--y { background: #febc2e; }
+  .pd__td--g { background: #28c840; }
+  .pd__title {
+    display: inline-flex; align-items: center; gap: 7px;
+    position: absolute; left: 50%; transform: translateX(-50%);
+    color: var(--ink-mute);
+    font-family: 'Syne', sans-serif;
+    font-size: 12.5px;
+  }
+  .pd__chromeRight {
+    margin-left: auto;
+    display: inline-flex; gap: 4px; align-items: center;
+  }
+  .pd__pip { width: 14px; height: 2px; border-radius: 99px; background: rgba(255,255,255,0.18); }
+
+  .pd__screen {
+    position: relative;
+    background: #f4f6fa;
+    height: calc(100% - 36px);
+    overflow: hidden;
+  }
+  .pd__content {
+    height: 100%; width: 100%;
+    transition: filter 350ms cubic-bezier(0.4, 0, 0.2, 1), transform 350ms ease;
+    will-change: filter;
+  }
+  .pd__content--blur { transform: scale(1.03); filter: blur(26px) saturate(1.05) contrast(0.95); }
+
+  .pd__lock {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 6px;
+    background: linear-gradient(180deg, rgba(13,27,42,0.55) 0%, rgba(13,27,42,0.75) 100%);
+    color: var(--ink);
+    opacity: 0; pointer-events: none;
+    transition: opacity 250ms ease;
+    text-align: center;
+  }
+  .pd__lock--on { opacity: 1; }
+  .pd__lockBadge {
+    width: 60px; height: 60px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 99px;
+    background: rgba(13,27,42,0.88);
+    border: 1px solid rgba(0,194,168,0.55);
+    color: var(--accent);
+    box-shadow: 0 0 0 6px var(--accent-glow), 0 0 32px rgba(0,194,168,0.45);
+  }
+  .pd__lock--on .pd__lockBadge {
+    animation: lockPop 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes lockPop {
+    from { transform: scale(0.6); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .pd__lockText { font-size: 22px; font-weight: 700; letter-spacing: -0.015em; margin-top: 8px; }
+  .pd__lockSub {
+    font-family: 'Inconsolata', monospace;
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(232,240,247,0.75);
+  }
+  .pd__lockHint {
+    margin-top: 14px;
+    font-size: 10.5px;
+    color: var(--ink-mute);
+    font-family: 'Inconsolata', monospace;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* Faux document */
+  .doc { padding: 26px 36px 24px; color: #1a2d42; font-family: 'Syne', sans-serif; height: 100%; }
+  .doc__crumb {
+    font-family: 'Inconsolata', monospace;
+    font-size: 10px; letter-spacing: 0.2em; color: #5d6b80;
+    text-transform: uppercase;
+  }
+  .doc__h { font-size: 24px; letter-spacing: -0.02em; margin: 4px 0 6px; font-weight: 700; color: #0d1b2a; }
+  .doc__meta {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    font-size: 11.5px; color: #5d6b80;
+    border-bottom: 1px solid #e2e6ee;
+    padding-bottom: 12px; margin-bottom: 14px;
+  }
+  .doc__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 14px; }
+  .doc__grid h4 {
+    font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: #3d4b60; margin: 0 0 6px; font-weight: 600;
+  }
+  .doc__grid ul { margin: 0; padding-left: 14px; font-size: 12px; line-height: 1.55; color: #1f2a3a; }
+  .doc__grid li { margin-bottom: 3px; }
+  .doc__box {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+    background: #e8ecf3; border-radius: 7px; padding: 12px 14px;
+  }
+  .doc__col { display: flex; flex-direction: column; gap: 3px; }
+  .doc__lbl {
+    font-family: 'Inconsolata', monospace;
+    font-size: 9.5px; letter-spacing: 0.16em; color: #5d6b80;
+    text-transform: uppercase;
+  }
+  .doc__amt { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; color: #0d1b2a; }
+  .doc__arrow { color: var(--accent-2); padding: 0 4px; }
+  .doc__amtTail { font-size: 10.5px; color: #5d6b80; margin-left: 4px; font-weight: 400; }
+
+  /* Camera widget */
+  .cam {
+    position: absolute;
+    left: -34px; bottom: -34px;
+    width: 232px;
+    background: rgba(13,27,42,0.94);
+    border: 1px solid rgba(0,194,168,0.30);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.7), 0 0 30px var(--accent-glow);
+    backdrop-filter: blur(8px);
+    font-family: 'Inconsolata', monospace;
+    font-size: 10px;
+    transition: border-color 250ms ease, box-shadow 250ms ease;
+    z-index: 5;
+  }
+  .cam--alert {
+    border-color: rgba(255,107,74,0.65);
+    box-shadow:
+      0 0 0 1px rgba(255,107,74,0.25),
+      0 30px 60px -20px rgba(0,0,0,0.7),
+      0 0 30px rgba(255,107,74,0.30);
+  }
+  .cam__head {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 11px;
+    color: var(--ink-dim);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    border-bottom: 1px solid rgba(0,194,168,0.18);
+    font-size: 9.5px;
+  }
+  .cam__rec {
+    width: 7px; height: 7px; border-radius: 99px;
+    background: var(--alert);
+    box-shadow: 0 0 8px var(--alert);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  .cam__hz { margin-left: auto; opacity: 0.6; }
+  .cam__view {
+    position: relative;
+    height: 124px;
+    background: linear-gradient(180deg, #1a2d42 0%, #0d1b2a 100%);
+    overflow: hidden;
+  }
+  .cam__scan {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(0,194,168,0.06) 0 1px, transparent 1px 3px);
+    pointer-events: none;
+  }
+  .cam__sil { position: absolute; border-radius: 50%; transition: opacity 250ms ease, transform 250ms ease; }
+  .cam__sil--you {
+    width: 78px; height: 92px; left: 36px; bottom: 6px;
+    background: radial-gradient(ellipse at 50% 35%, rgba(0,194,168,0.28) 0%, rgba(0,194,168,0.08) 50%, transparent 80%);
+  }
+  .cam__sil--peek {
+    width: 58px; height: 70px; right: 22px; bottom: 14px;
+    opacity: 0; transform: translateX(20px);
+    background: radial-gradient(ellipse at 50% 35%, rgba(255,107,74,0.28) 0%, rgba(255,107,74,0.08) 50%, transparent 80%);
+  }
+  .cam__sil--shown { opacity: 1; transform: translateX(0); }
+
+  .cam__face {
+    position: absolute;
+    width: 52px; height: 60px;
+    pointer-events: none;
+    transition: opacity 200ms ease, transform 220ms ease;
+  }
+  .cam__face--you { left: 49px; bottom: 22px; }
+  .cam__face--peek { right: 30px; bottom: 28px; opacity: 0; transform: translateX(16px); }
+  .cam__face--shown { opacity: 1; transform: translateX(0); }
+  .cam__corner { position: absolute; width: 8px; height: 8px; border: 1.5px solid var(--accent); }
+  .cam__face--peek .cam__corner { border-color: var(--alert); }
+  .cam__corner--tl { left: 0; top: 0; border-right: 0; border-bottom: 0; }
+  .cam__corner--tr { right: 0; top: 0; border-left: 0; border-bottom: 0; }
+  .cam__corner--bl { left: 0; bottom: 0; border-right: 0; border-top: 0; }
+  .cam__corner--br { right: 0; bottom: 0; border-left: 0; border-top: 0; }
+  .cam__tag {
+    position: absolute; bottom: -13px; left: -1px;
+    font-size: 8.5px; letter-spacing: 0.08em;
+    padding: 1px 4px; border-radius: 2px;
+    white-space: nowrap;
+  }
+  .cam__tag--ok { background: var(--accent); color: var(--on-accent); }
+  .cam__tag--alert { background: var(--alert); color: #2a0a05; }
+  .cam__foot {
+    display: flex; justify-content: space-between;
+    padding: 7px 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    border-top: 1px solid rgba(0,194,168,0.18);
+    background: rgba(0,0,0,0.30);
+    font-size: 9px;
+  }
+
+  /* Toast */
+  .pd__toast {
+    position: absolute;
+    top: -22px; right: -14px;
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(13,27,42,0.96);
+    border: 1px solid rgba(0,194,168,0.30);
+    border-radius: 10px;
+    padding: 11px 15px;
+    min-width: 270px;
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5), 0 0 30px var(--accent-glow);
+    backdrop-filter: blur(8px);
+    opacity: 0; transform: translateY(-8px);
+    transition: opacity 220ms ease, transform 220ms ease;
+    z-index: 6;
+  }
+  .pd__toast--in { opacity: 1; transform: translateY(0); }
+  .pd__toastDot {
+    width: 8px; height: 8px; border-radius: 99px;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+    flex-shrink: 0;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  .pd__toastBody { display: flex; flex-direction: column; gap: 1px; font-size: 12.5px; }
+  .pd__toastBody strong { color: var(--ink); font-weight: 600; }
+  .pd__toastBody > span {
+    color: var(--ink-dim);
+    font-family: 'Inconsolata', monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+  }
+
+  /* STATS */
+  .stats {
+    position: relative; z-index: 5;
+    margin: 0 auto;
+    max-width: 1480px;
+    padding: 30px 40px 64px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    border-top: 1px solid var(--line);
+    margin-top: 90px;
+  }
+  .stat__num { font-size: 42px; letter-spacing: -0.035em; font-weight: 700; line-height: 1; }
+  .stat__num .unit { color: var(--ink-mute); font-size: 22px; margin-left: 4px; }
+  .stat__lbl {
+    margin-top: 10px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+  /* FEATURES */
+  .features {
+    background: var(--bg-2);
+    border-top: 1px solid var(--line);
+    padding: 96px 40px;
+  }
+  .features__inner { max-width: 1480px; margin: 0 auto; }
+  .section-label {
+    display: flex; align-items: center; gap: 14px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 24px;
+  }
+  .section-label::before { content: ""; width: 22px; height: 1px; background: var(--accent); }
+  .section-h {
+    font-size: clamp(36px, 4vw, 56px); letter-spacing: -0.025em;
+    line-height: 1.04; font-weight: 700;
+    max-width: 820px;
+    margin: 0 0 56px;
+  }
+  .section-h em { font-style: normal; color: var(--accent); }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .feat {
+    background: var(--bg-2);
+    padding: 32px 28px 34px;
+    min-height: 240px;
+    display: flex; flex-direction: column;
+  }
+  .feat__num { font-family: 'Inconsolata', monospace; font-size: 11px; color: var(--ink-mute); letter-spacing: 0.16em; }
+  .feat__icon { margin-top: 18px; width: 36px; height: 36px; color: var(--accent); }
+  .feat__title { margin-top: 22px; font-size: 22px; letter-spacing: -0.015em; font-weight: 700; }
+  .feat__copy { margin-top: 10px; font-size: 14.5px; line-height: 1.55; color: var(--ink-dim); }
+
+  /* CTA */
+  .cta { border-top: 1px solid var(--line); padding: 70px 40px; text-align: center; }
+  .cta h2 {
+    font-size: clamp(34px, 4vw, 56px);
+    letter-spacing: -0.025em; font-weight: 700; line-height: 1.04;
+    margin: 0 0 28px;
+  }
+  .cta h2 em { font-style: normal; color: var(--accent); }
+  .domain {
+    display: inline-flex; align-items: stretch;
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--surface);
+    margin-top: 18px;
+  }
+  .domain input {
+    background: transparent; border: 0; outline: 0;
+    color: var(--ink); padding: 12px 16px;
+    font-family: 'Inconsolata', monospace; font-size: 14px;
+    min-width: 320px;
+  }
+  .domain button {
+    padding: 12px 22px;
+    background: var(--accent);
+    color: var(--on-accent);
+    border: 0;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s;
+    font-family: inherit;
+  }
+  .domain button:hover { background: var(--accent-hover); }
+
+  /* FOOTER */
+  .foot {
+    border-top: 1px solid var(--line);
+    padding: 32px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'Inconsolata', monospace; font-size: 11.5px; color: var(--ink-mute);
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .foot a { color: var(--ink-mute); transition: color 0.18s; }
+  .foot a:hover { color: var(--accent); }
+  .foot__links { display: flex; gap: 22px; }
+
+  @media (max-width: 980px) {
+    .hero__inner { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .grid { grid-template-columns: 1fr; }
+    .nav__links { display: none; }
+    .pd { max-width: 540px; margin-top: 60px; }
+    .pd__device { transform: rotateY(-10deg) rotateX(5deg); }
+    .cam { left: -8px; bottom: -20px; transform: scale(0.85); transform-origin: bottom left; }
+    .pd__toast { right: -4px; }
+  }
+</style>
+</head>
+
+<!--
+  HEADLINE VARIANT SWITCHING
+  ──────────────────────────
+  Change `data-variant` to A, B, C, or D to switch headlines:
+    A — Their eyes hit your screen. Your screen blurs first.
+    B — One viewer. Always.
+    C — Privacy that watches back.
+    D — Someone is looking. Not for long.
+-->
+<body data-variant="A">
+
+<section class="hero">
+  <div class="hero__bg"></div>
+  <div class="hero__grain"></div>
+
+  <nav class="nav">
+    <div class="brand">
+      <span class="brand__mark">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M16 3 L26 7 V15 C26 21 22 26 16 29 C10 26 6 21 6 15 V7 Z" stroke="#00c2a8" stroke-width="1.6" fill="rgba(0,194,168,0.10)"/>
+          <ellipse cx="16" cy="16.5" rx="5.2" ry="3.6" stroke="#00c2a8" stroke-width="1.4" fill="none"/>
+          <circle cx="16" cy="16.5" r="1.6" fill="#00c2a8"/>
+        </svg>
+      </span>
+      <span>SurfShield</span>
+    </div>
+    <div class="nav__links">
+      <a href="#features">How it works</a>
+      <a href="/privacy">Privacy</a>
+      <a href="#pricing">Pricing</a>
+      <a href="/feedback">Contact</a>
+    </div>
+    <div class="nav__right">
+      <a href="https://buy.stripe.com/test_7sY00ifuK57wcQt4X20Fi02" class="btn btn-primary">Start your free trial →</a>
+      <a href="#stripe-replace" class="pill pill--solid">Start free trial →</a>
+    </div>
+  </nav>
+
+  <div class="hero__inner">
+    <div>
+      <span class="eyebrow"><span class="dot"></span>watching · 1 face recognized · 0 onlookers</span>
+
+      <div class="variant variant--A">
+        <h1 class="headline">
+          Their eyes hit your screen.<br/>
+          Your screen <em>blurs first.</em>
+        </h1>
+        <p class="sub">
+          SurfShield watches your back so prying eyes never see your screen.
+          The camera you already have keeps watch on the room &mdash; the moment
+          a second pair of eyes lands on your display, the pixels dissolve.
+        </p>
+      </div>
+
+      <div class="variant variant--B">
+        <h1 class="headline">
+          One viewer.<br/>
+          <em>Always.</em>
+        </h1>
+        <p class="sub">
+          A second pair of eyes lands on your screen and the pixels are gone &mdash;
+          instantly, by an AI that watches only the room behind you.
+          Your screen stays yours.
+        </p>
+      </div>
+
+      <div class="variant variant--C">
+        <h1 class="headline">
+          Privacy that <em>watches back.</em>
+        </h1>
+        <p class="sub">
+          SurfShield turns the camera on the room behind you. The moment
+          someone leans in for a look, your screen turns to fog &mdash; a quiet
+          defense that nobody else even notices.
+        </p>
+      </div>
+
+      <div class="variant variant--D">
+        <h1 class="headline">
+          Someone is looking.<br/>
+          <em>Not for long.</em>
+        </h1>
+        <p class="sub">
+          SurfShield catches the glance from over your shoulder before it
+          catches a word. From peek to pixelate in moments, every time.
+        </p>
+      </div>
+
+      <div class="hero__cta">
+        <a href="https://buy.stripe.com/test_7sY00ifuK57wcQt4X20Fi02" class="btn btn-primary">Start your free trial →</a>
+        <a href="#stripe-replace" class="btn-primary">
+          Start free trial
+          <svg class="btn-arrow" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#features" class="btn-ghost">
+          <svg class="btn-arrow" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M2 8c2-3.5 4-5 6-5s4 1.5 6 5c-2 3.5-4 5-6 5s-4-1.5-6-5Z" stroke="currentColor" stroke-width="1.4"/></svg>
+          Watch a demo
+        </a>
+      </div>
+    </div>
+
+    <!-- LIVE PEEK DEMO (vanilla JS animated below) -->
+    <aside class="hero__demo" aria-label="Live product demonstration">
+      <div class="pd" id="peekDemo">
+        <div class="pd__device">
+          <div class="pd__chrome">
+            <span class="pd__td pd__td--r"></span>
+            <span class="pd__td pd__td--y"></span>
+            <span class="pd__td pd__td--g"></span>
+            <span class="pd__title">
+              <svg viewBox="0 0 14 14" width="11" height="11" aria-hidden="true">
+                <rect x="3" y="6" width="8" height="6" rx="1" fill="currentColor"/>
+                <path d="M4.5 6V4.5a2.5 2.5 0 0 1 5 0V6" stroke="currentColor" stroke-width="1.2" fill="none"/>
+              </svg>
+              Performance Review · Sarah Chen.pdf
+            </span>
+            <span class="pd__chromeRight">
+              <span class="pd__pip"></span>
+              <span class="pd__pip"></span>
+              <span class="pd__pip"></span>
+            </span>
+          </div>
+          <div class="pd__screen">
+            <div class="pd__content" id="pdContent">
+              <div class="doc">
+                <div class="doc__crumb">PERSONAL · DRAFT v3</div>
+                <h3 class="doc__h">2026 Q1 Performance Review</h3>
+                <div class="doc__meta">
+                  <span>Sarah Chen</span><span>·</span>
+                  <span>Director, Design</span><span>·</span>
+                  <span>Reviewer: M. Okafor</span>
+                </div>
+                <div class="doc__grid">
+                  <div>
+                    <h4>Strengths</h4>
+                    <ul>
+                      <li>Led design language refresh; adoption ↑ 4×.</li>
+                      <li>Mentored 3 ICs to senior this cycle.</li>
+                      <li>Cross-team ritual for crit reduced churn.</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4>Growth areas</h4>
+                    <ul>
+                      <li>Delegating earlier on multi-team initiatives.</li>
+                      <li>Long-range narrative for the platform team.</li>
+                      <li>Bandwidth for ad-hoc partner reviews.</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="doc__box">
+                  <div class="doc__col">
+                    <div class="doc__lbl">Compensation review</div>
+                    <div class="doc__amt">$184,500 <span class="doc__arrow">→</span> $208,000</div>
+                  </div>
+                  <div class="doc__col">
+                    <div class="doc__lbl">Equity refresh</div>
+                    <div class="doc__amt">$92,000<span class="doc__amtTail">/y · 4y vest</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="pd__lock" id="pdLock">
+              <div class="pd__lockBadge">
+                <svg viewBox="0 0 32 32" width="28" height="28">
+                  <rect x="7" y="14" width="18" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                  <path d="M11 14v-3a5 5 0 0 1 10 0v3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                  <circle cx="16" cy="20" r="1.6" fill="currentColor"/>
+                </svg>
+              </div>
+              <div class="pd__lockText">Screen secured</div>
+              <div class="pd__lockSub">1 onlooker detected</div>
+              <div class="pd__lockHint">SurfShield is watching</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cam" id="camWidget">
+          <div class="cam__head">
+            <span class="cam__rec"></span>
+            <span>cam 01 · on-device</span>
+            <span class="cam__hz">30fps</span>
+          </div>
+          <div class="cam__view">
+            <div class="cam__scan"></div>
+            <div class="cam__sil cam__sil--you"></div>
+            <div class="cam__sil cam__sil--peek" id="camSilPeek"></div>
+            <div class="cam__face cam__face--you">
+              <span class="cam__corner cam__corner--tl"></span>
+              <span class="cam__corner cam__corner--tr"></span>
+              <span class="cam__corner cam__corner--bl"></span>
+              <span class="cam__corner cam__corner--br"></span>
+              <span class="cam__tag cam__tag--ok">YOU · 0.98</span>
+            </div>
+            <div class="cam__face cam__face--peek" id="camFacePeek">
+              <span class="cam__corner cam__corner--tl"></span>
+              <span class="cam__corner cam__corner--tr"></span>
+              <span class="cam__corner cam__corner--bl"></span>
+              <span class="cam__corner cam__corner--br"></span>
+              <span class="cam__tag cam__tag--alert">+1 · 0.91</span>
+            </div>
+          </div>
+          <div class="cam__foot">
+            <span id="camFaces">faces: 1</span>
+            <span id="camStatus">CLEAR</span>
+          </div>
+        </div>
+
+        <div class="pd__toast" id="pdToast" aria-live="polite">
+          <span class="pd__toastDot"></span>
+          <span class="pd__toastBody">
+            <strong>Onlooker detected</strong>
+            <span>Screen blurred &middot; SurfShield active</span>
+          </span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="stats">
+    <div>
+      <div class="stat__num">AI<span class="unit">&nbsp;</span></div>
+      <div class="stat__lbl">Claude-powered detection</div>
+    </div>
+    <div>
+      <div class="stat__num">$1.99<span class="unit">/mo</span></div>
+      <div class="stat__lbl">cancel anytime</div>
+    </div>
+    <div>
+      <div class="stat__num">7<span class="unit">days</span></div>
+      <div class="stat__lbl">free trial · no card required</div>
+    </div>
+    <div>
+      <div class="stat__num">∞<span class="unit">&nbsp;</span></div>
+      <div class="stat__lbl">peace of mind, always on</div>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="features__inner">
+    <div class="section-label">02 / How it sees</div>
+    <h2 class="section-h">
+      Built like a <em>shield</em>, not a screenshot.
+    </h2>
+    <div class="grid">
+      <div class="feat">
+        <span class="feat__num">F-01</span>
+        <svg class="feat__icon" viewBox="0 0 36 36" fill="none">
+          <circle cx="13" cy="18" r="7" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="26" cy="18" r="5" stroke="currentColor" stroke-width="1.5" opacity="0.55"/>
+          <circle cx="13" cy="18" r="1.8" fill="currentColor"/>
+          <circle cx="26" cy="18" r="1.4" fill="currentColor" opacity="0.55"/>
+        </svg>
+        <div class="feat__title">Two-face detection</div>
+        <p class="feat__copy">A vision model watches the framing of the room. The instant a second pair of eyes lines up with the screen, the pixels go.</p>
+      </div>
+      <div class="feat">
+        <span class="feat__num">F-02</span>
+        <svg class="feat__icon" viewBox="0 0 36 36" fill="none">
+          <rect x="5" y="9" width="26" height="18" rx="2" stroke="currentColor" stroke-width="1.4"/>
+          <circle cx="13" cy="18" r="2.2" fill="currentColor" opacity="0.4"/>
+          <circle cx="19" cy="18" r="2.2" fill="currentColor" opacity="0.7"/>
+          <circle cx="25" cy="18" r="2.2" fill="currentColor"/>
+          <path d="M5 23h26" stroke="currentColor" stroke-width="1.4" opacity="0.6"/>
+        </svg>
+        <div class="feat__title">Pixel dissolve</div>
+        <p class="feat__copy">Not a black box — your screen pixelates progressively, intense enough to hide content but soft enough to keep you in flow.</p>
+      </div>
+      <div class="feat">
+        <span class="feat__num">F-03</span>
+        <svg class="feat__icon" viewBox="0 0 36 36" fill="none">
+          <path d="M18 4 L30 10 V20 C30 25 25 29 18 31 C11 29 6 25 6 20 V10 Z" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M14 18a4 4 0 1 1 8 0a4 4 0 1 1 -8 0Z" stroke="currentColor" stroke-width="1.4"/>
+        </svg>
+        <div class="feat__title">Privacy-first by design</div>
+        <p class="feat__copy">Frames are sent to a hardened API endpoint, processed for detection only, and never stored. Your camera feed is never recorded.</p>
+      </div>
+      <div class="feat">
+        <span class="feat__num">F-04</span>
+        <svg class="feat__icon" viewBox="0 0 36 36" fill="none">
+          <path d="M6 18c4-7 8-10 12-10s8 3 12 10c-4 7-8 10-12 10S10 25 6 18Z" stroke="currentColor" stroke-width="1.4"/>
+          <circle cx="18" cy="18" r="4" stroke="currentColor" stroke-width="1.4"/>
+        </svg>
+        <div class="feat__title">Adjustable sensitivity</div>
+        <p class="feat__copy">Crank it up in cafes and on flights, relax it at your desk. Set the threshold that matches where you actually work.</p>
+      </div>
+      <div class="feat">
+        <span class="feat__num">F-05</span>
+        <svg class="feat__icon" viewBox="0 0 36 36" fill="none">
+          <path d="M6 12h24l-3 16H9Z" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M11 12V8a7 7 0 0 1 14 0v4" stroke="currentColor" stroke-width="1.4"/>
+        </svg>
+        <div class="feat__title">Soft-dismiss</div>
+        <p class="feat__copy">When the room clears, the screen comes back the moment you do. No interrupted flow, no extra clicks to recover.</p>
+      </div>
+      <div class="feat">
+        <span class="feat__num">F-06</span>
+        <svg class="feat__icon" viewBox="0 0 36 36" fill="none">
+          <rect x="6" y="6" width="14" height="18" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+          <rect x="18" y="14" width="12" height="16" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M22 26h4M11 11h4" stroke="currentColor" stroke-width="1.4"/>
+        </svg>
+        <div class="feat__title">Browser &amp; Android</div>
+        <p class="feat__copy">Works in any modern browser today, with Android app shipping soon. One subscription covers every device with a camera you use.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="pricing">
+  <h2>Make your screen a <em>conversation of one</em>.</h2>
+  <div>
+    <!-- TODO: Wire form action to your email service (Mailchimp, ConvertKit, Resend, etc.) or replace with a direct "Start trial" button -->
+    <form class="domain" onsubmit="event.preventDefault(); window.location.href='/signin';">
+      <input type="email" placeholder="you@email.com" required />
+      <button type="submit">Start free trial →</button>
+    </form>
+  </div>
+</section>
+
+<footer class="foot">
+  <span>SurfShield · © 2026</span>
+  <div class="foot__links">
+    <a href="/privacy">Privacy</a>
+    <a href="/terms">Terms</a>
+    <a href="/feedback">Contact</a>
+  </div>
+  <span>getsurfshield.com</span>
+</footer>
+
+<script>
+  // PeekDemo animation — vanilla JS port of the original React component.
+  // Cycles: idle → detected (280ms grace) → blurred → idle, repeating.
+
+  (function () {
+    var CYCLE_MS = 6800;   // total cycle period
+    var BLUR_MS  = 3200;   // how long the blur sustains
+    var GRACE_MS = 280;    // detected → blurred grace
+    var IDLE_MS  = Math.max(800, CYCLE_MS - BLUR_MS - GRACE_MS);
+
+    var content   = document.getElementById('pdContent');
+    var lock      = document.getElementById('pdLock');
+    var cam       = document.getElementById('camWidget');
+    var toast     = document.getElementById('pdToast');
+    var peekFace  = document.getElementById('camFacePeek');
+    var peekSil   = document.getElementById('camSilPeek');
+    var facesText = document.getElementById('camFaces');
+    var statusText= document.getElementById('camStatus');
+
+    if (!content) return;  // safety guard
+
+    var timers = [];
+    function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+    function later(fn, ms) { var t = setTimeout(fn, ms); timers.push(t); return t; }
+
+    function setPhase(phase) {
+      var showPeek = phase === 'detected' || phase === 'blurred';
+      var blurred  = phase === 'blurred';
+
+      content.classList.toggle('pd__content--blur', blurred);
+      lock.classList.toggle('pd__lock--on', blurred);
+      cam.classList.toggle('cam--alert', showPeek);
+      toast.classList.toggle('pd__toast--in', showPeek);
+      peekFace.classList.toggle('cam__face--shown', showPeek);
+      peekSil.classList.toggle('cam__sil--shown', showPeek);
+
+      facesText.textContent = 'faces: ' + (showPeek ? 2 : 1);
+      statusText.textContent = showPeek ? 'ALERT' : 'CLEAR';
+    }
+
+    function loop() {
+      setPhase('idle');
+      later(function () {
+        setPhase('detected');
+        later(function () {
+          setPhase('blurred');
+          later(loop, BLUR_MS);
+        }, GRACE_MS);
+      }, IDLE_MS);
+    }
+
+    // Pause animation when tab is hidden — saves CPU.
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        clearTimers();
+      } else {
+        loop();
+      }
+    });
+
+    loop();
+  })();
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>SurfShield — Privacy that watches your back</title>
 <meta name="description" content="SurfShield uses your webcam and on-device AI to detect when someone is looking over your shoulder, and automatically blurs your screen. Privacy that watches your back." />
 
