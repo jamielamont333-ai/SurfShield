@@ -1,589 +1,584 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SurfShield — Browser Shield</title>
-<meta name="description" content="Activate the SurfShield browser shield." />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SurfShield — Your Browser Shield</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <style>
+    /* === Theme tokens === */
+    :root {
+      --bg-deep: #07111c;
+      --bg-card: #0f1f33;
+      --bg-card-2: #142a44;
+      --border: #1e3a55;
+      --text: #d6e1ec;
+      --text-muted: #6f8aa3;
+      --text-dim: #4a6378;
+      --accent: #2dd4bf;
+      --accent-hover: #5eead4;
+      --accent-soft: rgba(45, 212, 191, 0.15);
+      --danger: #f87171;
+    }
 
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inconsolata:wght@400;500&display=swap" rel="stylesheet" />
+    /* === Reset & base === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-<style>
-:root {
-  --navy: #0d1b2a;
-  --navy2: #1a2d42;
-  --surface: #1e2f42;
-  --teal: #00c2a8;
-  --coral: #ff6b4a;
-  --white: #f8fafc;
-  --text: #e8f0f7;
-  --muted: #7a95b0;
-  --muted2: #a8b8c8;
-  --border: rgba(255, 255, 255, 0.08);
-  --border2: rgba(255, 255, 255, 0.15);
-}
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg-deep);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+    /* === Layout === */
+    .container { max-width: 680px; margin: 0 auto; padding: 24px 16px; }
 
-body {
-  font-family: 'Syne', sans-serif;
-  background: var(--navy);
-  color: var(--text);
-  line-height: 1.6;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
 
-a { color: var(--teal); text-decoration: none; }
-a:hover { text-decoration: underline; }
+    .logo {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.02em;
+    }
+    .logo-accent { color: var(--accent); }
 
-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  padding: 16px 32px;
-  background: rgba(13, 27, 42, 0.85);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+    /* === Cards === */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 32px 24px;
+      margin-bottom: 16px;
+    }
 
-.nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 700;
-  font-size: 18px;
-  letter-spacing: -0.02em;
-  color: var(--white);
-}
-.nav-logo:hover { text-decoration: none; }
+    /* === Hero === */
+    .welcome {
+      text-align: center;
+      color: var(--accent);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .welcome span { color: var(--text); }
 
-.nav-links { display: flex; gap: 24px; font-size: 14px; color: var(--muted2); }
-.nav-links a { color: var(--muted2); }
-.nav-links a:hover { color: var(--teal); }
+    h1.title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      text-align: center;
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+    }
 
-@media (max-width: 600px) {
-  nav { padding: 14px 18px; }
-  .nav-links { gap: 14px; font-size: 12px; }
-}
+    .subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      max-width: 480px;
+      margin: 0 auto 28px;
+    }
 
-main {
-  flex: 1;
-  padding: 100px 24px 60px;
-}
+    /* === Status pill === */
+    .status-pill-wrap { text-align: center; margin-bottom: 24px; }
 
-.app-container {
-  max-width: 720px;
-  margin: 0 auto;
-}
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 18px;
+      border-radius: 100px;
+      background: var(--bg-card-2);
+      border: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
 
-/* States */
-#loading-state {
-  text-align: center;
-  padding: 80px 20px;
-  color: var(--muted);
-}
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    .status-dot.active {
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent-soft);
+    }
 
-.spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--border2);
-  border-top-color: var(--teal);
-  border-radius: 50%;
-  margin: 0 auto 16px;
-  animation: spin 0.9s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
+    /* === Primary button === */
+    .btn-shield {
+      display: block;
+      margin: 0 auto;
+      padding: 16px 48px;
+      background: var(--accent);
+      color: var(--bg-deep);
+      border: none;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(45, 212, 191, 0.25);
+    }
+    .btn-shield:hover { background: var(--accent-hover); }
+    .btn-shield:active { transform: translateY(1px); }
 
-#error-state { display: none; text-align: center; padding: 80px 20px; }
-#error-state.show { display: block; }
-#error-state h2 {
-  color: var(--coral);
-  font-size: 22px;
-  margin-bottom: 12px;
-}
-#error-state p { color: var(--muted2); max-width: 420px; margin: 0 auto 12px; }
-#error-state .actions { margin-top: 20px; }
+    /* === Camera preview === */
+    .camera-area { margin-top: 28px; display: flex; justify-content: center; }
 
-#app-state { display: none; }
-#app-state.show { display: block; }
+    .camera-placeholder {
+      width: 100%;
+      max-width: 360px;
+      aspect-ratio: 4/3;
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
 
-/* Hero card with shield button */
-.shield-hero {
-  background: var(--navy2);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 44px 36px;
-  text-align: center;
-  margin-bottom: 20px;
-}
+    #camera-video {
+      width: 100%;
+      max-width: 360px;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      border-radius: 12px;
+      background: var(--bg-card-2);
+    }
 
-.welcome {
-  font-family: 'Inconsolata', monospace;
-  font-size: 11px;
-  color: var(--teal);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  margin-bottom: 14px;
-}
+    /* === License key card === */
+    .license-label {
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .license-row { display: flex; gap: 8px; align-items: stretch; }
 
-.welcome-email {
-  color: var(--muted2);
-  text-transform: none;
-  letter-spacing: 0;
-}
+    .license-key {
+      flex: 1;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      letter-spacing: 0.05em;
+      user-select: all;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
 
-.shield-hero h1 {
-  font-size: 30px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--white);
-  margin-bottom: 12px;
-}
+    .btn-copy {
+      background: var(--bg-card-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .btn-copy:hover { background: var(--bg-card); border-color: var(--accent); }
+    .btn-copy.copied {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
 
-.shield-subtitle {
-  font-size: 15px;
-  color: var(--muted2);
-  margin-bottom: 26px;
-  max-width: 460px;
-  margin-left: auto;
-  margin-right: auto;
-}
+    .license-note { color: var(--text-dim); font-size: 0.85rem; margin-top: 12px; }
 
-.status-indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 16px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  margin-bottom: 24px;
-}
+    /* === Sign out === */
+    .signout-row { text-align: center; margin: 24px 0; }
+    .btn-link {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9rem;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+    .btn-link:hover { color: var(--text); }
 
-.status-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--muted);
-}
+    /* === The shield itself: full-screen overlay === */
+    #surfshield-overlay {
+      position: fixed;
+      inset: 0;
+      backdrop-filter: blur(36px) saturate(1.2);
+      -webkit-backdrop-filter: blur(36px) saturate(1.2);
+      background: rgba(7, 17, 28, 0.4);
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    #surfshield-overlay.active { opacity: 1; pointer-events: auto; }
 
-.status-text {
-  font-size: 12px;
-  color: var(--muted2);
-  font-family: 'Inconsolata', monospace;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
+    /* Floating "Shield active" pill — visible above the overlay */
+    #surfshield-pill {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--accent);
+      border-radius: 100px;
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      box-shadow: 0 4px 24px rgba(45, 212, 191, 0.3);
+    }
+    #surfshield-pill.active { display: flex; }
 
-.btn-shield {
-  background: var(--teal);
-  color: var(--navy);
-  border: none;
-  border-radius: 12px;
-  padding: 16px 36px;
-  font-family: inherit;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: opacity 0.15s, transform 0.05s;
-  min-width: 220px;
-}
+    .pill-pulse {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.6); }
+      50% { opacity: 0.7; box-shadow: 0 0 0 8px rgba(45, 212, 191, 0); }
+    }
 
-.btn-shield:hover:not(:disabled) { opacity: 0.92; }
-.btn-shield:active:not(:disabled) { transform: scale(0.99); }
-.btn-shield:disabled { opacity: 0.55; cursor: not-allowed; }
+    /* === Loading & error states === */
+    .state-screen {
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      text-align: center;
+    }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .state-text { color: var(--text-muted); max-width: 380px; }
+    .state-text.error { color: var(--danger); }
 
-.shield-note {
-  margin-top: 14px;
-  font-size: 12px;
-  color: var(--muted);
-  font-style: italic;
-}
-
-.camera-placeholder {
-  max-width: 320px;
-  margin: 26px auto 0;
-  aspect-ratio: 4/3;
-  background: var(--navy);
-  border: 1px dashed var(--border2);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  color: var(--muted);
-  font-family: 'Inconsolata', monospace;
-  letter-spacing: 0.15em;
-}
-
-/* License key card */
-.license-card {
-  background: var(--navy2);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 28px 32px;
-  margin-bottom: 20px;
-}
-
-.license-label {
-  font-family: 'Inconsolata', monospace;
-  font-size: 11px;
-  color: var(--teal);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-
-.license-key-row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.license-key {
-  flex: 1;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  padding: 12px 14px;
-  font-family: 'Inconsolata', monospace;
-  font-size: 13px;
-  color: var(--white);
-  word-break: break-all;
-  user-select: all;
-}
-
-.btn-copy {
-  background: var(--surface);
-  color: var(--text);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  padding: 11px 16px;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: border-color 0.15s, color 0.15s;
-}
-.btn-copy:hover { border-color: var(--teal); color: var(--teal); }
-
-.license-hint {
-  font-size: 13px;
-  color: var(--muted2);
-}
-
-/* Sign out */
-.signout-row {
-  text-align: center;
-  margin-top: 28px;
-}
-
-.signout-btn {
-  background: transparent;
-  color: var(--muted);
-  border: none;
-  font-family: inherit;
-  font-size: 13px;
-  cursor: pointer;
-  text-decoration: underline;
-  padding: 4px 8px;
-}
-.signout-btn:hover { color: var(--coral); }
-.signout-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* Footer */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 40px 32px;
-}
-
-.footer-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.footer-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 700;
-  font-size: 14px;
-  color: var(--white);
-}
-.footer-brand:hover { text-decoration: none; }
-
-.footer-links { display: flex; gap: 20px; font-size: 13px; }
-.footer-links a { color: var(--muted); }
-.footer-links a:hover { color: var(--teal); }
-
-.footer-copy {
-  font-family: 'Inconsolata', monospace;
-  font-size: 11px;
-  color: var(--muted);
-}
-
-@media (max-width: 600px) {
-  .shield-hero { padding: 32px 24px; }
-  .shield-hero h1 { font-size: 24px; }
-  .license-card { padding: 22px 22px; }
-  .license-key-row { flex-direction: column; align-items: stretch; }
-  .btn-copy { width: 100%; }
-  footer { padding: 32px 20px; }
-  .footer-inner { flex-direction: column; text-align: center; }
-}
-</style>
+    /* === Utilities === */
+    .hidden { display: none !important; }
+  </style>
 </head>
 <body>
 
-<nav>
-  <a href="/" class="nav-logo">
-    <svg width="26" height="28" viewBox="0 0 32 34" fill="none">
-      <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#0f2236" stroke="#00c2a8" stroke-width="1.5"/>
-      <path d="M9 17C9 17 11.8 12.5 16 12.5C20.2 12.5 23 17 23 17C23 17 20.2 21.5 16 21.5C11.8 21.5 9 17 9 17Z" stroke="#00c2a8" stroke-width="1.3" fill="none"/>
-      <circle cx="16" cy="17" r="2.8" fill="#00c2a8" opacity="0.9"/>
-      <circle cx="16" cy="17" r="1.3" fill="#0d1b2a"/>
-    </svg>
-    SurfShield
-  </a>
-  <div class="nav-links">
-    <a href="/#how">How it works</a>
-    <a href="/#pricing">Pricing</a>
-    <a href="/app">My Shield</a>
-    <a href="/feedback">Feedback</a>
-  </div>
-</nav>
-
-<main>
-  <div class="app-container">
-
-    <!-- LOADING STATE -->
-    <div id="loading-state">
+  <!-- ===== LOADING STATE ===== -->
+  <div id="loading-state" class="container">
+    <div class="state-screen">
       <div class="spinner"></div>
-      <p>Loading your shield...</p>
+      <p class="state-text">Loading your shield...</p>
     </div>
-
-    <!-- ERROR STATE -->
-    <div id="error-state">
-      <h2>Something went wrong</h2>
-      <p id="error-message">We couldn't load your account.</p>
-      <div class="actions">
-        <a href="/signin">← Back to sign in</a>
-      </div>
-    </div>
-
-    <!-- APP STATE -->
-    <div id="app-state">
-      <div class="shield-hero">
-        <div class="welcome">
-          Signed in as <span class="welcome-email" id="user-email">—</span>
-        </div>
-        <h1>Your browser shield</h1>
-        <p class="shield-subtitle">Click Start Shield to begin webcam-based protection on this tab. Switch tabs or close this one and the shield stops.</p>
-
-        <div class="status-indicator">
-          <span class="status-dot" id="status-dot"></span>
-          <span class="status-text" id="status-text">Shield off</span>
-        </div>
-
-        <div>
-          <button id="start-btn" class="btn-shield">
-            Start Shield
-          </button>
-        </div>
-
-        <p class="shield-note">
-          Camera activation wires up in the next build step.
-        </p>
-
-        <div class="camera-placeholder">
-          CAMERA · PREVIEW · INACTIVE
-        </div>
-      </div>
-
-      <!-- License key card -->
-      <div class="license-card">
-        <div class="license-label">Your license key</div>
-        <div class="license-key-row">
-          <div class="license-key" id="license-key">—</div>
-          <button class="btn-copy" id="copy-btn">Copy</button>
-        </div>
-        <p class="license-hint">
-          Use this to activate the Chrome extension or desktop app on other devices.
-        </p>
-      </div>
-
-      <!-- Sign out -->
-      <div class="signout-row">
-        <button class="signout-btn" id="signout-btn">Sign out</button>
-      </div>
-    </div>
-
   </div>
-</main>
 
-<footer>
-  <div class="footer-inner">
-    <a href="/" class="footer-brand">
-      <svg width="20" height="22" viewBox="0 0 32 34" fill="none">
-        <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#0f2236" stroke="#00c2a8" stroke-width="1.5"/>
-        <circle cx="16" cy="17" r="2.8" fill="#00c2a8"/>
-      </svg>
-      SurfShield
-    </a>
-    <div class="footer-links">
-      <a href="/privacy">Privacy</a>
-      <a href="/terms">Terms</a>
-      <a href="/feedback">Feedback</a>
-      <a href="/">Home</a>
+  <!-- ===== ERROR STATE ===== -->
+  <div id="error-state" class="container hidden">
+    <div class="state-screen">
+      <p id="error-message" class="state-text error">Something went wrong.</p>
+      <button class="btn-link" onclick="location.reload()">Try again</button>
+      <button id="error-signout" class="btn-link">Sign out</button>
     </div>
-    <div class="footer-copy">© 2026 SurfShield · v1.0.0</div>
   </div>
-</footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  // =============================================================
-  //  PASTE YOUR SUPABASE KEYS BELOW
-  //  Same values you used in signin.html. The publishable key is
-  //  safe to expose; row-level security on Supabase protects data.
-  // =============================================================
-  const SUPABASE_URL = 'https://ngtqkyqckpbhwvejvtaa.supabase.co';
-  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_LaMUtr4HVrGyBP3Zqkg9HA_aMNKpuHO';
-  const SIGNIN_URL = '/signin';
+  <!-- ===== APP STATE ===== -->
+  <div id="app-state" class="container hidden">
+    <nav>
+      <div class="logo">Surf<span class="logo-accent">Shield</span></div>
+    </nav>
 
-  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    <div class="card">
+      <p class="welcome">Signed in as <span id="user-email">—</span></p>
+      <h1 class="title">Your browser shield</h1>
+      <p class="subtitle">
+        Click Start Shield to begin webcam-based protection on this tab.
+        Switch tabs or close this one and the shield stops.
+      </p>
 
-  // DOM refs
-  const loadingState = document.getElementById('loading-state');
-  const errorState   = document.getElementById('error-state');
-  const errorMessage = document.getElementById('error-message');
-  const appState     = document.getElementById('app-state');
-  const userEmail    = document.getElementById('user-email');
-  const licenseKey   = document.getElementById('license-key');
-  const copyBtn      = document.getElementById('copy-btn');
-  const signoutBtn   = document.getElementById('signout-btn');
-  const startBtn     = document.getElementById('start-btn');
+      <div class="status-pill-wrap">
+        <div class="status-pill">
+          <span id="status-dot" class="status-dot"></span>
+          <span id="status-text">Shield off</span>
+        </div>
+      </div>
 
+      <button id="start-btn" class="btn-shield">Start Shield</button>
+
+      <div class="camera-area">
+        <div id="camera-placeholder" class="camera-placeholder">Camera · Preview · Inactive</div>
+        <video id="camera-video" autoplay playsinline muted class="hidden"></video>
+        <canvas id="capture-canvas" width="640" height="480" class="hidden"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="license-label">Your license key</p>
+      <div class="license-row">
+        <div id="license-key" class="license-key">—</div>
+        <button id="copy-btn" class="btn-copy">Copy</button>
+      </div>
+      <p class="license-note">Use this to activate the Chrome extension or desktop app on other devices.</p>
+    </div>
+
+    <div class="signout-row">
+      <button id="signout-btn" class="btn-link">Sign out</button>
+    </div>
+  </div>
+
+  <!-- ===== Full-screen shield overlay (activates on threat) ===== -->
+  <div id="surfshield-overlay"></div>
+  <div id="surfshield-pill">
+    <span class="pill-pulse"></span>
+    Shield active
+  </div>
+
+  <!-- ===== Scripts ===== -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  /* =================================================================
+     SurfShield app.html — main logic
+
+     CONFIGURE THE TWO CONSTANTS BELOW WITH YOUR SUPABASE PROJECT VALUES.
+
+     Assumes Supabase schema:
+       - licenses: id, user_id, license_key, is_active (+ FK to subscriptions)
+       - subscriptions: id, status, ...
+       - RLS policy on licenses: auth.uid() = user_id can SELECT
+
+     The /api/detect endpoint expects:
+       Headers: X-License-Key (the user's key, uppercase)
+       Body:    { image: "<base64 jpeg>", sensitivity: <1-10> }
+       Returns: { threat: bool, reason: string, count: int }
+     ================================================================= */
+
+  // ===== CONFIG — FILL THESE IN =====
+  const SUPABASE_URL      = 'YOUR_SUPABASE_URL_HERE';
+  const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+  // ==================================
+
+  const CAPTURE_INTERVAL_MS = 1500;  // detect frequency (lower = more sensitive, more $ spend)
+  const SENSITIVITY         = 5;     // 1-10, passed to /api/detect
+
+  const { createClient } = window.supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ----- App state -----
+  let licenseKey   = null;
+  let stream       = null;
+  let captureTimer = null;
+  let isShieldOn   = false;
+  let inFlight     = false;
+
+  // ----- DOM helpers -----
+  const $ = (id) => document.getElementById(id);
+
+  function showScreen(name) {
+    ['loading-state', 'error-state', 'app-state'].forEach((s) => {
+      $(s).classList.toggle('hidden', s !== name);
+    });
+  }
   function showError(msg) {
-    loadingState.style.display = 'none';
-    errorMessage.textContent = msg;
-    errorState.classList.add('show');
+    $('error-message').textContent = msg;
+    showScreen('error-state');
   }
 
-  function showApp() {
-    loadingState.style.display = 'none';
-    appState.classList.add('show');
+  // ============= BOOT =============
+  async function init() {
+    // 1. Auth check
+    const { data: { session }, error } = await sb.auth.getSession();
+    if (error || !session) {
+      window.location.href = '/signin.html';
+      return;
+    }
+
+    // 2. Show user email
+    $('user-email').textContent = session.user.email;
+
+    // 3. Fetch license key
+    const { data: lic, error: licError } = await sb
+      .from('licenses')
+      .select('license_key, is_active')
+      .eq('user_id', session.user.id)
+      .single();
+
+    if (licError || !lic) {
+      console.error('License fetch failed:', licError);
+      showError('We could not load your license. Please contact support.');
+      return;
+    }
+    if (!lic.is_active) {
+      showError('Your license has been deactivated. Please contact support.');
+      return;
+    }
+
+    licenseKey = lic.license_key;
+    $('license-key').textContent = licenseKey;
+
+    // 4. Wire event handlers
+    $('start-btn').addEventListener('click', toggleShield);
+    $('copy-btn').addEventListener('click', copyLicense);
+    $('signout-btn').addEventListener('click', signOut);
+    $('error-signout').addEventListener('click', signOut);
+
+    // 5. Reveal the app
+    showScreen('app-state');
   }
 
-  // -------------------------------------------------------------
-  //  BOOT SEQUENCE
-  //  1. Check Supabase session (auth gate)
-  //  2. Fetch the user's license key from the `licenses` table
-  //  3. If anything is missing, show a clear error state
-  // -------------------------------------------------------------
-  (async () => {
+  // ============= SHIELD LOGIC =============
+  function toggleShield() {
+    if (isShieldOn) stopShield();
+    else startShield();
+  }
+
+  async function startShield() {
     try {
-      // Step 1: Auth gate
-      const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+      stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    } catch (err) {
+      alert('Camera permission required to use the shield.\n\n' + err.message);
+      return;
+    }
 
-      if (sessionError) throw sessionError;
+    const video = $('camera-video');
+    video.srcObject = stream;
+    video.classList.remove('hidden');
+    $('camera-placeholder').classList.add('hidden');
 
-      if (!session) {
-        // Not signed in. Send them to /signin to authenticate.
-        window.location.href = SIGNIN_URL;
+    $('start-btn').textContent = 'Stop Shield';
+    $('status-text').textContent = 'Shield on';
+    $('status-dot').classList.add('active');
+    isShieldOn = true;
+
+    captureTimer = setInterval(captureAndDetect, CAPTURE_INTERVAL_MS);
+  }
+
+  function stopShield() {
+    if (captureTimer) clearInterval(captureTimer);
+    captureTimer = null;
+
+    if (stream) {
+      stream.getTracks().forEach((t) => t.stop());
+      stream = null;
+    }
+
+    const video = $('camera-video');
+    video.srcObject = null;
+    video.classList.add('hidden');
+    $('camera-placeholder').classList.remove('hidden');
+
+    activateBlur(false);
+    $('start-btn').textContent = 'Start Shield';
+    $('status-text').textContent = 'Shield off';
+    $('status-dot').classList.remove('active');
+    isShieldOn = false;
+  }
+
+  function activateBlur(on) {
+    $('surfshield-overlay').classList.toggle('active', on);
+    $('surfshield-pill').classList.toggle('active', on);
+  }
+
+  async function captureAndDetect() {
+    if (inFlight) return;
+    const video = $('camera-video');
+    if (!video.videoWidth) return;
+
+    inFlight = true;
+    try {
+      const canvas = $('capture-canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const base64 = canvas.toDataURL('image/jpeg', 0.85).split(',')[1];
+
+      const res = await fetch('/api/detect', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-License-Key': licenseKey
+        },
+        body: JSON.stringify({ image: base64, sensitivity: SENSITIVITY })
+      });
+
+      if (res.status === 401 || res.status === 402) {
+        const err = await res.json().catch(() => ({}));
+        alert(err.message || 'Subscription required to use the shield.');
+        stopShield();
+        return;
+      }
+      if (!res.ok) {
+        console.warn('detect returned', res.status);
         return;
       }
 
-      const user = session.user;
-      userEmail.textContent = user.email;
-
-      // Step 2: Fetch this user's license.
-      // NOTE: This assumes your `licenses` table has a `user_id` column
-      // linking to auth.users.id. If your schema links by email or uses
-      // a different column name, change the .eq() call accordingly.
-      const { data: license, error: licenseError } = await supabaseClient
-        .from('licenses')
-        .select('license_key, is_active')
-        .eq('user_id', user.id)
-        .limit(1)
-        .single();
-
-      if (licenseError) {
-        if (licenseError.code === 'PGRST116') {
-          // PGRST116 = no rows returned
-          showError("No active subscription found for this account. If you just paid via Stripe, give it ~30 seconds for the webhook to create your license — then refresh. If you haven't subscribed yet, head back to the homepage to subscribe.");
-        } else {
-          showError('Could not load your license: ' + licenseError.message);
-        }
-        return;
-      }
-
-      if (!license.is_active) {
-        showError('Your license has been deactivated. Contact support@getsurfshield.com if this is unexpected.');
-        return;
-      }
-
-      // Step 3: All good. Show the app.
-      licenseKey.textContent = license.license_key;
-      showApp();
-    } catch (err) {
-      console.error('Boot error:', err);
-      showError(err.message || 'Could not load your account.');
+      const data = await res.json();
+      activateBlur(!!data.threat);
+      if (data.threat) console.log('🛡 Threat:', data.reason, '(count:', data.count + ')');
+    } catch (e) {
+      console.error('Detect error:', e);
+    } finally {
+      inFlight = false;
     }
-  })();
+  }
 
-  // -------------------------------------------------------------
-  //  Copy license key to clipboard
-  // -------------------------------------------------------------
-  copyBtn.addEventListener('click', async () => {
+  // ============= MISC HANDLERS =============
+  async function copyLicense() {
     try {
-      await navigator.clipboard.writeText(licenseKey.textContent);
-      const original = copyBtn.textContent;
-      copyBtn.textContent = 'Copied!';
-      setTimeout(() => copyBtn.textContent = original, 1500);
-    } catch (err) {
-      console.error('Copy failed:', err);
-      copyBtn.textContent = 'Copy failed';
-      setTimeout(() => copyBtn.textContent = 'Copy', 1500);
+      await navigator.clipboard.writeText(licenseKey);
+      const btn = $('copy-btn');
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 1800);
+    } catch (e) {
+      alert('Could not copy to clipboard.');
     }
-  });
+  }
 
-  // -------------------------------------------------------------
-  //  Sign out
-  // -------------------------------------------------------------
-  signoutBtn.addEventListener('click', async () => {
-    signoutBtn.disabled = true;
-    signoutBtn.textContent = 'Signing out...';
-    try {
-      await supabaseClient.auth.signOut();
-      window.location.href = '/';
-    } catch (err) {
-      console.error('Sign out error:', err);
-      signoutBtn.disabled = false;
-      signoutBtn.textContent = 'Sign out';
-    }
-  });
+  async function signOut() {
+    if (isShieldOn) stopShield();
+    await sb.auth.signOut();
+    window.location.href = '/';
+  }
 
-  // -------------------------------------------------------------
-  //  Start Shield (placeholder — Block 4 wires this up)
-  // -------------------------------------------------------------
-  startBtn.addEventListener('click', () => {
-    // Intentionally a no-op until Block 4.
-  });
-</script>
-
+  // ============= GO =============
+  init();
+  </script>
 </body>
 </html>
