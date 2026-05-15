@@ -5,36 +5,50 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Privacy Policy — SurfShield</title>
 <meta name="description" content="SurfShield's Privacy Policy. How we handle camera data, AI processing, and your personal information." />
+<link rel="icon" type="image/png" href="assets/icon.png" />
 
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inconsolata:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inconsolata:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
 <style>
 :root {
-  --navy: #0d1b2a;
-  --navy2: #1a2d42;
-  --surface: #1e2f42;
-  --teal: #00c2a8;
-  --coral: #ff6b4a;
-  --white: #f8fafc;
-  --text: #e8f0f7;
-  --muted: #7a95b0;
-  --muted2: #a8b8c8;
-  --border: rgba(255, 255, 255, 0.08);
-  --border2: rgba(255, 255, 255, 0.15);
+  /* Backgrounds */
+  --navy:       #0d1b2a;
+  --navy-2:     #1a2d42;
+  --surface:    #1e2f42;
+  --surface-2:  #243548;
+
+  /* Brand */
+  --teal:       #00c2a8;
+  --teal-dark:  #00a08a;
+  --teal-glow:  rgba(0, 194, 168, 0.15);
+  --coral:      #ff6b4a;
+
+  /* Text */
+  --white:      #f8fafc;
+  --text:       #e8f0f7;
+  --muted:      #a8b8c8;
+  --muted-ui:   #7a95b0;
+
+  /* Borders */
+  --border:     rgba(255, 255, 255, 0.08);
+  --border-2:   rgba(255, 255, 255, 0.15);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Syne', system-ui, sans-serif;
   background: var(--navy);
   color: var(--text);
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
 a { color: var(--teal); text-decoration: none; }
-a:hover { text-decoration: underline; }
+a:hover { color: var(--teal-dark); text-decoration: underline; }
 
 /* NAV */
 nav {
@@ -59,16 +73,15 @@ nav {
   letter-spacing: -0.02em;
   color: var(--white);
 }
-.nav-logo:hover { text-decoration: none; }
+.nav-logo:hover { color: var(--white); text-decoration: none; }
 
 .nav-links {
   display: flex;
   gap: 24px;
   font-size: 14px;
-  color: var(--muted2);
 }
-.nav-links a { color: var(--muted2); }
-.nav-links a:hover { color: var(--teal); }
+.nav-links a { color: var(--muted); }
+.nav-links a:hover { color: var(--teal); text-decoration: none; }
 
 @media (max-width: 600px) {
   nav { padding: 14px 18px; }
@@ -108,15 +121,16 @@ nav {
 .doc-meta {
   font-family: 'Inconsolata', monospace;
   font-size: 13px;
-  color: var(--muted);
+  color: var(--muted-ui);
 }
 
 .summary-box {
-  background: rgba(0, 194, 168, 0.06);
-  border: 1px solid rgba(0, 194, 168, 0.25);
+  background: var(--teal-glow);
+  border: 1px solid rgba(0, 194, 168, 0.30);
   border-radius: 12px;
   padding: 24px 28px;
   margin: 32px 0 40px;
+  box-shadow: 0 0 32px -12px var(--teal-glow);
 }
 
 .summary-box h2 {
@@ -124,6 +138,7 @@ nav {
   color: var(--teal);
   margin-bottom: 12px;
   letter-spacing: -0.01em;
+  font-weight: 700;
 }
 
 .summary-box ul {
@@ -152,7 +167,7 @@ nav {
   color: var(--white);
   margin-top: 36px;
   margin-bottom: 14px;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 
 .doc h3 {
@@ -161,6 +176,7 @@ nav {
   color: var(--white);
   margin-top: 24px;
   margin-bottom: 8px;
+  letter-spacing: -0.01em;
 }
 
 .doc p {
@@ -176,10 +192,9 @@ nav {
   font-size: 15px;
   color: var(--text);
 }
-
-.doc li {
-  margin-bottom: 6px;
-}
+.doc ul::marker { color: var(--muted-ui); }
+.doc li { margin-bottom: 6px; }
+.doc li::marker { color: var(--muted-ui); }
 
 .doc strong {
   color: var(--white);
@@ -191,6 +206,7 @@ footer {
   border-top: 1px solid var(--border);
   margin-top: 60px;
   padding: 40px 32px;
+  background: var(--navy-2);
 }
 
 .footer-inner {
@@ -210,21 +226,23 @@ footer {
   font-weight: 700;
   font-size: 14px;
   color: var(--white);
+  letter-spacing: -0.01em;
 }
-.footer-brand:hover { text-decoration: none; }
+.footer-brand:hover { color: var(--white); text-decoration: none; }
 
 .footer-links {
   display: flex;
   gap: 20px;
   font-size: 13px;
 }
-.footer-links a { color: var(--muted); }
-.footer-links a:hover { color: var(--teal); }
+.footer-links a { color: var(--muted-ui); }
+.footer-links a:hover { color: var(--teal); text-decoration: none; }
 
 .footer-copy {
   font-family: 'Inconsolata', monospace;
   font-size: 11px;
-  color: var(--muted);
+  color: var(--muted-ui);
+  letter-spacing: 0.06em;
 }
 
 @media (max-width: 600px) {
@@ -238,7 +256,7 @@ footer {
 <nav>
   <a href="/" class="nav-logo">
     <svg width="26" height="28" viewBox="0 0 32 34" fill="none">
-      <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#0f2236" stroke="#00c2a8" stroke-width="1.5"/>
+      <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#1a2d42" stroke="#00c2a8" stroke-width="1.5"/>
       <path d="M9 17C9 17 11.8 12.5 16 12.5C20.2 12.5 23 17 23 17C23 17 20.2 21.5 16 21.5C11.8 21.5 9 17 9 17Z" stroke="#00c2a8" stroke-width="1.3" fill="none"/>
       <circle cx="16" cy="17" r="2.8" fill="#00c2a8" opacity="0.9"/>
       <circle cx="16" cy="17" r="1.3" fill="#0d1b2a"/>
@@ -411,7 +429,7 @@ footer {
   <div class="footer-inner">
     <a href="/" class="footer-brand">
       <svg width="20" height="22" viewBox="0 0 32 34" fill="none">
-        <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#0f2236" stroke="#00c2a8" stroke-width="1.5"/>
+        <path d="M16 2L3 7.5V17C3 23.8 8.8 30.1 16 32C23.2 30.1 29 23.8 29 17V7.5L16 2Z" fill="#1a2d42" stroke="#00c2a8" stroke-width="1.5"/>
         <circle cx="16" cy="17" r="2.8" fill="#00c2a8"/>
       </svg>
       SurfShield
