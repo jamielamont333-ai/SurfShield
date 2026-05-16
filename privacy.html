@@ -1,200 +1,425 @@
----
-meta-description: SurfShield's Privacy Policy. How we handle camera data, AI processing, and your personal information.
-meta-viewport: width=device-width, initial-scale=1.0
-title: Privacy Policy — SurfShield
----
-
-
-[SurfShield](https://www.getsurfshield.com/)
-
-[How it works](https://www.getsurfshield.com/#how) [Pricing](https://www.getsurfshield.com/#pricing) [Feedback](https://www.getsurfshield.com/feedback)
-
-Legal · Privacy
-
-# Privacy Policy
-
-Last updated: May 16, 2026
-
-## The short version
-
-- Your camera frames are sent to our detection service for analysis. We don't store them on our own servers. Our AI provider (Anthropic) may retain them briefly for abuse prevention, then deletes them — they're never used to train AI models.
-- We don't do facial recognition. We count people, not identify them.
-- We don't sell your data. We don't show ads. We don't allow third-party tracking.
-- Your account data (email, subscription status, license key) is stored securely with Supabase.
-- You can request data deletion or export at any time by emailing support.
-
-## 1. Introduction
-
-SurfShield ("we", "our", "us") provides AI-powered shoulder-surfing protection through our website, Chrome extension, and desktop application (collectively, the "Service"). This policy explains what information we collect, how we use it, and the rights you have over it.
-
-By using the Service, you agree to the practices described in this policy. If you don't agree, please don't use the Service.
-
-## 2. What information we collect
-
-### 2.1 Camera frames (transient)
-
-When you enable shield protection, SurfShield accesses your camera to capture short still frames at regular intervals. These frames are sent to our detection service to determine whether one or more people are visible.
-
-- **Frames are not recorded.** No video stream is saved.
-- **SurfShield doesn't store frames.** Once a detection result is returned, the frame is discarded from our servers — we don't keep a copy.
-- **Frames are processed by a third-party AI service** (Anthropic). Anthropic may retain frames briefly (up to 7 days by default) for abuse prevention and reliability, then deletes them. Anthropic does not use API data to train their models. See §5.1.
-- **Frames are not used to identify you.** SurfShield counts people in view; it does not match faces to identities.
-
-
-### 2.2 Account information
-
-If you subscribe to a paid plan, we collect:
-
-- Email address (used to sign you in and contact you)
-- Name and profile picture — only when you sign in with Google, supplied by Google
-- Google account identifier — only when you sign in with Google
-- Payment information (processed by Stripe — we never see or store your card number)
-- Subscription status (active, trialing, canceled, past due)
-- License key (used to authenticate your extension and desktop app)
-
-
-### 2.3 Usage data
-
-The Service may collect anonymous usage information to help us improve the product:
-
-- How often you enable/disable shield protection
-- Whether detections occurred (count only, no images)
-- Application version, operating system, and crash reports
-- Approximate region (country-level), derived from IP address
-
-
-### 2.4 Cookies and similar technologies
-
-Our website uses minimal cookies, primarily to keep you signed in and remember your preferences. We do not use third-party advertising cookies or trackers.
-
-## 3. What we do NOT collect
-
-- **We do not perform facial recognition.** Our detection counts people; it does not identify them.
-- **We do not store video.** No webcam footage is saved by us, ever.
-- **We do not collect biometric identifiers.** No facial templates, fingerprints, or voice prints.
-- **We do not sell your personal information.** Not now, not ever.
-- **We do not show you advertisements** in our products, and we do not allow advertisers to track you.
-- **We do not use passwords.** Sign-in is via Google (OAuth) or a one-time code sent to your email — there are no passwords for us to store or for you to remember.
-
-
-## 4. How we use your information
-
-We use the information we collect to:
-
-- Operate the detection service and deliver shield protection
-- Manage your account, subscription, and billing
-- Send service-related emails (sign-in codes, billing receipts, important updates)
-- Improve the product through anonymous usage analysis
-- Respond to support requests
-- Comply with legal obligations
-
-
-## 5. Third-party services
-
-SurfShield uses a small number of trusted third-party services to operate. We share only the data necessary for each service to function.
-
-### 5.1 Anthropic (AI detection)
-
-Camera frames are sent to [Anthropic's API](https://www.anthropic.com/legal/privacy) for shoulder-surfer detection. Under Anthropic's standard API terms:
-
-- Frames are never used to train Anthropic's AI models.
-- Frames are retained in Anthropic's operational logs only briefly (up to 7 days by default) for abuse prevention and reliability, then automatically deleted.
-- Frames are not used for facial recognition or biometric identification on Anthropic's side either.
-
-For full details, see Anthropic's [API data retention policy](https://docs.claude.com/en/api/overview) and [privacy policy](https://www.anthropic.com/legal/privacy).
-
-### 5.2 Stripe (payments)
-
-Subscription payments are collected and processed by [Stripe](https://stripe.com/privacy). We never see or store your full card number. Stripe also sends you payment receipts and renewal notifications.
-
-### 5.3 Supabase (account database)
-
-Your account email, subscription metadata, and license key are stored in [Supabase](https://supabase.com/privacy), a managed PostgreSQL platform. Supabase also handles email delivery for one-time sign-in codes. Stored data is encrypted at rest and in transit.
-
-### 5.4 Vercel (hosting)
-
-Our website and detection API are hosted by [Vercel](https://vercel.com/legal/privacy-policy). They process incoming requests on our behalf and may log basic request metadata (IP address, user agent) for operational purposes.
-
-### 5.5 Future email service
-
-We may add a dedicated transactional email service in the future for marketing or notification emails. If we do, we will update this policy and notify you of any change in data handling.
-
-### 5.6 Google (sign-in)
-
-If you choose to sign in with Google, [Google](https://policies.google.com/privacy) handles authentication and shares your email address, name, profile picture, and Google account ID with us. Google does not see your activity inside SurfShield, and we do not share any product data back to Google. You can revoke SurfShield's access at any time from your Google account settings.
-
-## 6. Data security
-
-We use industry-standard security measures to protect your data:
-
-- All traffic is encrypted with HTTPS/TLS
-- Camera frames are transmitted securely over HTTPS to our detection API. SurfShield's own servers do not store frames; our AI provider's brief retention is described in §5.1.
-- Account data is encrypted at rest in Supabase
-- API keys and secrets are stored in encrypted environment variables, never in client-side code
-- Sign-in uses Google OAuth or one-time codes — no passwords to leak or reuse
-
-
-No system is perfectly secure. If we ever experience a data breach affecting your information, we will notify you promptly and as required by applicable law.
-
-## 7. Your rights
-
-You have rights over the personal information we hold about you. Depending on where you live, these may include:
-
-### 7.1 General rights (everyone)
-
-- **Access** — request a copy of the data we hold about you
-- **Correction** — ask us to fix inaccurate data
-- **Deletion** — ask us to delete your account and associated data
-- **Cancel anytime** — cancel your subscription through the billing portal linked from your account page
-- **Unsubscribe** — opt out of any non-essential emails through the link in those emails
-
-
-### 7.2 California residents (CCPA)
-
-If you reside in California, you have additional rights under the California Consumer Privacy Act:
-
-- The right to know what categories of personal information we collect and how we use it
-- The right to request deletion of personal information we hold about you
-- The right to opt out of the "sale" or "sharing" of personal information (we don't sell or share)
-- The right to non-discrimination for exercising any of these rights
-
-
-### 7.3 European Economic Area and UK residents (GDPR)
-
-If you reside in the EEA or UK, you have rights under GDPR/UK GDPR:
-
-- Right of access, rectification, erasure, restriction, portability, and objection
-- Right to withdraw consent at any time (where processing is based on consent)
-- Right to lodge a complaint with your local data protection authority
-
-
-For GDPR purposes, the data controller is SurfShield, contactable at the support email below. Where we transfer data outside the EEA/UK, we rely on appropriate safeguards including provider Data Processing Agreements and Standard Contractual Clauses.
-
-### 7.4 How to exercise your rights
-
-Email <support@getsurfshield.com> with your request. We will respond within 30 days (or sooner where required by law).
-
-## 8. Children's privacy
-
-SurfShield is not intended for users under 13 (or under 16 in the EEA). We do not knowingly collect personal information from children. If you believe a child has provided us with personal information, contact us and we'll delete it.
-
-## 9. International data transfers
-
-SurfShield's service providers (Anthropic, Stripe, Supabase, Vercel, Google) are primarily located in the United States. If you use our Service from outside the U.S., your information will be transferred to and processed in the U.S. and other jurisdictions where our providers operate. By using the Service, you consent to this transfer. Where required, we rely on appropriate safeguards such as Standard Contractual Clauses.
-
-## 10. Changes to this policy
-
-We may update this Privacy Policy from time to time. When we make material changes, we'll notify you by email (if you have an account) and post the updated policy on our website with a new "Last updated" date. Continued use of the Service after changes means you accept the updated policy.
-
-## 11. Contact us
-
-For privacy questions, data requests, or anything else covered by this policy, reach out:
-
-- Email: <support@getsurfshield.com>
-- Web: [getsurfshield.com/feedback](https://www.getsurfshield.com/feedback)
-
-[SurfShield](https://www.getsurfshield.com/)
-
-[Privacy](https://www.getsurfshield.com/privacy) [Terms](https://www.getsurfshield.com/terms) [Feedback](https://www.getsurfshield.com/feedback) [Home](https://www.getsurfshield.com/)
-
-© 2026 SurfShield · v1.0.0
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Privacy Policy — SurfShield</title>
+<meta name="description" content="SurfShield's Privacy Policy. How we handle camera data, AI processing, and your personal information." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #0d1b2a;
+    --bg-2: #1a2d42;
+    --surface: #1e2f42;
+    --surface-2: #243548;
+    --ink: #f8fafc;
+    --ink-body: #e8f0f7;
+    --ink-dim: #a8b8c8;
+    --ink-mute: #7a95b0;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.15);
+    --accent: #00c2a8;
+    --accent-2: #00a08a;
+    --accent-hover: #1ad6bd;
+    --accent-glow: rgba(0, 194, 168, 0.15);
+    --alert: #ff6b4a;
+    --on-accent: #04221d;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink-body); }
+  body {
+    font-family: 'Syne', system-ui, sans-serif;
+    font-feature-settings: 'ss01', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  .mono { font-family: 'Inconsolata', ui-monospace, monospace; letter-spacing: 0.02em; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ATMOSPHERE — quieter than the landing hero */
+  .page__bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 50% at 80% 0%, rgba(0,194,168,0.07), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 10% 10%, rgba(0,194,168,0.04), transparent 60%),
+      linear-gradient(180deg, #0d1b2a 0%, #0a1622 100%);
+  }
+  .page__grain {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    opacity: 0.22;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.6  0 0 0 0 0.85  0 0 0 0 0.8  0 0 0 0.10 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode: overlay;
+  }
+  .page { position: relative; z-index: 2; }
+
+  /* NAV — identical to landing page */
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 40px;
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(2px);
+  }
+  .brand {
+    display: flex; align-items: center; gap: 12px;
+    font-weight: 700; font-size: 19px; letter-spacing: -0.015em;
+    color: var(--ink);
+  }
+  .brand__mark { width: 28px; height: 28px; display: block; }
+  .brand__mark svg { width: 100%; height: 100%; display: block; }
+  .nav__links { display: flex; gap: 36px; font-size: 13.5px; }
+  .nav__links a { color: var(--ink-dim); transition: color 0.18s; }
+  .nav__links a:hover, .nav__links a.is-active { color: var(--ink); }
+  .nav__right { display: flex; gap: 14px; align-items: center; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--ink);
+    transition: background 0.18s, border-color 0.18s;
+  }
+  .pill:hover { border-color: var(--accent); background: var(--accent-glow); }
+  .pill--solid {
+    background: var(--accent);
+    color: var(--on-accent);
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+  .pill--solid:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+  /* PAGE HEADER */
+  .page-head {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 40px 40px;
+  }
+  .page-head__crumb {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-dim);
+    padding: 7px 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: 100px;
+    background: rgba(13,27,42,0.6);
+  }
+  .page-head__crumb::before {
+    content: ""; width: 6px; height: 6px; border-radius: 99px;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+  }
+  .page-head h1 {
+    font-size: clamp(40px, 5.5vw, 72px);
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+    font-weight: 700;
+    margin: 22px 0 0;
+    color: var(--ink);
+  }
+  .page-head__meta {
+    margin-top: 18px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  /* ARTICLE CONTENT */
+  .article {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 20px 40px 96px;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--ink-body);
+  }
+  .article p { margin: 0 0 16px; }
+  .article a { color: var(--accent); border-bottom: 1px solid transparent; transition: border-color 0.18s; }
+  .article a:hover { border-bottom-color: var(--accent); }
+  .article strong { color: var(--ink); font-weight: 600; }
+  .article ul, .article ol { padding-left: 22px; margin: 0 0 20px; }
+  .article li { margin-bottom: 8px; }
+  .article li::marker { color: var(--accent); }
+  .article hr {
+    border: 0; height: 1px; background: var(--line);
+    margin: 40px 0;
+  }
+  .article h2 {
+    font-size: 26px;
+    letter-spacing: -0.015em;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 56px 0 18px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+    line-height: 1.2;
+  }
+  .article h2:first-of-type { margin-top: 40px; }
+  .article h3 {
+    font-size: 18px;
+    letter-spacing: -0.005em;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 32px 0 10px;
+  }
+
+  /* THE-SHORT-VERSION BOX */
+  .short {
+    background: rgba(0, 194, 168, 0.04);
+    border: 1px solid rgba(0, 194, 168, 0.18);
+    border-radius: 12px;
+    padding: 22px 26px 6px;
+    margin: 32px 0 12px;
+  }
+  .short__label {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .short__label::before { content: ""; width: 18px; height: 1px; background: var(--accent); }
+  .short ul { padding-left: 18px; }
+  .short li { color: var(--ink-body); }
+
+  /* FOOTER — identical to landing */
+  .foot {
+    border-top: 1px solid var(--line);
+    padding: 32px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'Inconsolata', monospace; font-size: 11.5px; color: var(--ink-mute);
+    gap: 20px;
+    flex-wrap: wrap;
+    background: rgba(13,27,42,0.6);
+  }
+  .foot a { color: var(--ink-mute); transition: color 0.18s; }
+  .foot a:hover { color: var(--accent); }
+  .foot__links { display: flex; gap: 22px; }
+
+  @media (max-width: 720px) {
+    .nav { padding: 18px 22px; }
+    .nav__links { display: none; }
+    .page-head { padding: 56px 22px 28px; }
+    .article { padding: 16px 22px 72px; }
+    .foot { padding: 24px 22px; }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="page__bg"></div>
+<div class="page__grain"></div>
+
+<div class="page">
+
+  <nav class="nav">
+    <a class="brand" href="/">
+      <span class="brand__mark">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M16 3 L26 7 V15 C26 21 22 26 16 29 C10 26 6 21 6 15 V7 Z" stroke="#00c2a8" stroke-width="1.6" fill="rgba(0,194,168,0.10)"/>
+          <ellipse cx="16" cy="16.5" rx="5.2" ry="3.6" stroke="#00c2a8" stroke-width="1.4" fill="none"/>
+          <circle cx="16" cy="16.5" r="1.6" fill="#00c2a8"/>
+        </svg>
+      </span>
+      <span>SurfShield</span>
+    </a>
+    <div class="nav__links">
+      <a href="/#features">How it works</a>
+      <a href="/privacy" class="is-active">Privacy</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/feedback">Contact</a>
+    </div>
+    <div class="nav__right">
+      <a href="/signin" class="pill mono">Sign in</a>
+      <a href="#stripe-replace" class="pill pill--solid">Start free trial →</a>
+    </div>
+  </nav>
+
+  <header class="page-head">
+    <span class="page-head__crumb">Legal · Privacy</span>
+    <h1>Privacy Policy</h1>
+    <div class="page-head__meta">Last updated: May 16, 2026</div>
+  </header>
+
+  <article class="article">
+
+    <div class="short">
+      <div class="short__label">The short version</div>
+      <ul>
+        <li>Your camera frames are sent to our detection service for analysis. We don't store them on our own servers. Our AI provider (Anthropic) may retain them briefly for abuse prevention, then deletes them — they're never used to train AI models.</li>
+        <li>We don't do facial recognition. We count people, not identify them.</li>
+        <li>We don't sell your data. We don't show ads. We don't allow third-party tracking.</li>
+        <li>Your account data (email, subscription status, license key) is stored securely with Supabase.</li>
+        <li>You can request data deletion or export at any time by emailing support.</li>
+      </ul>
+    </div>
+
+    <h2>1. Introduction</h2>
+    <p>SurfShield ("we", "our", "us") provides AI-powered shoulder-surfing protection through our website, Chrome extension, and desktop application (collectively, the "Service"). This policy explains what information we collect, how we use it, and the rights you have over it.</p>
+    <p>By using the Service, you agree to the practices described in this policy. If you don't agree, please don't use the Service.</p>
+
+    <h2>2. What information we collect</h2>
+
+    <h3>2.1 Camera frames (transient)</h3>
+    <p>When you enable shield protection, SurfShield accesses your camera to capture short still frames at regular intervals. These frames are sent to our detection service to determine whether one or more people are visible.</p>
+    <ul>
+      <li><strong>Frames are not recorded.</strong> No video stream is saved.</li>
+      <li><strong>SurfShield doesn't store frames.</strong> Once a detection result is returned, the frame is discarded from our servers — we don't keep a copy.</li>
+      <li><strong>Frames are processed by a third-party AI service</strong> (Anthropic). Anthropic may retain frames briefly (up to 7 days by default) for abuse prevention and reliability, then deletes them. Anthropic does not use API data to train their models. See §5.1.</li>
+      <li><strong>Frames are not used to identify you.</strong> SurfShield counts people in view; it does not match faces to identities.</li>
+    </ul>
+
+    <h3>2.2 Account information</h3>
+    <p>If you subscribe to a paid plan, we collect:</p>
+    <ul>
+      <li>Email address (used to sign you in and contact you)</li>
+      <li>Name and profile picture — only when you sign in with Google, supplied by Google</li>
+      <li>Google account identifier — only when you sign in with Google</li>
+      <li>Payment information (processed by Stripe — we never see or store your card number)</li>
+      <li>Subscription status (active, trialing, canceled, past due)</li>
+      <li>License key (used to authenticate your extension and desktop app)</li>
+    </ul>
+
+    <h3>2.3 Usage data</h3>
+    <p>The Service may collect anonymous usage information to help us improve the product:</p>
+    <ul>
+      <li>How often you enable/disable shield protection</li>
+      <li>Whether detections occurred (count only, no images)</li>
+      <li>Application version, operating system, and crash reports</li>
+      <li>Approximate region (country-level), derived from IP address</li>
+    </ul>
+
+    <h3>2.4 Cookies and similar technologies</h3>
+    <p>Our website uses minimal cookies, primarily to keep you signed in and remember your preferences. We do not use third-party advertising cookies or trackers.</p>
+
+    <h2>3. What we do NOT collect</h2>
+    <ul>
+      <li><strong>We do not perform facial recognition.</strong> Our detection counts people; it does not identify them.</li>
+      <li><strong>We do not store video.</strong> No webcam footage is saved by us, ever.</li>
+      <li><strong>We do not collect biometric identifiers.</strong> No facial templates, fingerprints, or voice prints.</li>
+      <li><strong>We do not sell your personal information.</strong> Not now, not ever.</li>
+      <li><strong>We do not show you advertisements</strong> in our products, and we do not allow advertisers to track you.</li>
+      <li><strong>We do not use passwords.</strong> Sign-in is via Google (OAuth) or a one-time code sent to your email — there are no passwords for us to store or for you to remember.</li>
+    </ul>
+
+    <h2>4. How we use your information</h2>
+    <p>We use the information we collect to:</p>
+    <ul>
+      <li>Operate the detection service and deliver shield protection</li>
+      <li>Manage your account, subscription, and billing</li>
+      <li>Send service-related emails (sign-in codes, billing receipts, important updates)</li>
+      <li>Improve the product through anonymous usage analysis</li>
+      <li>Respond to support requests</li>
+      <li>Comply with legal obligations</li>
+    </ul>
+
+    <h2>5. Third-party services</h2>
+    <p>SurfShield uses a small number of trusted third-party services to operate. We share only the data necessary for each service to function.</p>
+
+    <h3>5.1 Anthropic (AI detection)</h3>
+    <p>Camera frames are sent to <a href="https://www.anthropic.com/legal/privacy">Anthropic's API</a> for shoulder-surfer detection. Under Anthropic's standard API terms:</p>
+    <ul>
+      <li>Frames are never used to train Anthropic's AI models.</li>
+      <li>Frames are retained in Anthropic's operational logs only briefly (up to 7 days by default) for abuse prevention and reliability, then automatically deleted.</li>
+      <li>Frames are not used for facial recognition or biometric identification on Anthropic's side either.</li>
+    </ul>
+    <p>For full details, see Anthropic's <a href="https://docs.claude.com/en/api/overview">API data retention policy</a> and <a href="https://www.anthropic.com/legal/privacy">privacy policy</a>.</p>
+
+    <h3>5.2 Stripe (payments)</h3>
+    <p>Subscription payments are collected and processed by <a href="https://stripe.com/privacy">Stripe</a>. We never see or store your full card number. Stripe also sends you payment receipts and renewal notifications.</p>
+
+    <h3>5.3 Supabase (account database)</h3>
+    <p>Your account email, subscription metadata, and license key are stored in <a href="https://supabase.com/privacy">Supabase</a>, a managed PostgreSQL platform. Supabase also handles email delivery for one-time sign-in codes. Stored data is encrypted at rest and in transit.</p>
+
+    <h3>5.4 Vercel (hosting)</h3>
+    <p>Our website and detection API are hosted by <a href="https://vercel.com/legal/privacy-policy">Vercel</a>. They process incoming requests on our behalf and may log basic request metadata (IP address, user agent) for operational purposes.</p>
+
+    <h3>5.5 Future email service</h3>
+    <p>We may add a dedicated transactional email service in the future for marketing or notification emails. If we do, we will update this policy and notify you of any change in data handling.</p>
+
+    <h3>5.6 Google (sign-in)</h3>
+    <p>If you choose to sign in with Google, <a href="https://policies.google.com/privacy">Google</a> handles authentication and shares your email address, name, profile picture, and Google account ID with us. Google does not see your activity inside SurfShield, and we do not share any product data back to Google. You can revoke SurfShield's access at any time from your Google account settings.</p>
+
+    <h2>6. Data security</h2>
+    <p>We use industry-standard security measures to protect your data:</p>
+    <ul>
+      <li>All traffic is encrypted with HTTPS/TLS</li>
+      <li>Camera frames are transmitted securely over HTTPS to our detection API. SurfShield's own servers do not store frames; our AI provider's brief retention is described in §5.1.</li>
+      <li>Account data is encrypted at rest in Supabase</li>
+      <li>API keys and secrets are stored in encrypted environment variables, never in client-side code</li>
+      <li>Sign-in uses Google OAuth or one-time codes — no passwords to leak or reuse</li>
+    </ul>
+    <p>No system is perfectly secure. If we ever experience a data breach affecting your information, we will notify you promptly and as required by applicable law.</p>
+
+    <h2>7. Your rights</h2>
+    <p>You have rights over the personal information we hold about you. Depending on where you live, these may include:</p>
+
+    <h3>7.1 General rights (everyone)</h3>
+    <ul>
+      <li><strong>Access</strong> — request a copy of the data we hold about you</li>
+      <li><strong>Correction</strong> — ask us to fix inaccurate data</li>
+      <li><strong>Deletion</strong> — ask us to delete your account and associated data</li>
+      <li><strong>Cancel anytime</strong> — cancel your subscription through the billing portal linked from your account page</li>
+      <li><strong>Unsubscribe</strong> — opt out of any non-essential emails through the link in those emails</li>
+    </ul>
+
+    <h3>7.2 California residents (CCPA)</h3>
+    <p>If you reside in California, you have additional rights under the California Consumer Privacy Act:</p>
+    <ul>
+      <li>The right to know what categories of personal information we collect and how we use it</li>
+      <li>The right to request deletion of personal information we hold about you</li>
+      <li>The right to opt out of the "sale" or "sharing" of personal information (we don't sell or share)</li>
+      <li>The right to non-discrimination for exercising any of these rights</li>
+    </ul>
+
+    <h3>7.3 European Economic Area and UK residents (GDPR)</h3>
+    <p>If you reside in the EEA or UK, you have rights under GDPR/UK GDPR:</p>
+    <ul>
+      <li>Right of access, rectification, erasure, restriction, portability, and objection</li>
+      <li>Right to withdraw consent at any time (where processing is based on consent)</li>
+      <li>Right to lodge a complaint with your local data protection authority</li>
+    </ul>
+    <p>For GDPR purposes, the data controller is SurfShield, contactable at the support email below. Where we transfer data outside the EEA/UK, we rely on appropriate safeguards including provider Data Processing Agreements and Standard Contractual Clauses.</p>
+
+    <h3>7.4 How to exercise your rights</h3>
+    <p>Email <a href="mailto:support@getsurfshield.com">support@getsurfshield.com</a> with your request. We will respond within 30 days (or sooner where required by law).</p>
+
+    <h2>8. Children's privacy</h2>
+    <p>SurfShield is not intended for users under 13 (or under 16 in the EEA). We do not knowingly collect personal information from children. If you believe a child has provided us with personal information, contact us and we'll delete it.</p>
+
+    <h2>9. International data transfers</h2>
+    <p>SurfShield's service providers (Anthropic, Stripe, Supabase, Vercel, Google) are primarily located in the United States. If you use our Service from outside the U.S., your information will be transferred to and processed in the U.S. and other jurisdictions where our providers operate. By using the Service, you consent to this transfer. Where required, we rely on appropriate safeguards such as Standard Contractual Clauses.</p>
+
+    <h2>10. Changes to this policy</h2>
+    <p>We may update this Privacy Policy from time to time. When we make material changes, we'll notify you by email (if you have an account) and post the updated policy on our website with a new "Last updated" date. Continued use of the Service after changes means you accept the updated policy.</p>
+
+    <h2>11. Contact us</h2>
+    <p>For privacy questions, data requests, or anything else covered by this policy, reach out:</p>
+    <ul>
+      <li>Email: <a href="mailto:support@getsurfshield.com">support@getsurfshield.com</a></li>
+      <li>Web: <a href="/feedback">getsurfshield.com/feedback</a></li>
+    </ul>
+
+  </article>
+
+  <footer class="foot">
+    <span>SurfShield · © 2026</span>
+    <div class="foot__links">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/feedback">Contact</a>
+    </div>
+    <span>getsurfshield.com</span>
+  </footer>
+
+</div>
+
+</body>
+</html>
