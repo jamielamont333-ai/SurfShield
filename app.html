@@ -233,13 +233,47 @@
       inset: 0;
       backdrop-filter: blur(36px) saturate(1.2);
       -webkit-backdrop-filter: blur(36px) saturate(1.2);
-      background: rgba(7, 17, 28, 0.4);
+      background: rgba(7, 17, 28, 0.55);
       z-index: 9999;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     }
     #surfshield-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .dismiss-hint {
+      text-align: center;
+      color: var(--text);
+      padding: 32px;
+      opacity: 0;
+      transition: opacity 0.3s ease 0.4s;
+      pointer-events: none;
+      user-select: none;
+    }
+    #surfshield-overlay.active .dismiss-hint { opacity: 1; }
+
+    .dismiss-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      filter: drop-shadow(0 0 12px rgba(45, 212, 191, 0.6));
+    }
+    .dismiss-heading {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.02em;
+      margin-bottom: 10px;
+    }
+    .dismiss-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
 
     /* Floating "Shield active" pill — visible above the overlay */
     #surfshield-pill {
@@ -327,8 +361,9 @@
       <p class="welcome">Signed in as <span id="user-email">—</span></p>
       <h1 class="title">Your browser shield</h1>
       <p class="subtitle">
-        Click Start Shield to begin webcam-based protection on this tab.
-        Switch tabs or close this one and the shield stops.
+        Click Start Shield to enter protected mode. Your tab will go fullscreen
+        and the shield will blur the screen when someone is looking. Press Esc
+        any time to exit.
       </p>
 
       <div class="status-pill-wrap">
@@ -362,7 +397,13 @@
   </div>
 
   <!-- ===== Full-screen shield overlay (activates on threat) ===== -->
-  <div id="surfshield-overlay"></div>
+  <div id="surfshield-overlay">
+    <div class="dismiss-hint">
+      <div class="dismiss-icon">🛡</div>
+      <div class="dismiss-heading">Privacy shield active</div>
+      <div class="dismiss-sub">Click anywhere or press Esc to dismiss</div>
+    </div>
+  </div>
   <div id="surfshield-pill">
     <span class="pill-pulse"></span>
     Shield active
@@ -404,6 +445,9 @@
   let captureTimer = null;
   let isShieldOn   = false;
   let inFlight     = false;
+  let snoozedUntil = 0;       // Date.now() millis; blur suppressed until this time
+  let snoozeTimer  = null;    // interval for the snooze countdown display
+  const SNOOZE_MS  = 8000;    // dismiss = 8s before re-blur can trigger; tune to taste
 
   // ----- DOM helpers -----
   const $ = (id) => document.getElementById(id);
@@ -455,6 +499,15 @@
     $('copy-btn').addEventListener('click', copyLicense);
     $('signout-btn').addEventListener('click', signOut);
     $('error-signout').addEventListener('click', signOut);
+    $('surfshield-overlay').addEventListener('click', dismissBlur);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') dismissBlur();
+    });
+    // If the user exits fullscreen by any means (Esc, F11, browser button),
+    // treat that as a panic button — stop the shield entirely.
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement && isShieldOn) stopShield();
+    });
 
     // 5. Reveal the app
     showScreen('app-state');
@@ -467,10 +520,21 @@
   }
 
   async function startShield() {
+    // Enter true fullscreen so the blur overlay can cover the entire visible
+    // screen (hides browser chrome and most OS UI). Must be triggered from a
+    // user gesture — this click qualifies. If it fails (rare), we proceed
+    // with tab-only blur rather than blocking the shield entirely.
+    try {
+      await document.documentElement.requestFullscreen();
+    } catch (err) {
+      console.warn('Fullscreen denied; falling back to tab-only blur:', err);
+    }
+
     try {
       stream = await navigator.mediaDevices.getUserMedia({ video: true });
     } catch (err) {
       alert('Camera permission required to use the shield.\n\n' + err.message);
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
       return;
     }
 
@@ -490,10 +554,16 @@
   function stopShield() {
     if (captureTimer) clearInterval(captureTimer);
     captureTimer = null;
+    if (snoozeTimer) clearInterval(snoozeTimer);
+    snoozeTimer = null;
+    snoozedUntil = 0;
 
     if (stream) {
       stream.getTracks().forEach((t) => t.stop());
       stream = null;
+    }
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(() => {});
     }
 
     const video = $('camera-video');
@@ -513,8 +583,33 @@
     $('surfshield-pill').classList.toggle('active', on);
   }
 
+  function dismissBlur() {
+    // Only meaningful if the overlay is currently up
+    if (!$('surfshield-overlay').classList.contains('active')) return;
+    activateBlur(false);
+    snoozedUntil = Date.now() + SNOOZE_MS;
+    startSnoozeCountdown();
+  }
+
+  function startSnoozeCountdown() {
+    if (snoozeTimer) clearInterval(snoozeTimer);
+    const tick = () => {
+      const remaining = Math.ceil((snoozedUntil - Date.now()) / 1000);
+      if (remaining > 0 && isShieldOn) {
+        $('status-text').textContent = 'Snoozed · ' + remaining + 's';
+      } else {
+        clearInterval(snoozeTimer);
+        snoozeTimer = null;
+        if (isShieldOn) $('status-text').textContent = 'Shield on';
+      }
+    };
+    tick();
+    snoozeTimer = setInterval(tick, 250);
+  }
+
   async function captureAndDetect() {
     if (inFlight) return;
+    if (Date.now() < snoozedUntil) return;  // user dismissed; wait out the snooze before next call
     const video = $('camera-video');
     if (!video.videoWidth) return;
 
